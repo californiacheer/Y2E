@@ -1172,8 +1172,7 @@ header.top .header-star{display:none;}
   <section class="panel" id="panel-checklist">
     <div class="section-title">Pack for a Travel Comp</div>
     <div class="seg-toggle" id="checklistToggle">
-      <button type="button" class="seg-btn active" data-view="all">All</button>
-      <button type="button" class="seg-btn" data-view="girls">Girls</button>
+      <button type="button" class="seg-btn active" data-view="girls">Girls</button>
       <button type="button" class="seg-btn" data-view="boys">Boys</button>
     </div>
     <div id="checklistWrap"></div>
@@ -2083,8 +2082,8 @@ function renderFundraisers(){
   `).join('');
 }
 
-let checklistView = 'all';
-try{ checklistView = localStorage.getItem('y2k_checklist_view') || 'all'; }catch(e){}
+let checklistView = 'girls';
+try{ const v = localStorage.getItem('y2k_checklist_view'); if(v==='girls' || v==='boys') checklistView = v; }catch(e){}
 
 const SHOW_FLATLAYS = true;   // packing-list flatlay photos (set false to hide)
 function renderChecklist(){
