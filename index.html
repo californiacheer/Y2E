@@ -1238,6 +1238,26 @@ html.page-navy .app-disclaimer button.disc-link{color:rgba(255,255,255,.92);}
 .bud-edit-actions{display:flex; flex-wrap:wrap; gap:8px; align-items:center;}
 .bud-removed{font-size:12.5px; color:var(--text-muted); padding:10px 0 2px;}
 .exp-paste-actions{display:flex; flex-wrap:wrap; gap:8px;}
+.conf-num{font-size:12.5px; color:var(--text-muted);}
+.conf-num b{color:var(--text); letter-spacing:.02em;}
+
+/* ---- v2: edit buttons, flight legs, tools ---- */
+.bud-ed{flex:0 0 28px; width:28px; height:28px; border-radius:50%; border:none; background:var(--accent-soft); color:var(--accent); cursor:pointer; display:inline-flex; align-items:center; justify-content:center; padding:0; align-self:center;}
+.bud-ed svg{width:14px; height:14px;}
+.bud-ed:hover,.bud-ed:focus-visible{background:var(--accent); color:#fff;}
+.bud-item .bud-x{align-self:center;}
+.bud-hint{font-size:12px; color:var(--text-muted); margin:8px 0 0; line-height:1.45;}
+.flt-pair{display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:8px;}
+.flt-lbl{display:flex; flex-direction:column; gap:4px; font-size:11px; font-weight:700; letter-spacing:.04em; text-transform:uppercase; color:var(--text-muted); min-width:0;}
+.flt-lbl input{text-transform:none; letter-spacing:0; font-weight:400;}
+.trv-tools{display:flex; flex-direction:column; gap:8px; margin-top:2px;}
+.trv-leg{display:flex; flex-wrap:wrap; align-items:center; gap:6px 8px;}
+.trv-leg-t{font-size:12.5px; font-weight:700; margin-right:2px;}
+.trv-leg-t small{font-weight:500; color:var(--text-muted); margin-left:4px;}
+.trv-chip{display:inline-flex; align-items:center; font-size:12px; font-weight:700; color:var(--accent); background:var(--accent-soft); border-radius:99px; padding:5px 11px; text-decoration:none; white-space:nowrap;}
+.trv-chip:hover{background:var(--accent); color:#fff;}
+.trv-note{font-size:11.5px; color:var(--text-muted); line-height:1.4;}
+.compx-travel-detail + .compx-toggle-row{margin-top:16px;}
 </style>
 </head>
 <body>
@@ -1438,12 +1458,6 @@ html.page-navy .app-disclaimer button.disc-link{color:rgba(255,255,255,.92);}
       <label>What was it?<select id="expType" class="cal-input" style="margin-top:0"></select></label>
       <div class="exp-warn" id="expUntracked" hidden>You’re not tracking this category, so it won’t be counted. Turn it on in the Budget tab.</div>
       <label>Which comp? <small>(optional)</small><select id="expComp" class="cal-input" style="margin-top:0"></select></label>
-      <div class="exp-paste" id="expPasteWrap" hidden>
-        <label style="gap:4px">Have a confirmation email? <small>Paste it here and tap “Find the total.” It never leaves your phone.</small>
-          <textarea id="expPaste" placeholder="Paste the confirmation email text…"></textarea></label>
-        <div class="exp-paste-actions"><button type="button" class="bud-btn" id="expClip" hidden>Paste from clipboard</button><button type="button" class="bud-btn" id="expFind">Find the total</button></div>
-        <div id="expCands"></div>
-      </div>
       <div id="expMilesWrap" hidden><label>Round-trip miles<input type="number" inputmode="decimal" min="0" id="expMiles" class="cal-input" style="margin-top:0" placeholder="e.g. 140"><small id="expRateNote"></small></label></div>
       <div class="exp-row2">
         <label>Amount<div class="bud-money-in"><span>$</span><input type="number" inputmode="decimal" min="0" step="0.01" id="expAmt" placeholder="0.00"></div></label>
@@ -1510,6 +1524,7 @@ const customIcons = {
 };
 
 function mapsLink(address){ return 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(address); }
+function hotelDirLink(place){ return 'https://www.google.com/maps/dir/?api=1&destination=' + encodeURIComponent(place); }
 function hotelsLink(address){ return 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent('hotels near ' + address); }
 function flightsLink(text){ return 'https://www.google.com/travel/flights?q=' + encodeURIComponent(text); }
 
@@ -1527,7 +1542,9 @@ function buildCalDescription(c, bk){
   lines.push('Location: '+c.address);
   if(c.flightSearch){
     if(bk.air){
-      lines.push('Airfare: booked'+(bk.airDetail?' — '+bk.airDetail:''));
+      lines.push('Airfare: booked');
+      if(bk.airDetail) lines.push('Flight there: '+bk.airDetail);
+      if(bk.airBack) lines.push('Flight back: '+bk.airBack);
       if(bk.airLink) lines.push('Flight confirmation: '+bk.airLink);
     } else {
       lines.push('Airfare: not booked yet');
@@ -1568,7 +1585,7 @@ const competitions = [
     dateChanged:true, note:"Date changed — moved from Sun 11/22 to Sat 11/21."},
   {name:"ASCS Champs Grand Nationals", loc:"Aurora, CO · Gaylord Rockies Resort &amp; Convention Center", address:"Gaylord Rockies Resort & Convention Center, Aurora, CO", start:"2026-12-19", end:"2026-12-20", travel:"required",
     detail:"Team showoffs Wed 12/16. Fly in Thursday 12/17, fly out Monday 12/21. Recommended: stay on-site at the Gaylord Rockies Resort.", housing:"required", bookingDate:"2026-09-10", travelStart:"2026-12-17", travelEnd:"2026-12-21",
-    bookingLinks:[{label:"Group block booking info (PDF)", url:"https://6q39gws4.r.us-east-1.awstrack.me/L0/https:%2F%2Ffiles.iclasspro.com%2F32838%2Fstudents%2F1789007956.California_All_Stars_ATHLETES_-_Champs_-_Group_Block_Preview-compressed.pdf/1/010001a0893458f4-ce3ddfa0-60d9-49fd-982b-bd23d340dc62-000000/k0NB4BkE02Kl9kEYYv5ArnHOvho=473"}],
+    bookingLinks:[{label:"ASCS housing block (book here)", url:"https://presto.eventpipe.com/event/1525a7d2-eb0c-4823-8240-3e4895689ee5"}, {label:"Group block booking info (PDF)", url:"https://6q39gws4.r.us-east-1.awstrack.me/L0/https:%2F%2Ffiles.iclasspro.com%2F32838%2Fstudents%2F1789007956.California_All_Stars_ATHLETES_-_Champs_-_Group_Block_Preview-compressed.pdf/1/010001a0893458f4-ce3ddfa0-60d9-49fd-982b-bd23d340dc62-000000/k0NB4BkE02Kl9kEYYv5ArnHOvho=473"}],
     flightSearch:"Flights to Denver from San Diego, departing 2026-12-17, returning 2026-12-21",
     rosterLink:"https://www.varsity.com/download-event-app/", rosterLabel:"Team roster via Varsity Spirit Event App"},
   {name:"The Majors", loc:"Indianapolis, IN · Indiana Convention Center", address:"Indiana Convention Center, Indianapolis, IN", start:"2027-01-15", end:"2027-01-15", dateLabel:"January 2027", attending:false, teams:"Lady Bullets"},
@@ -1971,11 +1988,95 @@ const ASTRONAUT_IMG='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAZAAAAGtCAYAA
 function gcard(icon, label, sub, url, soon){
   const cls = 'compx-gcard' + (soon?' soon':'');
   const inner = `<div class="gc-ic">${icon}</div><div class="gc-lbl">${label}</div><div class="gc-sub">${sub}</div>`;
-  return url ? `<a class="${cls}" href="${url}" target="_blank">${inner}</a>` : `<div class="${cls}">${inner}</div>`;
+  return url ? `<a class="${cls}" href="${url}" target="_blank" rel="noopener noreferrer">${inner}</a>` : `<div class="${cls}">${inner}</div>`;
 }
-function travelToggleRow(field, yes, detail, link, title, sub, placeholder){
+// A confirmation can be a web link OR just a confirmation number. Only real-looking links become tappable,
+// so typing "KX7Q2M" can never send someone to a page that doesn't exist.
+function confirmInfo(v){
+  const t = String(v||'').trim();
+  if(!t) return null;
+  if(/^https?:\/\/[^\s]+\.[^\s]+$/i.test(t)) return {url:t};
+  if(/^(?:www\.)?[a-z0-9-]+(?:\.[a-z0-9-]+)*\.[a-z]{2,}(?:[\/?#]\S*)?$/i.test(t)) return {url:'https://'+t};
+  return {text:t};
+}
+function confirmHtml(v){
+  const c = confirmInfo(v);
+  if(!c) return '';
+  if(c.url) return '<a href="'+c.url.replace(/"/g,'&quot;')+'" target="_blank" rel="noopener noreferrer" style="font-size:12.5px;font-weight:600;color:var(--accent);">View confirmation ↗</a>';
+  return '<div class="conf-num">Confirmation #: <b>'+c.text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')+'</b></div>';
+}
+
+/* ---- flight + hotel quick links (built from what the parent types; nothing is sent anywhere) ---- */
+const AIRLINES = {
+  DL:{n:'Delta',icao:'DAL',site:'https://www.delta.com'}, AA:{n:'American Airlines',icao:'AAL',site:'https://www.aa.com'},
+  UA:{n:'United',icao:'UAL',site:'https://www.united.com'}, WN:{n:'Southwest',icao:'SWA',site:'https://www.southwest.com'},
+  AS:{n:'Alaska Airlines',icao:'ASA',site:'https://www.alaskaair.com'}, B6:{n:'JetBlue',icao:'JBU',site:'https://www.jetblue.com'},
+  NK:{n:'Spirit',icao:'NKS',site:'https://www.spirit.com'}, F9:{n:'Frontier',icao:'FFT',site:'https://www.flyfrontier.com'},
+  HA:{n:'Hawaiian Airlines',icao:'HAL',site:'https://www.hawaiianairlines.com'}, G4:{n:'Allegiant',icao:'AAY',site:'https://www.allegiantair.com'},
+  SY:{n:'Sun Country',icao:'SCX',site:'https://www.suncountry.com'}, AC:{n:'Air Canada',icao:'ACA',site:'https://www.aircanada.com'},
+  WS:{n:'WestJet',icao:'WJA',site:'https://www.westjet.com'}, BA:{n:'British Airways',icao:'BAW',site:'https://www.britishairways.com'}
+};
+const AIRLINE_WORDS = [['delta','DL'],['american','AA'],['united','UA'],['southwest','WN'],['alaska','AS'],['jetblue','B6'],['jet blue','B6'],['spirit','NK'],['frontier','F9'],['hawaiian','HA'],['allegiant','G4'],['sun country','SY'],['air canada','AC'],['westjet','WS'],['british','BA']];
+function parseFlight(s){
+  const t = String(s||'').trim();
+  if(!t) return null;
+  let m = t.match(/^([A-Za-z][A-Za-z0-9]|[0-9][A-Za-z])\s*[-#]?\s*(\d{1,4})\b/);
+  if(m) return {code:m[1].toUpperCase(), num:String(parseInt(m[2],10))};
+  const low = t.toLowerCase();
+  for(const [w,code] of AIRLINE_WORDS){
+    if(low.indexOf(w)===0){
+      m = low.slice(w.length).match(/^\s*(?:air\s*lines?|airways?)?\s*(?:flight|#|no\.?)?\s*(\d{1,4})\b/);
+      if(m) return {code:code, num:String(parseInt(m[1],10))};
+    }
+  }
+  return null;
+}
+function airlineAppLink(a){
+  const ua = (typeof navigator!=='undefined' && navigator.userAgent) || '';
+  if(/iPhone|iPad|iPod/i.test(ua)) return {url:'https://search.itunes.apple.com/WebObjects/MZSearch.woa/wa/search?media=software&term='+encodeURIComponent(a.n), label:'Airline app'};
+  if(/Android/i.test(ua)) return {url:'https://play.google.com/store/search?c=apps&q='+encodeURIComponent(a.n), label:'Airline app'};
+  return {url:a.site, label:'Airline site'};
+}
+function flightToolsHtml(c, bk){
+  const legs = [{w:'There', v:bk.airDetail, d:c.travelStart}, {w:'Back', v:bk.airBack, d:c.travelEnd}];
+  let out = '';
+  legs.forEach(l=>{
+    const f = parseFlight(l.v);
+    if(!f) return;
+    const a = AIRLINES[f.code];
+    const day = l.d ? fmtDayDate(l.d) : '';
+    const q = f.code+' '+f.num+' flight status'+(l.d ? ' '+fmtDayDate(l.d) : '');
+    const chips = ['<a class="trv-chip" href="https://www.google.com/search?q='+encodeURIComponent(q)+'" target="_blank" rel="noopener noreferrer">Flight status ↗</a>'];
+    if(a) chips.push('<a class="trv-chip" href="https://www.flightaware.com/live/flight/'+a.icao+f.num+'" target="_blank" rel="noopener noreferrer">Live map ↗</a>');
+    if(a){ const ap = airlineAppLink(a); chips.push('<a class="trv-chip" href="'+ap.url+'" target="_blank" rel="noopener noreferrer">'+ap.label+' ↗</a>'); }
+    out += '<div class="trv-leg"><span class="trv-leg-t">'+l.w+' · '+f.code+' '+f.num+(day?'<small>'+day+'</small>':'')+'</span>'+chips.join('')+'</div>';
+  });
+  if(!out) return '';
+  return '<div class="trv-tools">'+out+'<div class="trv-note">Quick links only. They open Google, FlightAware or your airline for live gate and delay info.</div></div>';
+}
+const HOTEL_SITES = [
+  [/gaylord\s+rockies/i, 'https://www.gaylordhotels.com/gaylord-rockies/'],
+  [/gaylord\s+opryland/i, 'https://www.gaylordhotels.com/gaylord-opryland/'],
+  [/gaylord\s+texan/i, 'https://www.gaylordhotels.com/gaylord-texan/'],
+  [/gaylord\s+palms/i, 'https://www.gaylordhotels.com/gaylord-palms/'],
+  [/gaylord\s+national/i, 'https://www.gaylordhotels.com/gaylord-national/']
+];
+function hotelToolsHtml(c, bk){
+  const name = String(bk.hotelDetail||'').trim();
+  if(!name) return '';
+  const city = String(c.loc||'').split('·')[0].trim();
+  let site = null;
+  for(const [re,u] of HOTEL_SITES){ if(re.test(name)){ site = u; break; } }
+  const chip = site
+    ? '<a class="trv-chip" href="'+site+'" target="_blank" rel="noopener noreferrer">Hotel website ↗</a>'
+    : '<a class="trv-chip" href="https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(name+(city?', '+city:''))+'" target="_blank" rel="noopener noreferrer">Hotel details ↗</a>';
+  const note = site ? '' : '<div class="trv-note">Opens the hotel in Maps near '+(city?city.replace(/&/g,'&amp;').replace(/</g,'&lt;'):'the comp')+' with its website, phone and photos. If it is a big chain, add the city or street so the right location comes up.</div>';
+  return '<div class="trv-tools"><div class="trv-leg">'+chip+'</div>'+note+'</div>';
+}
+function travelToggleRow(field, yes, detail, link, title, sub, placeholder, back, tools){
   const safeDetail = (detail||'').replace(/"/g,'&quot;');
   const safeLink = (link||'').replace(/"/g,'&quot;');
+  const safeBack = (back||'').replace(/"/g,'&quot;');
   return `<div class="compx-toggle-row">
       <div class="compx-toggle-copy">
         <div class="compx-toggle-title">${title}</div>
@@ -1987,9 +2088,12 @@ function travelToggleRow(field, yes, detail, link, title, sub, placeholder){
       </div>
     </div>
     <div class="compx-travel-detail ${yes?'show':''}">
-      <input type="text" class="booking-link-input" data-field="${field}Detail" placeholder="${placeholder}" value="${safeDetail}">
-      <input type="text" class="booking-link-input" data-field="${field}Link" placeholder="Add confirmation link (optional)" value="${safeLink}">
-      ${link?`<a href="${link}" target="_blank" style="font-size:12.5px;font-weight:600;color:var(--accent);">View confirmation ↗</a>`:''}
+      ${field==='air'
+        ? `<div class="flt-pair"><label class="flt-lbl">Flight there<input type="text" class="booking-link-input" data-field="airDetail" placeholder="e.g. DL 1234" value="${safeDetail}"></label><label class="flt-lbl">Flight back<input type="text" class="booking-link-input" data-field="airBack" placeholder="e.g. DL 5678" value="${safeBack}"></label></div>`
+        : `<input type="text" class="booking-link-input" data-field="${field}Detail" placeholder="${placeholder}" value="${safeDetail}">`}
+      <input type="text" class="booking-link-input" data-field="${field}Link" placeholder="Confirmation link or number (optional)" value="${safeLink}">
+      ${confirmHtml(link)}
+      ${tools||''}
     </div>`;
 }
 
@@ -2129,7 +2233,11 @@ function renderComps(){
 
       const gcards = [];
       gcards.push(gcard(ICON_PIN,'Directions','Open in Maps →', mapsLink(c.address)));
-      if(c.travel==='local') gcards.push(gcard(ICON_BED,'Hotels nearby','View hotel list →', hotelsLink(c.address)));
+      // Once a hotel name is entered under "My Travel", swap "Hotels nearby" for directions to that hotel.
+      const bookedHotel = (c.housing && bk.hotel) ? String(bk.hotelDetail||'').trim() : '';
+      if(bookedHotel){
+        gcards.push(gcard(ICON_BED,'Directions to hotel', bookedHotel.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')+' →', hotelDirLink(bookedHotel+', '+c.loc.split('·')[0].trim())));
+      } else if(c.travel==='local') gcards.push(gcard(ICON_BED,'Hotels nearby','View hotel list →', hotelsLink(c.address)));
       if(c.flightSearch) gcards.push(gcard(ICON_PLANE,'Search flights','Find flights →', flightsLink(c.flightSearch)));
       gcards.push(c.photosLink
         ? gcard(ICON_CAMERA,'Comp photos','View photos →', c.photosLink)
@@ -2148,8 +2256,8 @@ function renderComps(){
 
       if(c.flightSearch || c.housing){
         let travelRows = '';
-        if(c.flightSearch) travelRows += travelToggleRow('air', !!bk.air, bk.airDetail, bk.airLink, 'Booked your flight?', 'Once you say yes, you can log the flight # for the family calendar.', 'Airline / flight # (optional)');
-        if(c.housing) travelRows += travelToggleRow('hotel', !!bk.hotel, bk.hotelDetail, bk.hotelLink, 'Booked your hotel?', 'Once you say yes, you can log the hotel name for the family calendar.', 'Hotel name (optional)');
+        if(c.flightSearch) travelRows += travelToggleRow('air', !!bk.air, bk.airDetail, bk.airLink, 'Booked your flight?', 'Once you say yes, log both flight numbers (like DL 1234) for the family calendar and get quick status links.', 'Airline / flight # (optional)', bk.airBack, flightToolsHtml(c, bk));
+        if(c.housing) travelRows += travelToggleRow('hotel', !!bk.hotel, bk.hotelDetail, bk.hotelLink, 'Booked your hotel?', 'Once you say yes, you can log the hotel name for the family calendar.', 'Hotel name (optional)', '', hotelToolsHtml(c, bk));
         sectionsHtml += `<div class="compx-section" data-slug="${slug}">
           <div class="compx-section-label"><span class="cxl-ic">${ICON_CHECK}</span>My Travel</div>
           ${travelRows}
@@ -2905,45 +3013,10 @@ function budgetToggleHtml(){
     '<span class="bud-switch"><input type="checkbox" '+(on?'checked':'')+' onchange="setBudgetEnabled(this.checked)" aria-label="Track my budget"><span class="bud-slider"></span></span></label>';
 }
 
-/* ---- parsing a pasted confirmation email ---- */
-function parseConfirmation(text){
-  const out = {cands:[], date:'', conf:''};
-  const lines = String(text||'').split(/\r?\n/);
-  const seen = {};
-  const moneyRe = /\$\s?([0-9]{1,3}(?:,[0-9]{3})+(?:\.[0-9]{2})?|[0-9]+(?:\.[0-9]{2})?)/g;
-  lines.forEach((line, idx)=>{
-    let m; moneyRe.lastIndex = 0;
-    while((m = moneyRe.exec(line))){
-      const amt = parseFloat(m[1].replace(/,/g,''));
-      if(!(amt > 0)) continue;
-      let label = line.replace(/\$\s?[0-9][0-9,]*(?:\.[0-9]{2})?/g,'').replace(/[:\-–|·\s]+$/,'').replace(/^[\s:\-–|·]+/,'').trim();
-      if(!label && idx>0) label = lines[idx-1].trim();
-      const l = label.toLowerCase();
-      let score = 1;
-      if(/grand total|trip total|order total|total (price|cost|amount|charged|paid|due|fare)|amount (paid|charged|due)|total for stay|total charge/.test(l)) score = 4;
-      else if(/\btotal\b/.test(l) && !/sub ?total|tax/.test(l)) score = 3;
-      else if(/sub ?total|taxes|tax\b|fee|per night|nightly|avg|average|deposit|resort|each|per day|\/day/.test(l)) score = 0;
-      const key = amt.toFixed(2);
-      if(!seen[key] || seen[key].score < score){ seen[key] = {amt, label: label.slice(0,48), score}; }
-    }
-  });
-  out.cands = Object.values(seen).sort((a,b)=> b.score-a.score || b.amt-a.amt).slice(0,4);
-  const cm = String(text||'').match(/confirmation\s*(?:number|code|no\.?|#)?\s*[:#]?\s*([A-Z0-9]{5,12})\b/i);
-  if(cm) out.conf = cm[1].toUpperCase();
-  const mons = {jan:1,feb:2,mar:3,apr:4,may:5,jun:6,jul:7,aug:8,sep:9,oct:10,nov:11,dec:12};
-  const dm = String(text||'').match(/\b(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]*\.?\s+(\d{1,2})(?:st|nd|rd|th)?,?\s+(20\d\d)\b/i)
-          || null;
-  if(dm){ out.date = dm[3]+'-'+String(mons[dm[1].slice(0,3).toLowerCase()]).padStart(2,'0')+'-'+String(dm[2]).padStart(2,'0'); }
-  else {
-    const dn = String(text||'').match(/\b(\d{1,2})\/(\d{1,2})\/(20\d\d)\b/);
-    if(dn) out.date = dn[3]+'-'+String(dn[1]).padStart(2,'0')+'-'+String(dn[2]).padStart(2,'0');
-  }
-  return out;
-}
-
 /* ---- the "add an expense" sheet ---- */
 function openExpenseSheet(pre){
   pre = pre || {};
+  expEditId = pre.id || null;
   const b = loadBudget();
   const sheet = document.getElementById('expSheet');
   const typeSel = document.getElementById('expType');
@@ -2956,21 +3029,20 @@ function openExpenseSheet(pre){
     competitions.filter(c=>c.attending!==false).map(c=>'<option value="'+slugify(c.name)+'">'+bEsc(c.name)+'</option>').join('');
   compSel.value = pre.comp || '';
   document.getElementById('expDate').value = pre.date || isoFromDate(new Date());
-  document.getElementById('expAmt').value = '';
-  document.getElementById('expMiles').value = '';
-  document.getElementById('expNote').value = '';
-  document.getElementById('expPaste').value = '';
-  document.getElementById('expCands').innerHTML = '';
+  document.getElementById('expAmt').value = pre.amt!=null ? pre.amt : '';
+  document.getElementById('expMiles').value = pre.miles!=null ? pre.miles : '';
+  document.getElementById('expNote').value = pre.note || '';
+  document.getElementById('expTitle').textContent = expEditId ? 'Edit expense' : 'Add an expense';
+  document.getElementById('expSave').textContent = expEditId ? 'Save changes' : 'Save';
   document.getElementById('expErr').textContent = '';
   sheet.hidden = false; document.body.style.overflow = 'hidden';
   syncExpenseForm();
   setTimeout(()=>{ const f = document.getElementById('expAmt'); if(f) f.focus(); }, 60);
 }
-function closeExpenseSheet(){ document.getElementById('expSheet').hidden = true; document.body.style.overflow = ''; }
+function closeExpenseSheet(){ expEditId = null; document.getElementById('expSheet').hidden = true; document.body.style.overflow = ''; }
 function syncExpenseForm(){
   const t = expType(document.getElementById('expType').value), b = loadBudget();
   document.getElementById('expMilesWrap').hidden = !t.miles;
-  document.getElementById('expPasteWrap').hidden = !t.paste;
   document.getElementById('expRateNote').textContent = t.miles ? ('Rate: '+bMoney(b.mileage,true)+' per mile (change it in Budget settings)') : '';
   document.getElementById('expUntracked').hidden = !!b.track[t.cat];
 }
@@ -2981,13 +3053,15 @@ function saveExpenseFromSheet(){
   if(!(amt > 0)){ err.textContent = 'Enter an amount greater than $0.'; return; }
   const b = loadBudget();
   const miles = parseFloat(document.getElementById('expMiles').value);
-  b.expenses.push({
-    id:'x'+Date.now()+Math.floor(Math.random()*1000), type:t.id, amt:Math.round(amt*100)/100,
+  const rec = {
+    id: expEditId || ('x'+Date.now()+Math.floor(Math.random()*1000)), type:t.id, amt:Math.round(amt*100)/100,
     date: document.getElementById('expDate').value || isoFromDate(new Date()),
     comp: document.getElementById('expComp').value || '',
     note: document.getElementById('expNote').value.trim().slice(0,80),
     miles: t.miles && miles>0 ? miles : undefined
-  });
+  };
+  const ix = expEditId ? b.expenses.findIndex(e=>e.id===expEditId) : -1;
+  if(ix>=0){ b.expenses[ix] = rec; if(b.over) delete b.over['x:'+expEditId]; } else b.expenses.push(rec);
   saveBudget(b);
   closeExpenseSheet();
   renderBudget(); renderComps();
@@ -3036,13 +3110,15 @@ function budgetSettingsHtml(b, first){
     (first ? '<button type="button" class="pay-btn bud-start" data-bud-act="start">Start tracking</button>' : '')+
   '</div>';
 }
-let budOpen = new Set(), budSettingsOpen = false, budEditKey = null;
+const PENCIL_SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 013 3L7 19l-4 1 1-4z"/></svg>';
+let budOpen = new Set(), budSettingsOpen = false, budEditKey = null, expEditId = null;
 function budItemHtml(i){
   const editing = budEditKey === i.key;
   const canRemove = true;
   let row = '<div class="bud-item'+(i.skipped?' gone':'')+'"><span class="bud-item-d">'+fmtDate(i.date)+'</span><span class="bud-item-l">'+bEsc(i.label)+
     (i.src==='estimate'?' <em>est.</em>':'')+(i.edited?' <em>edited</em>':'')+(i.status==='planned'&&i.src!=='estimate'&&i.src!=='you'?' <em>upcoming</em>':'')+'</span>'+
-    '<button type="button" class="bud-amt-btn" data-bud-edit="'+bEsc(i.key)+'" aria-label="Change amount for '+bEsc(i.label)+'">'+bMoney(i.amt)+'</button>'+
+    '<button type="button" class="bud-amt-btn" '+(i.src==='you' ? 'data-exp-edit="'+i.id+'"' : 'data-bud-edit="'+bEsc(i.key)+'"')+' aria-label="Edit '+bEsc(i.label)+'">'+bMoney(i.amt)+'</button>'+
+    '<button type="button" class="bud-ed" '+(i.src==='you' ? 'data-exp-edit="'+i.id+'"' : 'data-bud-edit="'+bEsc(i.key)+'"')+' aria-label="Edit '+bEsc(i.label)+'" title="Edit">'+PENCIL_SVG+'</button>'+
     (i.src==='you' ? '<button type="button" class="bud-x" data-bud-del="'+i.id+'" aria-label="Remove">×</button>' : '<button type="button" class="bud-x" data-bud-skip="'+bEsc(i.key)+'" aria-label="Remove this one">×</button>')+'</div>';
   if(editing){
     row += '<div class="bud-edit"><label class="bud-field">Your share of this one<div class="bud-money-in"><span>$</span><input type="number" inputmode="decimal" min="0" step="0.01" id="budEditAmt" value="'+(Math.round(i.amt*100)/100)+'"></div></label>'+
@@ -3097,7 +3173,7 @@ function renderBudget(){
       (on ? '<span class="bud-cat-tot">'+bWhole(tot)+'</span>' : '')+
       '<span class="bud-chev" aria-hidden="true">›</span></summary>'+
       (on ? '<div class="bud-minibar"><span class="bud-bar-spent" style="width:'+sp+'%"></span><span class="bud-bar-plan" style="width:'+pp+'%"></span></div>' : '')+
-      '<div class="bud-items">'+(on ? (items.length ? items.map(i=>budItemHtml(i)).join('') : '<div class="bud-empty">Nothing here yet.</div>') : '<div class="bud-empty">Switch on to count '+c.label.toLowerCase()+' in your budget.</div>')+
+      '<div class="bud-items">'+(on ? (items.length ? items.map(i=>budItemHtml(i)).join('')+'<p class="bud-hint">Tap ✎ to change an amount (say, when you split it with another parent). Tap × to remove.</p>' : '<div class="bud-empty">Nothing here yet.</div>') : '<div class="bud-empty">Switch on to count '+c.label.toLowerCase()+' in your budget.</div>')+
         (on && x.removed.length ? '<div class="bud-removed">'+x.removed.length+' removed · <button type="button" class="bud-link" data-bud-act="restore" data-cat="'+c.key+'">Put them back</button></div>' : '')+'</div>'+
     '</details>';
   });
@@ -3128,8 +3204,8 @@ function renderBudget(){
   html += '<div class="section-title">Expenses I added</div><div class="card"><button type="button" class="pay-btn" data-bud-act="add">+ Add an expense</button>';
   html += logged.length ? '<div class="bud-log">'+logged.map(e=>{
     const ty = expType(e.type), cn = e.comp && compBySlug(e.comp);
-    return '<div class="bud-item"><span class="bud-item-d">'+fmtDate(e.date)+'</span><span class="bud-item-l">'+ty.label+(cn?' — '+bEsc(cn.name):'')+(e.note?' · '+bEsc(e.note):'')+(e.miles?' · '+e.miles+' mi':'')+(b.track[ty.cat]?'':' <em>not counted</em>')+'</span><b>'+bMoney(e.amt)+'</b><button type="button" class="bud-x" data-bud-del="'+e.id+'" aria-label="Remove">×</button></div>';
-  }).join('')+'</div>' : '<p class="bud-empty" style="margin-top:12px;">Nothing yet. Flights, hotels, gas, food, merch — add anything you spend and it shows up above.</p>';
+    return '<div class="bud-item"><span class="bud-item-d">'+fmtDate(e.date)+'</span><span class="bud-item-l">'+ty.label+(cn?' — '+bEsc(cn.name):'')+(e.note?' · '+bEsc(e.note):'')+(e.miles?' · '+e.miles+' mi':'')+(b.track[ty.cat]?'':' <em>not counted</em>')+'</span><b>'+bMoney(e.amt)+'</b><button type="button" class="bud-ed" data-exp-edit="'+e.id+'" aria-label="Edit this expense" title="Edit">'+PENCIL_SVG+'</button><button type="button" class="bud-x" data-bud-del="'+e.id+'" aria-label="Remove">×</button></div>';
+  }).join('')+'</div><p class="bud-hint">Tap ✎ to change the amount, date or note. Tap × to remove.</p>' : '<p class="bud-empty" style="margin-top:12px;">Nothing yet. Flights, hotels, gas, food, merch — add anything you spend and it shows up above.</p>';
   html += '</div>';
 
   /* settings & tools */
@@ -3157,6 +3233,8 @@ function budgetCsv(){ return budgetRows().map(r=>r.map(v=>'"'+String(v).replace(
     if(del){ removeExpense(del.dataset.budDel); return; }
     const skip = e.target.closest('[data-bud-skip]');
     if(skip){ const b0 = loadBudget(); b0.over[skip.dataset.budSkip] = {skip:true}; saveBudget(b0); if(budEditKey===skip.dataset.budSkip) budEditKey = null; renderBudget(); renderComps(); return; }
+    const xe = e.target.closest('[data-exp-edit]');
+    if(xe){ const rec = loadBudget().expenses.find(x=>x.id===xe.dataset.expEdit); if(rec) openExpenseSheet({id:rec.id, type:rec.type, comp:rec.comp, date:rec.date, amt:rec.amt, miles:rec.miles, note:rec.note}); return; }
     const edt = e.target.closest('[data-bud-edit]');
     if(edt){ budEditKey = (budEditKey===edt.dataset.budEdit) ? null : edt.dataset.budEdit; renderBudget(); const f = document.getElementById('budEditAmt'); if(f){ f.focus(); f.select(); } return; }
     const act = e.target.closest('[data-bud-act]');
@@ -3218,28 +3296,6 @@ function budgetCsv(){ return budgetRows().map(r=>r.map(v=>'"'+String(v).replace(
   document.getElementById('expMiles').addEventListener('input', ()=>{
     const m = parseFloat(document.getElementById('expMiles').value), r = loadBudget().mileage;
     document.getElementById('expAmt').value = m>0 && r>0 ? (Math.round(m*r*100)/100) : '';
-  });
-  document.getElementById('expFind').addEventListener('click', ()=>{
-    const res = parseConfirmation(document.getElementById('expPaste').value), box = document.getElementById('expCands');
-    if(!res.cands.length){ box.innerHTML = '<div class="bud-empty">Couldn’t find a dollar amount in that text. You can type it in above.</div>'; return; }
-    box.innerHTML = '<div class="bud-cand-h">Tap the one you paid:</div>' + res.cands.map(c=>'<button type="button" class="bud-cand" data-amt="'+c.amt+'"><b>'+bMoney(c.amt,true)+'</b><small>'+bEsc(c.label||'amount found')+'</small></button>').join('');
-    if(res.conf && !document.getElementById('expNote').value) document.getElementById('expNote').value = 'Conf. '+res.conf;
-    if(res.cands[0].score>=3 && (res.cands.length===1 || res.cands[1].score<3)){ document.getElementById('expAmt').value = res.cands[0].amt; const first = box.querySelector('.bud-cand'); if(first) first.classList.add('sel'); }
-  });
-  const clip = document.getElementById('expClip');
-  if(clip && navigator.clipboard && navigator.clipboard.readText){
-    clip.hidden = false;
-    clip.addEventListener('click', ()=>{
-      navigator.clipboard.readText().then(txt=>{
-        document.getElementById('expPaste').value = txt || '';
-        document.getElementById('expFind').click();
-      }).catch(()=>{ document.getElementById('expCands').innerHTML = '<div class="bud-empty">Your phone wouldn’t share the clipboard. Press and hold in the box above and choose Paste instead.</div>'; });
-    });
-  }
-  document.getElementById('expCands').addEventListener('click', e=>{
-    const c = e.target.closest('.bud-cand'); if(!c) return;
-    document.getElementById('expAmt').value = c.dataset.amt;
-    document.querySelectorAll('#expCands .bud-cand').forEach(x=>x.classList.toggle('sel', x===c));
   });
 })();
 
