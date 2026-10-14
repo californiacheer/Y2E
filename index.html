@@ -1329,6 +1329,115 @@ html.page-navy .app-disclaimer button.disc-link{color:rgba(255,255,255,.92);}
 .exp-datehint{display:flex; flex-wrap:wrap; gap:2px 12px; align-items:center; margin-top:-6px;}
 .exp-datehint small{color:var(--text-muted); font-size:12px; font-weight:400;}
 .exp-datehint .bud-link{padding:0; font-size:12px;}
+.bud-helper{display:flex; flex-direction:column; gap:10px; margin-top:14px;}
+.bud-helper b{font-size:15px;}
+.bud-helper small{display:block; color:var(--text-muted); font-size:12.5px; line-height:1.45; margin-top:2px;}
+.est-head{display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:6px;}
+.est-head h2{margin:0; font-size:18px;}
+.est-x{border:none; background:var(--surface-2); color:var(--text-muted); width:30px; height:30px; border-radius:50%; font-size:18px; line-height:1; cursor:pointer;}
+.est-row{display:flex; justify-content:space-between; align-items:center; gap:12px; padding:12px 0; border-bottom:1px dashed var(--border);}
+.est-row:last-of-type{border-bottom:none;}
+.est-row b{font-size:14.5px;}
+.est-row small{display:block; color:var(--text-muted); font-size:12.5px; line-height:1.4; margin-top:2px; font-weight:400;}
+.est-row .bud-tbtn[disabled]{opacity:.45; cursor:default;}
+.est-q{font-size:13px; font-weight:700; margin:14px 0 8px;}
+.est-q small{font-weight:400; color:var(--text-muted);}
+.est-pills{display:flex; flex-wrap:wrap; gap:8px;}
+.est-pill{border:1px solid var(--border); background:var(--surface); color:var(--text); padding:8px 12px; border-radius:99px; font:inherit; font-size:13px; font-weight:600; cursor:pointer;}
+.est-pill.on{background:var(--accent); color:#fff; border-color:var(--accent);}
+:root[data-theme="dark"] .est-pill.on{color:#0f1a40;}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]) .est-pill.on{color:#0f1a40;} }
+.est-range{width:100%; accent-color:var(--accent); margin:6px 0 2px;}
+.est-ticks{display:flex; justify-content:space-between; font-size:11.5px; color:var(--text-muted);}
+.est-pace{font-size:13px; margin-top:6px; line-height:1.45;}
+.est-result{background:var(--surface-2); border-radius:12px; padding:12px 14px; margin-top:16px; display:flex; flex-direction:column; gap:6px;}
+.est-big{font-size:26px; font-weight:800; font-variant-numeric:tabular-nums;}
+.est-result small{color:var(--text-muted); font-size:12.5px; line-height:1.45;}
+.est-check{display:flex; gap:10px; align-items:flex-start; font-size:13px; margin-top:10px; font-weight:600;}
+.est-check input{margin-top:2px;}
+.est-actions{display:flex; flex-wrap:wrap; gap:10px; align-items:center; margin-top:14px;}
+.est-actions .pay-btn[disabled]{opacity:.5;}
+.exp-card.eh-card{padding:0; overflow:hidden; display:flex; flex-direction:column;}
+.eh-card #estBody{display:flex; flex-direction:column; min-height:0; flex:1 1 auto;}
+.eh-wrap{display:flex; flex-direction:column; max-height:92vh; min-height:0;}
+.eh-top{padding:16px 20px 0;}
+.eh-head{display:flex; align-items:center; justify-content:space-between; gap:10px;}
+.eh-head h2{margin:0; font-size:18px;}
+.eh-steps{display:grid; grid-template-columns:repeat(5,1fr); gap:5px; margin:10px 0 6px;}
+.eh-stp{border:1px solid var(--border); background:var(--surface); color:var(--text); border-radius:12px; padding:6px 2px; font:inherit; text-align:center; cursor:pointer; min-width:0;}
+.eh-stp b{display:block; font-size:11px;}
+.eh-stp small{display:block; font-size:10.5px; color:var(--text-muted); font-variant-numeric:tabular-nums;}
+.eh-stp.on{border-color:var(--accent); background:var(--accent-soft);}
+.eh-stp.off{opacity:.5;}
+.eh-body{overflow-y:auto; flex:1 1 auto; min-height:0; padding:4px 20px 12px;}
+.eh-foot{padding:12px 20px calc(16px + env(safe-area-inset-bottom)); border-top:1px solid var(--border); display:flex; gap:10px; align-items:center;}
+.eh-foot .pay-btn{flex:1; margin:0;}
+.eh-sec{border:none; background:var(--surface-2); color:var(--text); font:inherit; font-weight:700; padding:11px 14px; border-radius:12px; cursor:pointer;}
+.eh-wrap button:focus-visible,.eh-wrap input:focus-visible{outline:2px solid var(--accent); outline-offset:2px;}
+.eh-q{font-size:13px; font-weight:700; margin:14px 0 8px;}
+.eh-q small{font-weight:400; color:var(--text-muted);}
+.eh-pills{display:flex; flex-wrap:wrap; gap:8px;}
+.eh-pill{border:1px solid var(--border); background:var(--surface); color:var(--text); padding:8px 12px; border-radius:99px; font:inherit; font-size:13px; font-weight:600; cursor:pointer;}
+.eh-pill.on{background:var(--accent); color:#fff; border-color:var(--accent);}
+.eh-range{width:100%; accent-color:var(--accent); margin:6px 0 2px;}
+.eh-ticks{display:flex; justify-content:space-between; font-size:11.5px; color:var(--text-muted);}
+.eh-pace{font-size:13px; margin-top:6px; line-height:1.45;}
+.eh-res{background:var(--surface-2); border-radius:12px; padding:12px 14px; margin-top:16px; display:flex; flex-direction:column; gap:6px;}
+.eh-big{font-size:26px; font-weight:800; font-variant-numeric:tabular-nums;}
+.eh-res small,.eh-fine{color:var(--text-muted); font-size:12.5px; line-height:1.45; display:block;}
+.eh-fine{margin-top:8px;}
+.eh-hint,.eh-td{color:var(--text-muted); font-size:12.5px; line-height:1.4;}
+.eh-td{display:block;}
+.eh-ln{display:flex; justify-content:space-between; gap:10px; font-size:13px; padding:5px 0; border-top:1px dashed var(--border); font-variant-numeric:tabular-nums;}
+.eh-ln:first-child,.eh-ln.first{border-top:none;}
+.eh-ln span:last-child{font-weight:700;}
+.eh-sug{border-radius:12px; padding:10px 12px; margin-top:12px; font-size:13px; line-height:1.45; background:var(--accent-soft); color:var(--accent-ink);}
+.eh-sug b{display:block;}
+.eh-step{display:flex; align-items:center; gap:12px;}
+.eh-step button{width:34px; height:34px; border-radius:50%; border:1px solid var(--border); background:var(--surface); color:var(--text); font-size:18px; cursor:pointer;}
+.eh-step output{font-weight:800; min-width:20px; text-align:center; font-size:16px;}
+.eh-check{display:flex; gap:10px; align-items:flex-start; font-size:13px; font-weight:600; margin:12px 0 0;}
+.eh-check input{margin-top:2px;}
+.eh-check small{font-weight:400; color:var(--text-muted);}
+.eh-inc{margin-top:18px;}
+.eh-cmp{display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:10px;}
+.eh-cmp.one{grid-template-columns:1fr; margin-top:0;}
+.eh-opt{border:1.5px solid var(--border); border-radius:14px; padding:11px 12px; cursor:pointer; background:var(--surface); color:var(--text); text-align:left; font:inherit;}
+.eh-opt.on{border-color:var(--accent); background:var(--accent-soft);}
+.eh-opt b{display:block; font-size:13px;}
+.eh-opt .eh-amt{display:block; font-size:20px; font-weight:800; margin:2px 0; font-variant-numeric:tabular-nums;}
+.eh-orow{display:flex; justify-content:space-between; gap:8px; align-items:baseline;}
+.eh-orow .eh-amt{margin:0;}
+.eh-opt small{color:var(--text-muted); font-size:11.5px; line-height:1.35; display:block;}
+.eh-tag{display:inline-block; font-size:10.5px; font-weight:700; padding:1px 7px; border-radius:99px; background:var(--surface); color:var(--accent-ink); box-shadow:inset 0 0 0 1px var(--accent); margin-bottom:4px;}
+.eh-acc{border-bottom:1px dashed var(--border);}
+.eh-acc>button{all:unset; box-sizing:border-box; display:grid; grid-template-columns:1fr auto; gap:2px 10px; width:100%; padding:11px 0; cursor:pointer; color:var(--text);}
+.eh-acc>button:focus-visible{outline:2px solid var(--accent); outline-offset:2px;}
+.eh-acc .eh-in{padding:0 0 14px;}
+.eh-tn{display:block; font-weight:700; font-size:14.5px;}
+.eh-tamt{text-align:right; font-weight:800; font-variant-numeric:tabular-nums; font-size:16px;}
+.eh-tamt small{display:block; font-weight:500; color:var(--text-muted); font-size:11.5px;}
+.eh-none{font-weight:500; color:var(--text-muted); font-size:13px;}
+.eh-chip{display:inline-block; font-size:11px; font-weight:700; padding:2px 8px; border-radius:99px; margin-right:6px; background:var(--accent-soft); color:var(--accent-ink);}
+.eh-chip.fly{background:var(--warn-soft); color:var(--warn);}
+.eh-tot{display:flex; justify-content:space-between; align-items:baseline; background:var(--surface-2); border-radius:12px; padding:12px 14px; margin-top:12px;}
+.eh-tot b{font-size:26px; font-weight:800; font-variant-numeric:tabular-nums;}
+.eh-tot span{color:var(--text-muted); font-size:12.5px;}
+.eh-sum{display:grid; grid-template-columns:1fr auto; gap:6px 12px; font-size:14px; margin-top:12px;}
+.eh-sum .r{text-align:right; font-weight:700; font-variant-numeric:tabular-nums;}
+.eh-sum .t{border-top:2px solid var(--border); padding-top:8px; font-weight:800; font-size:16px;}
+.eh-home{background:var(--surface-2); border-radius:12px; padding:10px 12px; margin-top:6px;}
+.eh-two{display:grid; grid-template-columns:1fr 1fr; gap:10px;}
+.eh-lab{display:block; font-size:12.5px; font-weight:700;}
+.eh-blockrow{display:flex; gap:10px; align-items:flex-end; flex-wrap:wrap;}
+.eh-plan{width:100%; display:flex; align-items:center; gap:12px; text-align:left; border:1.5px solid var(--accent); background:var(--accent-soft); color:var(--accent-ink); border-radius:14px; padding:12px 14px; margin:10px 0 4px; font:inherit; cursor:pointer;}
+.eh-plan b{display:block; font-size:14px;}
+.eh-plan small{display:block; font-size:12px; opacity:.85;}
+.eh-plan .arr{margin-left:auto; font-size:20px;}
+.eh-helplink{margin:2px 0 8px; display:inline-block;}
+
+:root[data-theme="dark"] .eh-pill.on{color:#0f1a40;}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]) .eh-pill.on{color:#0f1a40;} }
 .bud-seg{display:flex; border:1px solid var(--border); border-radius:11px; overflow:hidden; margin-bottom:12px;}
 .bud-seg button{flex:1; border:none; background:var(--surface); color:var(--text-muted); font:inherit; font-size:13px; font-weight:700; padding:9px 6px; cursor:pointer;}
 .bud-seg button.active{background:var(--accent); color:#fff;}
@@ -1578,6 +1687,9 @@ html.page-navy .app-disclaimer button.disc-link{color:rgba(255,255,255,.92);}
     </div>
   </div>
 </div>
+<div class="exp-sheet" id="estSheet" hidden role="dialog" aria-modal="true" aria-labelledby="estTitle">
+  <div class="exp-card"><div id="estBody"></div></div>
+</div>
 <div class="disc-modal" id="discModal" hidden role="dialog" aria-modal="true" aria-labelledby="discTitle">
   <div class="disc-sheet">
     <div class="disc-head"><h2 id="discTitle">Disclaimer</h2><button type="button" class="disc-x" id="discClose" aria-label="Close">×</button></div>
@@ -1717,7 +1829,7 @@ const competitions = [
     housing:"optional", rosterLink:"https://www.kcexclusives.com/cheer-collective/competitions/global-spirit-championships-west-coast-nationals-2027-ca", rosterLabel:"Event page (team list not posted yet)"},
   {name:"Youth Summit", loc:"Tampa, FL · Tampa Convention Center", address:"Tampa Convention Center, Tampa, FL", start:"2027-04-22", end:"2027-04-24", attending:false, teams:"TBA"},
   {name:"World Championships", loc:"Orlando, FL · ESPN Wide World of Sports", address:"ESPN Wide World of Sports, Orlando, FL", start:"2027-04-23", end:"2027-04-26", attending:false, teams:"Rangers, Coed, Lady Bullets, Glow, Sparkle"},
-  {name:"Summit Championships", loc:"Orlando, FL · ESPN Wide World of Sports", address:"ESPN Wide World of Sports, Orlando, FL", start:"2027-04-29", end:"2027-05-02", attending:false, teams:"TBA"}
+  {name:"Summit Championships", loc:"Orlando, FL · ESPN Wide World of Sports", address:"ESPN Wide World of Sports, Orlando, FL", start:"2027-04-29", end:"2027-05-02", travel:"required", flightSearch:"Flights to Orlando from San Diego", teams:"TBA"}
 ];
 
 const practiceImgs = {
@@ -3038,7 +3150,8 @@ function loadBudget(){
     expenses: Array.isArray(raw.expenses) ? raw.expenses : [],
     over: (raw.over && typeof raw.over === 'object') ? raw.over : {},
     view: (raw.view==='week' || raw.view==='month') ? raw.view : 'season',
-    caps: Object.assign({privates:0, travel:0, hotels:0}, (raw.caps && typeof raw.caps==='object') ? raw.caps : {}),
+    caps: Object.assign({privates:0, travel:0, hotels:0, other:0}, (raw.caps && typeof raw.caps==='object') ? raw.caps : {}),
+    plan: (raw.plan && typeof raw.plan==='object') ? raw.plan : {},
     homeZip: String(raw.homeZip||'').replace(/\D/g,'').slice(0,5)
   };
   return b;
@@ -3056,7 +3169,13 @@ function bMoney(n, forceCents){
 function bWhole(n){ return bMoney(Math.round(Number(n)||0)); }
 function bEsc(s){ return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 function bDaysBetween(a,b){ return Math.round((new Date(b+'T00:00:00')-new Date(a+'T00:00:00'))/86400000); }
-function compDays(c){ const s=c.travelStart||c.start, e=c.travelEnd||c.end||c.start; return Math.max(1, bDaysBetween(s,e)+1); }
+function compDays(c){
+  const s=c.travelStart||c.start, e=c.travelEnd||c.end||c.start, raw=Math.max(1, bDaysBetween(s,e)+1);
+  if(c.travelStart||c.travelEnd) return raw;
+  const o=((activePlan().trips)||{})[slugify(c.name)];
+  if(o && Number(o.days)>0) return Math.min(raw, Number(o.days));
+  return c.travel==='local' ? Math.min(raw, 2) : raw;
+}
 function compBySlug(slug){ return competitions.find(c=>slugify(c.name)===slug); }
 
 /* ---- private lessons: price lookup ---- */
@@ -3076,11 +3195,218 @@ function expLabel(e){
   return t.label+(cn ? ' — '+cn.name : '')+(note ? ' · '+note : '');
 }
 
+/* ---- estimate helper: trips (travel + hotels) ---- */
+let PLAN_DRAFT = null;                       // set while the helper is working out a draft
+function activePlan(){ return PLAN_DRAFT || loadBudget().plan || {}; }
+const EH_FLYONLY = /,\s*(TX|FL|TN)\b/i;      // Texas, Florida and Tennessee: nobody drives
+/* Ballpark prices for a San Diego family (my drafts, please review). Hotel = per room per night before tax. */
+const EH_CITIES = [
+  {rx:/Aurora,\s*CO|Denver/i, name:'Denver', fare:[180,290,450], apt:55, rental:70, park:30, onFee:30, hot:{on:[279,399], near:[140,220], far:[100,160]}},
+  {rx:/Houston/i, name:'Houston', fare:[200,320,480], apt:48, rental:62, park:35, onFee:0, hot:{on:[199,299], near:[150,220], far:[100,150]}},
+  {rx:/Orlando/i, name:'Orlando', fare:[280,400,580], apt:45, rental:55, park:25, onFee:25, hot:{on:[190,330], near:[120,210], far:[85,140]}},
+  {rx:/Tampa/i, name:'Tampa', fare:[280,400,580], apt:35, rental:55, park:30, onFee:0, hot:{on:[190,300], near:[130,210], far:[90,140]}},
+  {rx:/Nashville/i, name:'Nashville', fare:[260,370,540], apt:40, rental:60, park:35, onFee:30, hot:{on:[250,380], near:[150,240], far:[100,160]}},
+  {rx:/Indianapolis/i, name:'Indianapolis', fare:[260,380,560], apt:35, rental:58, park:30, onFee:0, hot:{on:[190,290], near:[130,200], far:[90,140]}},
+  {rx:/Phoenix/i, name:'Phoenix', fare:[90,150,260], apt:30, rental:55, park:25, onFee:0, hot:{on:[150,260], near:[110,180], far:[85,130]}},
+  {rx:/Las Vegas/i, name:'Las Vegas', fare:[100,160,280], apt:25, rental:50, park:25, onFee:40, hot:{on:[120,230], near:[90,160], far:[70,120]}},
+  {rx:/Palm Springs/i, name:'Palm Springs', fare:null, apt:30, rental:55, park:20, onFee:0, hot:{on:[160,260], near:[120,190], far:[90,140]}},
+  {rx:/Anaheim|Irvine|Los Angeles/i, name:'Southern California', fare:null, apt:40, rental:55, park:30, onFee:0, hot:{on:[170,270], near:[120,190], far:[90,140]}}
+];
+const EH_GENERIC = {name:'', fare:null, apt:50, rental:65, park:30, onFee:0, hot:{on:[180,300], near:[130,210], far:[95,150]}};
+function ehHay(c){ return (c.address||'')+' | '+(c.loc||''); }
+function ehCity(c){ return EH_CITIES.find(x=>x.rx.test(ehHay(c))) || null; }
+function ehRawDays(c){ return Math.max(1, bDaysBetween(c.start, c.end||c.start)+1); }
+function ehRoad(c, h){                         // one-way road miles from home to the venue (0 = not known yet)
+  if(Number(c.miles) > 0) return Number(c.miles);
+  const g = compGeo(c);
+  if(g && h && h.lat != null) return Math.max(1, Math.round(milesBetween(h, g)*1.2));
+  return 0;
+}
+function ehAirMi(c, h){
+  if(Number(c.airMiles) > 0) return Number(c.airMiles);
+  const g = compGeo(c);
+  return (g && h && h.lat != null) ? Math.round(milesBetween(h, g)) : 0;
+}
+function ehFare(c, h){                         // [low, typical, high] per person, round trip
+  const city = ehCity(c);
+  if(CONFIG.storageKey !== 'nova' && city && city.fare) return city.fare;
+  const a = ehAirMi(c, h);
+  if(!a) return [250,380,560];
+  const mid = Math.round((40 + 8.7*Math.sqrt(a))/10)*10;
+  return [Math.round(mid*0.62/10)*10, mid, Math.round(mid*1.55/10)*10];
+}
+function ehNoHotelMi(c){ const m = /within\s+(\d+)\s*mi/i.exec((c.note||'')+' '+(c.housingNote||'')); return m ? Number(m[1]) : 0; }
+function ehRecStay(c){ const m = /Recommended:\s*([^.]*)\./i.exec(c.detail||''); return m ? 'Your gym recommends: '+m[1].charAt(0).toLowerCase()+m[1].slice(1)+'.' : ''; }
+function ehDefault(c, h){
+  const road = ehRoad(c, h), hay = ehHay(c), flyOnly = EH_FLYONLY.test(hay);
+  const kind = c.travel==='required' ? 'fly' : c.travel==='local' ? 'local' : ((flyOnly || road > 400) ? 'fly' : 'local');
+  const raw = ehRawDays(c), days = kind==='fly' ? compDays(c) : Math.min(raw, 2);
+  const nh = ehNoHotelMi(c);
+  const air = ehAirMi(c, h) || (road ? road/1.2 : 0);
+  const hotel = kind==='fly' || (nh ? air > nh : (c.housing==='required' || (air > 50 && days > 1)));
+  return {kind:kind, days:days, tripMode:(road > 50 && days > 1) ? 'once' : 'each', mode:kind==='fly' ? 'fly' : 'drive',
+    pp:2, bags:1, tier:'mid', home:'drop', ground:null, needGround:true, needHome:true,
+    stay:(kind==='fly' || c.housing==='required') ? 'on' : 'near', hotel:hotel, nightsAdj:null, htier:'mid',
+    rooms:1, split:'solo', block:null, blockBy:'gym', mi:null};
+}
+function ehState(c, plan){
+  plan = plan || activePlan();
+  return Object.assign(ehDefault(c, plan.home||{}), ((plan.trips||{})[slugify(c.name)]) || {});
+}
+function ehDays(c, st){ return st.kind==='fly' ? compDays(c) : Math.max(1, Math.min(ehRawDays(c), Number(st.days)||2)); }
+function ehNights(c, st){
+  if(st.nightsAdj != null) return Math.max(1, Number(st.nightsAdj)||1);
+  if(st.kind==='fly') return (c.travelStart && c.travelEnd) ? Math.max(1, bDaysBetween(c.travelStart, c.travelEnd)) : ehRawDays(c);
+  return Math.max(1, ehDays(c, st) - 1);
+}
+function ehMiOne(c, st, h){ return Number(st.mi) > 0 ? Number(st.mi) : ehRoad(c, h); }
+function ehGround(c, st, stay){
+  const city = ehCity(c) || EH_GENERIC, d = ehDays(c, st), rd = d + 1;
+  const per = {on:0, near:14, far:26}[stay], rideTrips = stay==='on' ? 0 : 4*d;
+  const ride = 2*city.apt + rideTrips*per;
+  const rental = rd*city.rental + (stay==='on' ? rd*city.park*0.6 : rd*city.park) + rd*({on:10, near:15, far:25}[stay]);
+  return {ride:ride, rental:rental, rideTrips:rideTrips, best:Math.min(ride, rental), city:city};
+}
+function ehHomeLeg(c, st, h, rate, how){
+  how = how || st.home;
+  const air = Number(h.airMi) || 25, d = ehDays(c, st) + 1;
+  return how==='drop' ? 4*air*rate : how==='park' ? 2*air*rate + d*20 : 2*(8 + 1.25*air);
+}
+function ehTravel(c, st, h, rate){
+  rate = rate || 0.725;
+  const one = ehMiOne(c, st, h);
+  if(st.kind==='local' || st.mode==='drive'){
+    const trips = st.kind==='local' ? (st.tripMode==='each' ? ehDays(c, st) : 1) : 1;
+    const mi = one*2*trips, amt = mi*rate;
+    return {total:amt, lo:amt, hi:amt, unknown:!one, parts:{mileage:amt}, lines:[['Mileage · '+Math.round(mi).toLocaleString('en-US')+' mi at $'+Number(rate).toFixed(3).replace(/0$/,'')+' a mile, gas included', amt]]};
+  }
+  const fare = ehFare(c, h), price = fare[{lo:0, mid:1, hi:2}[st.tier]], fl = price*st.pp, nb = st.pp*st.bags, bag = nb*70;
+  const g = ehGround(c, st, st.stay), useR = (st.ground || (g.rental < g.ride ? 'rental' : 'ride')) === 'rental';
+  const gr = st.needGround ? (useR ? g.rental : g.ride) : 0, hc = st.needHome ? ehHomeLeg(c, st, h, rate) : 0;
+  const lo = fare[0]*st.pp + bag + (st.needGround ? g.best : 0) + (st.needHome ? ehHomeLeg(c, st, h, rate, 'drop') : 0);
+  const hi = fare[2]*st.pp + bag + (st.needGround ? Math.max(g.ride, g.rental) : 0) + (st.needHome ? ehHomeLeg(c, st, h, rate, 'park') : 0);
+  const lines = [['Flights · '+st.pp+' × '+bMoney(price), fl]];
+  if(nb) lines.push(['Checked bags · '+st.pp+' '+(st.pp===1?'person':'people')+' × '+st.bags+' = '+nb+' bag'+(nb===1?'':'s')+' at $70 round trip', bag]);
+  if(st.needHome) lines.push(['Getting to the airport from home', hc]);
+  if(st.needGround) lines.push([useR ? 'Rental car, parking and gas' : 'Rideshare', gr]);
+  return {total:fl+bag+gr+hc, lo:lo, hi:hi, g:g, useR:useR, fare:fare, parts:{air:fl+bag, ground:gr, home:hc}, lines:lines};
+}
+function ehHotel(c, st, stay){
+  if(!st.hotel) return {total:0, lo:0, hi:0, rate:0, fee:0, useB:false, n:0};
+  stay = stay || st.stay;
+  const city = ehCity(c) || EH_GENERIC, r = city.hot[stay], lo = r[0], hi = r[1], mid = Math.round((lo+hi)/2);
+  const n = ehNights(c, st), f = st.split==='split' ? 0.5 : 1, useB = !!(Number(st.block) > 0) && stay==='on';
+  const fee = useB ? 0 : (stay==='on' ? city.onFee : 0), rate = useB ? Number(st.block) : ({lo:lo, mid:mid, hi:hi}[st.htier] || mid);
+  const calc = x => (x + fee)*n*st.rooms*f*1.14;
+  return {total:calc(rate), lo:useB ? calc(rate) : calc(lo), hi:useB ? calc(rate) : calc(hi), rate:rate, fee:fee, useB:useB, n:n, lor:lo, hir:hi, mid:mid, pre:calc(rate)/1.14};
+}
+const EH_PART_TYPES = {air:['flight'], ground:['rental','rideshare'], home:['gas','parking'], mileage:['gas']};
+/* estimate rows: what is still to come for a comp, after the real costs already logged for it */
+function ehEstimateItems(b, plan, today){
+  const out = [];
+  if(!plan.trips) return out;
+  const inc = plan.inc || {}, h = plan.home || {}, rate = Number(b.mileage) || 0.725;
+  competitions.forEach(c=>{
+    if(c.attending===false) return;
+    const end = c.end||c.start; if(end < today) return;
+    const slug = slugify(c.name), st = ehState(c, plan);
+    const logged = types => b.expenses.filter(e=>e.comp===slug && types.indexOf(e.type)>=0).reduce((s,e)=>s+(Number(e.amt)||0), 0);
+    if(inc.travel !== false){
+      const t = ehTravel(c, st, h, rate); let rest = 0, any = false;
+      Object.keys(t.parts).forEach(k=>{ const l = logged(EH_PART_TYPES[k]); if(l > 0) any = true; rest += Math.max(0, t.parts[k] - l); });
+      if(rest >= 1) out.push({key:'tq:'+slug, cat:'travel', label:c.name+' — travel estimate'+(any ? ' (balance)' : ''), amt:Math.round(rest), date:c.start, status:'planned', src:'estimate', comp:slug});
+    }
+    if(inc.hotels !== false && st.hotel){
+      const ht = ehHotel(c, st), l = logged(['hotel']), rest = Math.max(0, ht.total - l);
+      if(rest >= 1) out.push({key:'hq:'+slug, cat:'hotels', label:c.name+' — hotel estimate'+(l > 0 ? ' (balance)' : ''), amt:Math.round(rest), date:c.start, status:'planned', src:'estimate', comp:slug});
+    }
+  });
+  if(inc.other !== false && Number(plan.otherExtra) > 0){
+    const l = b.expenses.filter(e=>e.type==='merch' || e.type==='swag').reduce((s,e)=>s+(Number(e.amt)||0), 0), rest = Math.max(0, Number(plan.otherExtra) - l);
+    if(rest >= 1) out.push({key:'oq', cat:'other', label:'Team merch, swag & parties (planned)', amt:Math.round(rest), date:addDaysISO(today, 1), status:'planned', src:'estimate'});
+  }
+  return out;
+}
+function ehAttendingSlugs(){ return competitions.filter(c=>c.attending!==false).map(c=>slugify(c.name)); }
+function ehScheduleChanged(){
+  const p = loadBudget().plan || {};
+  if(!p.savedAt || !p.comps) return false;
+  const now = ehAttendingSlugs();
+  return now.length !== p.comps.length || now.some(s=>p.comps.indexOf(s) < 0);
+}
+
+/* ---- estimate helper: private lessons plan ---- */
+const PRIV_GOALS = [
+  {id:'newskill', label:'Learn a new tumbling skill', kind:['tumbling']},
+  {id:'clean',    label:'Clean up current skills',    kind:['tumbling']},
+  {id:'regain',   label:'Get a skill back',           kind:['tumbling']},
+  {id:'flyer',    label:'Flyer stunting',             kind:['flyer']},
+  {id:'group',    label:'Stunt group or base',        kind:['group']},
+  {id:'lines',    label:'Body lines and flexibility', kind:['stretch']},
+  {id:'jumps',    label:'Jumps',                      kind:['jump']},
+  {id:'tryout',   label:'Get ready for tryouts',      kind:['tumbling','jump']},
+  {id:'mix',      label:'A bit of everything',        kind:['general']}
+];
+const PACE = [
+  {name:'Light',   per:0.25, text:'About one lesson a month'},
+  {name:'Steady',  per:0.5,  text:'A lesson every other week'},
+  {name:'Focused', per:1,    text:'A lesson every week'},
+  {name:'All in',  per:2,    text:'Two lessons a week'}
+];
+function plLessonTypes(ids){
+  const keys = Object.keys(privateRates()), out = [];
+  const rx = {tumbling:/tumbl/i, flyer:/flyer/i, group:/group|base/i, stretch:/stretch/i, jump:/jump/i, general:/general/i};
+  (ids||[]).forEach(id=>{
+    const g = PRIV_GOALS.find(x=>x.id===id); if(!g) return;
+    g.kind.forEach(k=>{
+      const key = keys.find(n=>rx[k].test(n)) || keys.find(n=>rx.general.test(n)) || keys[0];
+      if(key && out.indexOf(key) < 0) out.push(key);
+    });
+  });
+  return out;
+}
+function plPrice(type, mins){
+  const r = privateRates()[type] || {};
+  if(r[mins]) return {price:Number(r[mins]), mins:mins};
+  const ks = Object.keys(r).map(Number).sort((a,b)=>Math.abs(a-mins)-Math.abs(b-mins));
+  return ks.length ? {price:Number(r[ks[0]]), mins:ks[0]} : {price:0, mins:mins};
+}
+function plAvg(types, mins){
+  if(!types.length) return 0;
+  return types.reduce((s,t)=>s+plPrice(t,mins).price,0)/types.length;
+}
+function lastDayOfMonth(ym){ const p = ym.split('-').map(Number); return isoFromDate(new Date(p[0], p[1], 0)); }
+function plSeasonEnd(){
+  const t = isoFromDate(new Date());
+  return competitions.length ? competitions.filter(c=>c.attending!==false).reduce((m,c)=> (c.end||c.start) > m ? (c.end||c.start) : m, t) : addDaysISO(t, 120);
+}
+/* month-by-month: how many lessons the plan expects, minus what is already scheduled or logged */
+function plSegments(p, existing){
+  const out = [];
+  if(!p || !p.goals || !p.goals.length || !p.until) return out;
+  const today = isoFromDate(new Date()), start = addDaysISO(today, 1);
+  if(p.until < start) return out;
+  const types = plLessonTypes(p.goals), avg = plAvg(types, p.mins||30), per = (PACE[(p.pace||3)-1] || PACE[2]).per;
+  if(!types.length || !(avg > 0)) return out;
+  let cur = start;
+  while(cur <= p.until){
+    const ym = cur.slice(0,7), mEnd = lastDayOfMonth(ym), segEnd = mEnd < p.until ? mEnd : p.until;
+    const before = bDaysBetween(start, cur), through = bDaysBetween(start, segEnd) + 1;
+    const n = Math.round(per*through/7) - Math.round(per*before/7);
+    const expected = n*avg;
+    const sched = existing.filter(i=>i.date>=cur && i.date<=segEnd).reduce((s,i)=>s+i.amt,0);
+    out.push({ym:ym, from:cur, to:segEnd, lessons:n, expected:expected, sched:sched, amt:Math.max(0, Math.round(expected - sched))});
+    cur = addDaysISO(mEnd, 1);
+  }
+  return out;
+}
+
 /* ---- every dollar the budget knows about ---- */
 function budgetItems(){
   const b = loadBudget(), items = [], today = isoFromDate(new Date());
+  const allowNow = (PLAN_DRAFT && PLAN_DRAFT.allow != null) ? Number(PLAN_DRAFT.allow) : b.allowance;
   const st = d => d <= today ? 'paid' : 'planned';
-  const seasonEnd = competitions.length ? competitions.reduce((m,c)=> (c.end||c.start) > m ? (c.end||c.start) : m, today) : addDaysISO(today, 365);
+  const seasonEnd = competitions.length ? competitions.filter(c=>c.attending!==false).reduce((m,c)=> (c.end||c.start) > m ? (c.end||c.start) : m, today) : addDaysISO(today, 365);
   programFees.forEach((f,fi)=> items.push({key:'g:'+f.date+':'+fi, cat:'gym', label:f.label, amt:Number(f.amount)||0, date:f.date, status:st(f.date), src:'auto'}));
   loadPersonalEvents().forEach(p=>{
     if(!p.private) return;
@@ -3097,8 +3423,8 @@ function budgetItems(){
       const feeLeft = Math.max(0, (Number(c.entryFee)||0) - loggedEntry);
       if(feeLeft > 0) items.push({key:'e:'+slug, cat:'other', label:c.name+' — entry fee'+(loggedEntry>0?' (balance)':''), amt:feeLeft, date:c.start, status:st(c.start), src:'auto', comp:slug});
     }
-    if(b.allowance > 0){
-      const days = compDays(c), est = b.allowance*days;
+    if(allowNow > 0){
+      const days = compDays(c), est = allowNow*days;
       const actual = b.expenses.filter(e=>e.comp===slug && expType(e.type).allow).reduce((s,e)=>s+e.amt,0);
       const over = end < today;
       let rest = Math.max(0, est-actual);
@@ -3110,6 +3436,17 @@ function budgetItems(){
     const t = expType(e.type), cn = e.comp && compBySlug(e.comp);
     items.push({key:'x:'+e.id, cat:t.cat, label:expLabel(e), amt:Number(e.amt)||0, date:e.date, status:'paid', src:'you', id:e.id, comp:e.comp||'', type:e.type});
   });
+  const plan = activePlan().privates;
+  if(plan){
+    const seen = items.filter(i=>i.cat==='privates' && i.src!=='estimate');
+    plSegments(plan, seen).forEach(g=>{
+      if(g.amt < 1) return;
+      const mid = addDaysISO(g.from, Math.floor((bDaysBetween(g.from, g.to))/2));
+      const mon = new Date(g.ym+'-01T00:00:00').toLocaleDateString('en-US', {month:'short'});
+      items.push({key:'q:'+g.ym, cat:'privates', label:'Private lessons plan'+(plan.label ? ' · '+plan.label : '')+' ('+mon+')', amt:g.amt, date:mid, status:'planned', src:'estimate'});
+    });
+  }
+  ehEstimateItems(b, activePlan(), today).forEach(i=>items.push(i));
   items.forEach(i=>{
     const o = b.over[i.key];
     if(!o) return;
@@ -3140,7 +3477,7 @@ function autoGoal(b){
   BUDGET_CATS.forEach(c=>{
     if(!b.track[c.key]) return;
     const x = t.byCat[c.key], proj = x.spent + x.planned, cap = Number(b.caps && b.caps[c.key]) || 0;
-    g += (c.key==='privates' || c.key==='travel' || c.key==='hotels') && cap > 0 ? cap : proj;
+    g += (c.key==='privates' || c.key==='travel' || c.key==='hotels' || c.key==='other') && cap > 0 ? cap : proj;
   });
   return Math.round(g);
 }
@@ -3274,17 +3611,18 @@ const ICON_WALLET='<svg width="15" height="15" viewBox="0 0 24 24" fill="none" s
 
 /* ---- the Budget tab ---- */
 function budgetSettingsHtml(b, first){
-  const capKeys = ['privates','travel','hotels'];
+  const capKeys = ['privates','travel','hotels','other'];
   const capSum = capKeys.filter(k=>b.track[k]).reduce((t,k)=>t+(Number(b.caps[k])||0),0);
   return '<div class="bud-settings">'+
+    '<button type="button" class="eh-plan" data-bud-act="helper" data-step="priv"><span><b>Plan my whole season</b><small>Answer a few questions and get realistic budgets for lessons, travel, hotels and daily spending.</small></span><span class="arr" aria-hidden="true">›</span></button>'+
     '<label class="bud-cat-pick"><span class="bud-switch"><input type="checkbox" data-bud-auto '+(b.goalAuto?'checked':'')+'><span class="bud-slider"></span></span><span><b>Set my season budget automatically</b><small>Gym fees plus the category budgets below. Turn off to type your own number.</small></span></label>'+
     (b.goalAuto
       ? '<div class="bud-auto-goal"><span class="bud-field-label">Season budget</span><b>'+bWhole(effGoal(b))+'</b><small>Categories without a budget count at what is expected so far.</small></div>'
       : '<label class="bud-field">Season budget goal<div class="bud-money-in"><span>$</span><input type="number" inputmode="decimal" min="0" step="1" id="budGoal" value="'+(b.goal||'')+'" placeholder="e.g. 6000"></div></label>')+
     '<div class="bud-field-label">What do you want to track?</div>'+
     BUDGET_CATS.map(c=>'<label class="bud-cat-pick"><span class="bud-switch"><input type="checkbox" data-bud-cat="'+c.key+'" '+(b.track[c.key]?'checked':'')+'><span class="bud-slider"></span></span><span><b>'+c.label+'</b><small>'+c.hint+'</small></span></label>'+
-      ((capKeys.indexOf(c.key)>=0 && b.track[c.key]) ? '<label class="bud-field bud-cap">Season budget for '+c.label.toLowerCase()+' <small>(optional)</small><div class="bud-money-in"><span>$</span><input type="number" inputmode="decimal" min="0" step="1" data-bud-cap="'+c.key+'" value="'+(Number(b.caps[c.key])||'')+'" placeholder="e.g. '+({privates:'2000',travel:'3000',hotels:'2500'}[c.key])+'"></div></label>' : '')).join('')+
-    (!b.goalAuto && capSum>0 ? '<small class="bud-cap-sum">Your category budgets add up to '+bWhole(capSum)+(b.goal>0 ? ' of your '+bWhole(b.goal)+' season goal.'+(capSum+planBase(Object.assign({}, b, {caps:{privates:0,travel:0,hotels:0}}))>b.goal ? ' With gym fees that is more than the goal.' : '') : '.')+'</small>' : '')+
+      ((capKeys.indexOf(c.key)>=0 && b.track[c.key]) ? '<label class="bud-field bud-cap">Season budget for '+c.label.toLowerCase()+' <small>(optional)</small><div class="bud-money-in"><span>$</span><input type="number" inputmode="decimal" min="0" step="1" data-bud-cap="'+c.key+'" value="'+(Number(b.caps[c.key])||'')+'" placeholder="e.g. '+({privates:'2000',travel:'3000',hotels:'2500',other:'1500'}[c.key])+'"></div></label><button type="button" class="bud-link eh-helplink" data-bud-act="helper" data-step="'+({privates:'priv',travel:'travel',hotels:'hotels',other:'other'}[c.key])+'">Help me estimate this ›</button>' : '')).join('')+
+    (!b.goalAuto && capSum>0 ? '<small class="bud-cap-sum">Your category budgets add up to '+bWhole(capSum)+(b.goal>0 ? ' of your '+bWhole(b.goal)+' season goal.'+(capSum+planBase(Object.assign({}, b, {caps:{privates:0,travel:0,hotels:0,other:0}}))>b.goal ? ' With gym fees that is more than the goal.' : '') : '.')+'</small>' : '')+
     '<div class="bud-two">'+
       '<label class="bud-field">Spending allowance per trip day<div class="bud-money-in"><span>$</span><input type="number" inputmode="decimal" min="0" step="1" id="budAllow" value="'+(b.allowance||0)+'"></div><small>Food, souvenirs and fun. Counted automatically for every comp. Set to 0 to track only what you log.</small></label>'+
       '<label class="bud-field">Cost per mile<div class="bud-money-in"><span>$</span><input type="number" inputmode="decimal" min="0" step="0.005" id="budMile" value="'+(b.mileage||0)+'"></div><small>Used by “Mileage / gas”. The IRS standard business rate is a common choice. It covers gas, maintenance, insurance and wear on the car, so there is no need to log gas separately for those trips.</small></label>'+
@@ -3382,6 +3720,8 @@ function renderBudget(){
       '</div>'+goalWarn+'</div>';
   }
 
+  html += ehScheduleChanged() ? '<div class="card bud-helper"><div><b>Your schedule changed</b><small>A comp was added or removed since you planned your budget. Update your estimates to include it.</small></div><button type="button" class="pay-btn" data-bud-act="helper" data-step="travel">Update my estimates</button></div>' : '';
+
   /* categories */
   html += '<div class="section-title">Where it goes'+(win ? ' · '+win.title : '')+'</div><div class="card bud-cats">';
   const maxCat = Math.max(1, ...BUDGET_CATS.map(c=>{ const x=t.byCat[c.key]; return x.spent+x.planned; }));
@@ -3475,6 +3815,7 @@ function budgetCsv(){ return budgetRows().map(r=>r.map(v=>'"'+String(v).replace(
     if(a==='add'){ openExpenseSheet(); }
     else if(a==='goal'){ b.setupDone = b.setupDone; const d = root.querySelector('details.bud-tools-d'); const det = root.querySelector('.bud-tools details'); if(det){ det.open = true; det.scrollIntoView({behavior:'smooth', block:'center'}); const g=document.getElementById('budGoal'); if(g) setTimeout(()=>g.focus(),350); } }
     else if(a==='start'){ b.setupDone = true; saveBudget(b); renderBudget(); window.scrollTo(0,0); }
+    else if(a==='helper'){ openEstimateHelper(act.dataset.step); }
     else if(a==='off'){ setBudgetEnabled(false); }
     else if(a==='auto-goal'){ b.goalAuto = true; saveBudget(b); renderBudget(); }
     else if(a==='edit-cancel'){ budEditKey = null; renderBudget(); }
@@ -3789,6 +4130,277 @@ async function mileCalculate(){
     document.getElementById('mileAir').addEventListener('change', mileSyncTo);
     document.getElementById('expComp').addEventListener('change', ()=>{ if(!mileTripsTouched) document.getElementById('mileTrips').value = mileDefaultTrips(compBySlug(document.getElementById('expComp').value), document.getElementById('mileTo').value); });
   }
+})();
+
+/* ---- estimate helper: the guided sheet (lessons, travel, hotels, everything else, total) ---- */
+let ED = null, edTimer = null;
+const ED_ORDER = ['priv','travel','hotels','other','total'];
+const ED_NEXT = {priv:'Travel', travel:'Hotels', hotels:'Everything else', other:'Total'};
+const ED_TITLE = {priv:'Private lessons plan', travel:'Travel plan', hotels:'Hotels plan', other:'Everything else', total:'Your season budget'};
+const r10up = n => Math.ceil((Number(n)||0)/10 - 0.05)*10;
+function edComps(){ return competitions.filter(c=>c.attending!==false); }
+function edInit(step){
+  const b = loadBudget(), plan = b.plan || {}, p = plan.privates, lens = privateLengths();
+  const home = Object.assign({zip:b.homeZip||'', lat:null, lon:null, airMi:null}, plan.home||{}); if(b.homeZip && !home.zip) home.zip = b.homeZip;
+  ED = {step:step || 'priv', openAcc:null, homeMsg:'', home:home,
+    inc:Object.assign({priv:true, travel:true, hotels:true, other:true}, plan.inc||{}),
+    priv:p ? {goals:(p.goals||[]).slice(), mins:Number(p.mins)||lens[0]||30, pace:Number(p.pace)||3, until:p.until||plSeasonEnd(), label:p.label||''}
+           : {goals:[], mins:lens[0]||30, pace:3, until:plSeasonEnd(), label:''},
+    trips:{}, allow:Number(b.allowance)||0, extra:Number(plan.otherExtra)||0};
+  edComps().forEach(c=>{ const o = (plan.trips||{})[slugify(c.name)]; if(o) ED.trips[slugify(c.name)] = Object.assign({}, o); });
+  if(ED.home.zip.length===5 && ED.home.lat==null) edLookupHome(true);
+}
+function edSt(c){ return ehState(c, {home:ED.home, trips:ED.trips}); }
+function edOv(slug){ return ED.trips[slug] || (ED.trips[slug] = {}); }
+function edPlan(){
+  return {privates:(ED.inc.priv && ED.priv.goals.length) ? {goals:ED.priv.goals.slice(), mins:ED.priv.mins, pace:ED.priv.pace, until:ED.priv.until, label:ED.priv.label} : null,
+    trips:ED.trips, inc:ED.inc, home:ED.home, otherExtra:ED.extra, allow:ED.allow, comps:ehAttendingSlugs(), savedAt:isoFromDate(new Date())};
+}
+function edTotals(){
+  const b = loadBudget(); let items;
+  PLAN_DRAFT = edPlan();
+  try{ items = budgetItems().filter(i=>!i.skipped); } finally { PLAN_DRAFT = null; }
+  const t = {}; BUDGET_CATS.forEach(c=>t[c.key] = {tot:0});
+  items.forEach(i=>{ if(t[i.cat]) t[i.cat].tot += i.amt; });
+  const out = {cats:t, season:0};
+  BUDGET_CATS.forEach(c=>{
+    if(!b.track[c.key]) return;
+    const x = t[c.key].tot, key = c.key==='privates'?'priv':c.key;
+    out.season += (c.key==='gym' || !ED.inc[key]) ? x : r10up(x);
+  });
+  out.fin = {priv:r10up(t.privates.tot), travel:r10up(t.travel.tot), hotels:r10up(t.hotels.tot), other:r10up(t.other.tot)};
+  return out;
+}
+function openEstimateHelper(step){
+  edInit(step);
+  const sh = document.getElementById('estSheet'); sh.hidden = false; document.body.style.overflow = 'hidden';
+  sh.querySelector('.exp-card').classList.add('eh-card');
+  edRender();
+}
+function closeEstimateHelper(){ document.getElementById('estSheet').hidden = true; document.body.style.overflow = ''; ED = null; }
+/* ---- little builders ---- */
+function ehPills(k, opts, cur){ return '<div class="eh-pills">'+opts.map(o=>'<button type="button" class="eh-pill'+(String(cur)===String(o[0])?' on':'')+'" data-eh="set" data-k="'+k+'" data-v="'+o[0]+'" aria-pressed="'+(String(cur)===String(o[0]))+'">'+o[1]+'</button>').join('')+'</div>'; }
+function ehStep(k, val, label){ return '<div class="eh-step"><button type="button" data-eh="stp" data-k="'+k+'" data-d="-1" aria-label="Fewer">−</button><output>'+val+'</output><button type="button" data-eh="stp" data-k="'+k+'" data-d="1" aria-label="More">+</button>'+(label?'<span class="eh-hint">'+label+'</span>':'')+'</div>'; }
+function ehCheck(k, on, label){ return '<label class="eh-check"><input type="checkbox" data-eh="tg" data-k="'+k+'" '+(on?'checked':'')+'><span>'+label+'</span></label>'; }
+function ehRng(a, b){ return Math.round(a)===Math.round(b) ? bWhole(a) : bWhole(a)+' to '+bWhole(b); }
+function ehDaysPicker(c, st){
+  const raw = ehRawDays(c); if(st.kind==='fly' || raw < 2) return '';
+  const o = []; for(let i=1;i<=raw;i++) o.push([i, i+(i===1?' day':' days')]);
+  return '<div class="eh-q">How many days will you be there? <small>the comp runs '+raw+' day'+(raw>1?'s':'')+'</small></div>'+ehPills('days', o, ehDays(c, st));
+}
+/* ---- step 1: private lessons ---- */
+function edPrivResult(){
+  const d = ED.priv; if(!d.goals.length) return '<small>Pick at least one goal above to see an estimate.</small>';
+  const types = plLessonTypes(d.goals), avg = plAvg(types, d.mins);
+  if(!types.length || !(avg > 0)) return '<small>This gym has no private lesson prices set, so there is nothing to estimate.</small>';
+  const existing = budgetItems().filter(i=>i.cat==='privates' && i.src!=='estimate');
+  const segs = plSegments(d, existing);
+  const lessons = segs.reduce((s,g)=>s+g.lessons,0), total = segs.reduce((s,g)=>s+g.expected,0), onCal = segs.reduce((s,g)=>s+Math.min(g.sched, g.expected),0);
+  const today = isoFromDate(new Date()), days = Math.max(1, bDaysBetween(today, d.until)), months = Math.max(1, days/30.44);
+  const used = types.map(t=>{ const x = plPrice(t, d.mins); return bEsc(t)+' · '+x.mins+' min · '+bMoney(x.price); }).join('  |  ');
+  return '<div class="eh-big">'+bWhole(total)+'</div><div>About '+lessons+' lesson'+(lessons===1?'':'s')+' through '+fmtDate(d.until)+', or around '+bWhole(total/months)+' a month.</div>'+
+    '<small>Prices from your gym: '+used+(types.length>1 ? '. We split the lessons evenly between them.' : '.')+'</small>'+
+    (onCal>0 ? '<small>Already scheduled on your calendar in that time: '+bWhole(onCal)+'. The estimate only fills in what is not scheduled yet, and it shrinks as you add real lessons.</small>' : '<small>Nothing is scheduled on your calendar yet. As you add lessons there, this estimate shrinks to match.</small>');
+}
+function edPrivHtml(){
+  const d = ED.priv, lens = privateLengths(), x = PACE[(d.pace||3)-1];
+  return '<div class="eh-q">What is the goal? <small>pick all that fit</small></div>'+
+    '<div class="eh-pills">'+PRIV_GOALS.map(g=>'<button type="button" class="eh-pill'+(d.goals.indexOf(g.id)>=0?' on':'')+'" data-eh="goal" data-v="'+g.id+'" aria-pressed="'+(d.goals.indexOf(g.id)>=0)+'">'+g.label+'</button>').join('')+'</div>'+
+    '<div class="eh-q">Name this goal <small>optional, just for you</small></div><input type="text" class="cal-input" style="margin-top:0" maxlength="40" data-ein="label" data-key="label" value="'+bEsc(d.label)+'" placeholder="e.g. Level 3 skills before tryouts">'+
+    (lens.length > 1 ? '<div class="eh-q">Lesson length</div><div class="eh-pills">'+lens.map(m=>'<button type="button" class="eh-pill'+(d.mins===m?' on':'')+'" data-eh="mins" data-v="'+m+'" aria-pressed="'+(d.mins===m)+'">'+m+' min</button>').join('')+'</div><small class="eh-fine">Some lesson types only come in one length, so we use the closest one.</small>' : '')+
+    '<div class="eh-q">How hard do you want to push?</div><input type="range" class="eh-range" min="1" max="4" step="1" value="'+d.pace+'" data-ein="pace" aria-label="How often">'+
+    '<div class="eh-ticks">'+PACE.map(p=>'<span>'+p.name+'</span>').join('')+'</div><div class="eh-pace"><b>'+x.name+'</b> · '+x.text+'</div>'+
+    '<div class="eh-q">Plan lessons through</div><input type="date" class="cal-input" style="margin-top:0" data-ein="until" value="'+d.until+'"><small class="eh-fine">Your season ends '+fmtDate(plSeasonEnd())+', your last comp you are attending on the schedule. Pick an earlier date, like tryouts, if that is your deadline.</small>'+
+    '<div class="eh-res" id="ehPrivRes">'+edPrivResult()+'</div>';
+}
+/* ---- step 2: travel ---- */
+function edHomeHtml(){
+  const h = ED.home;
+  return '<div class="eh-home"><div class="eh-two"><label class="eh-lab">Your home ZIP code<input type="text" class="cal-input" style="margin-top:4px" inputmode="numeric" maxlength="5" data-ein="zip" data-key="zip" value="'+bEsc(h.zip||'')+'" placeholder="e.g. 92078"></label>'+
+    '<label class="eh-lab">Miles to your airport<input type="number" class="cal-input" style="margin-top:4px" inputmode="decimal" min="0" data-ein="airMi" data-key="airMi" value="'+(h.airMi||'')+'" placeholder="25"></label></div>'+
+    '<small class="eh-fine">Only the ZIP code is used, never an address. It sets the driving distance to each comp'+(h.lat!=null?' (found '+bEsc(h.name||h.zip)+')':'')+'. '+bEsc(ED.homeMsg||'')+'</small></div>';
+}
+function edTripInner(c, st){
+  const h = ED.home, one = ehMiOne(c, st, h), t = ehTravel(c, st, h, Number(loadBudget().mileage)||0.725), city = ehCity(c), flyOnly = EH_FLYONLY.test(ehHay(c));
+  const miBox = '<label class="eh-lab" style="max-width:200px">Miles each way<input type="number" class="cal-input" style="margin-top:4px" inputmode="decimal" min="0" data-ein="tripmi" data-key="tripmi" value="'+(one||'')+'" placeholder="enter miles"></label>';
+  if(st.kind==='local'){
+    return '<div class="eh-td">'+(one ? 'About '+one+' mi each way from your ZIP.' : 'Add your ZIP above, or type the miles each way.')+'</div>'+miBox+ehDaysPicker(c, st)+
+      (ehDays(c, st) > 1 ? '<div class="eh-q">How many drives?</div>'+ehPills('tripMode', [['each','Drive each day ('+ehDays(c, st)+')'], ['once','There and back once']], st.tripMode) : '')+
+      '<small class="eh-fine">Rate '+'$'+Number(loadBudget().mileage||0.725).toFixed(3).replace(/0$/,'')+' per mile. It already includes gas.</small>';
+  }
+  const driveMi = one, air = ehAirMi(c, h);
+  let html = '<div class="eh-td">'+(c.travelStart && c.travelEnd ? 'Fly in '+fmtDate(c.travelStart)+', fly out '+fmtDate(c.travelEnd)+' ('+compDays(c)+' days), from the gym’s schedule.' : compDays(c)+' days.')+'</div>';
+  const sug = flyOnly ? '<b>We suggest flying.</b>Most families fly to '+bEsc((city&&city.name)||'this one')+'.' : driveMi > 500 ? '<b>We suggest flying.</b>It is about '+driveMi.toLocaleString('en-US')+' mi by road each way. That is a lot of driving.' : driveMi >= 300 ? '<b>Either can work.</b>It is about '+driveMi.toLocaleString('en-US')+' mi by road each way. Compare below.' : driveMi > 0 ? '<b>Driving is an option.</b>It is about '+driveMi.toLocaleString('en-US')+' mi each way.' : '';
+  if(sug) html += '<div class="eh-sug">'+sug+'</div>';
+  if(!flyOnly) html += '<div class="eh-q">How are you getting there?</div>'+ehPills('mode', [['fly','Fly'], ['drive','Drive']], st.mode);
+  if(st.mode==='drive' && !flyOnly){
+    return html+(driveMi ? '' : miBox)+'<small class="eh-fine">Driving '+(driveMi*2).toLocaleString('en-US')+' mi round trip. Extra hotel nights on the road go in Hotels.</small>'+edLines(t);
+  }
+  html += '<div class="eh-q">How many people are flying?</div>'+ehStep('pp', st.pp, st.pp===1?'person':'people')+
+    '<div class="eh-q">Checked bags <small>per person</small></div>'+ehStep('bags', st.bags, 'per person · '+(st.pp*st.bags)+' total · about '+bWhole(st.pp*st.bags*70)+' round trip')+
+    '<div class="eh-q">Flight price to expect <small>per person, round trip</small></div>'+ehPills('tier', [['lo','Low '+bWhole(t.fare[0])], ['mid','Typical '+bWhole(t.fare[1])], ['hi','High '+bWhole(t.fare[2])]], st.tier)+
+    '<small class="eh-fine">Prices vary a lot by day and how early you book. '+(c.flightSearch ? '<a href="'+flightsLink(c.flightSearch)+'" target="_blank" rel="noopener">Check real prices on Google Flights</a>' : '<a href="'+flightsLink('Flights to '+((city&&city.name)||c.loc||'the venue'))+'" target="_blank" rel="noopener">Check real prices on Google Flights</a>')+'</small>'+
+    ehCheck('needGround', st.needGround, 'I need a ride or rental car there');
+  if(st.needGround){
+    const g = t.g;
+    html += '<div class="eh-cmp">'+
+      '<button type="button" class="eh-opt'+(!t.useR?' on':'')+'" data-eh="set" data-k="ground" data-v="ride">'+(g.ride<=g.rental?'<span class="eh-tag">Cheaper here</span>':'')+'<b>Rideshare</b><span class="eh-amt">'+bWhole(g.ride)+'</span><small>Airport rides'+(g.rideTrips?' + about '+g.rideTrips+' rides to the venue':'')+'.</small></button>'+
+      '<button type="button" class="eh-opt'+(t.useR?' on':'')+'" data-eh="set" data-k="ground" data-v="rental">'+(g.rental<g.ride?'<span class="eh-tag">Cheaper here</span>':'')+'<b>Rental car</b><span class="eh-amt">'+bWhole(g.rental)+'</span><small>'+(ehDays(c, st)+1)+' days at about '+bWhole(g.city.rental)+' + parking + gas.</small></button></div>'+
+      '<small class="eh-fine">Walking, or getting rides from friends or family there? Turn this off and nothing is added.</small>';
+  }
+  html += ehCheck('needHome', st.needHome, 'Include getting to the airport from home <small>(about '+(h.airMi||25)+' mi)</small>');
+  if(st.needHome) html += ehPills('home', [['drop','Someone drops us off'], ['park','Park at the airport'], ['ride','Rideshare']], st.home);
+  return html+edLines(t);
+}
+function edLines(t){ return '<div class="eh-res">'+t.lines.map(l=>'<div class="eh-ln"><span>'+l[0]+'</span><span>'+bWhole(l[1])+'</span></div>').join('')+'</div>'; }
+function edAcc(c, inner, right, sub){
+  const slug = slugify(c.name), open = ED.openAcc===slug;
+  return '<div class="eh-acc"><button type="button" data-eh="acc" data-v="'+slug+'" aria-expanded="'+open+'"><span><span class="eh-tn">'+bEsc(c.name)+'</span><span class="eh-td">'+sub+'</span></span><span class="eh-tamt">'+right+'</span></button>'+(open?'<div class="eh-in">'+inner+'</div>':'')+'</div>';
+}
+function edTravelHtml(){
+  const h = ED.home, rate = Number(loadBudget().mileage)||0.725, cs = edComps();
+  const rows = cs.map(c=>{
+    const st = edSt(c), t = ehTravel(c, st, h, rate), fly = st.kind==='fly' && st.mode==='fly';
+    const right = t.unknown ? '<small>add miles</small>' : bWhole(t.total)+'<small>'+(t.lo!==t.hi ? ehRng(t.lo, t.hi) : 'estimate')+'</small>';
+    return edAcc(c, edTripInner(c, st), right, '<span class="eh-chip'+(fly?' fly':'')+'">'+(fly?'FLY':'DRIVE')+'</span>'+fmtDate(c.start)+' · '+bEsc((c.loc||'').split('·')[0].trim()));
+  }).join('');
+  const all = cs.map(c=>ehTravel(c, edSt(c), h, rate)), tot = all.reduce((s,t)=>s+t.total,0), lo = all.reduce((s,t)=>s+t.lo,0), hi = all.reduce((s,t)=>s+t.hi,0);
+  return edHomeHtml()+'<p class="eh-hint" style="margin:10px 0 2px">Mileage for local comps, flights for the far ones. Tap a trip to change the details. Anything you do not need can be turned off.</p>'+rows+
+    '<div class="eh-tot"><span>Travel still to come<br><small>likely '+ehRng(lo, hi)+'</small></span><b>'+bWhole(tot)+'</b></div>';
+}
+/* ---- step 3: hotels ---- */
+function edHotelInner(c, st){
+  const h = ED.home, n = ehNights(c, st), city = ehCity(c) || EH_GENERIC, cur = ehHotel(c, st);
+  const stays = [['on','Right at the venue'], ['near','Nearby'], ['far','Farther out']];
+  const cards = stays.map(s=>{ const x = ehHotel(c, st, s[0]), g = (st.kind==='fly' && st.mode==='fly' && st.needGround) ? ehGround(c, st, s[0]).best : 0; return {s:s, x:x, g:g, all:x.total+g}; });
+  const min = Math.min.apply(null, cards.map(k=>k.all));
+  let html = (ehRecStay(c) ? '<div class="eh-sug" style="margin-top:0">'+bEsc(ehRecStay(c))+'</div>' : '')+
+    (st.kind==='fly' ? '<div class="eh-td">'+(c.travelStart && c.travelEnd ? 'Fly in '+fmtDate(c.travelStart)+', fly out '+fmtDate(c.travelEnd)+', so ' : '')+n+' night'+(n>1?'s':'')+'.</div>' : ehDaysPicker(c, st))+
+    '<div class="eh-q">Where would you stay? <small>hotel'+((st.kind==='fly' && st.needGround)?' plus getting around':'')+', for the trip</small></div><div class="eh-cmp one">'+
+    cards.map(k=>'<button type="button" class="eh-opt'+(st.stay===k.s[0]?' on':'')+'" data-eh="set" data-k="stay" data-v="'+k.s[0]+'"><span class="eh-orow"><b>'+k.s[1]+'</b><span class="eh-amt">'+bWhole(k.all)+'</span></span>'+(k.all===min?'<span class="eh-tag">Cheapest all-in</span>':'')+'<small>Hotel '+(k.x.useB?bWhole(k.x.total)+' at your block rate':ehRng(k.x.lo, k.x.hi))+' for '+n+' night'+(n>1?'s':'')+(k.g?' + '+bWhole(k.g)+' for '+(k.s[0]==='on'?'airport rides':'rideshare or a rental car'):'')+(k.s[0]==='on' && city.onFee ? '. Includes resort and parking fees.' : '.')+'</small></button>').join('')+'</div>';
+  html += '<div class="eh-q">Nightly rate to expect <small>'+({on:'at the venue', near:'nearby', far:'farther out'})[st.stay]+', before tax</small></div>'+
+    ((st.block > 0 && st.stay==='on') ? '<small class="eh-fine" style="margin-top:0">Using your block rate of '+bWhole(st.block)+' a night. Clear it below to use ranges.</small>' : ehPills('htier', [['lo','Low '+bWhole(cur.lor)], ['mid','Typical '+bWhole(cur.mid)], ['hi','High '+bWhole(cur.hir)]], st.htier))+
+    '<div class="eh-q">Nights</div>'+ehStep('n', n)+'<div class="eh-q">Rooms</div>'+ehStep('r', st.rooms)+
+    '<div class="eh-q">Splitting a room with another family?</div>'+ehPills('split', [['solo','Just us'], ['split','Split it']], st.split)+
+    '<div class="eh-q">Know the exact rate? <small>like your gym’s room block, or a rate a parent found</small></div><div class="eh-blockrow"><label class="eh-lab" style="width:140px">Per night<input type="number" class="cal-input" style="margin-top:4px" inputmode="decimal" min="0" data-ein="block" data-key="block" value="'+(st.block||'')+'" placeholder="$ per night"></label>'+
+    (st.block > 0 ? ehPills('blockBy', [['gym','From the gym'], ['parent','From a parent']], st.blockBy) : '<small class="eh-fine" style="margin:0">Applies to the hotel at the venue. Leave it blank to use the ranges.</small>')+'</div>'+
+    '<div class="eh-res"><div class="eh-ln"><span>'+n+' night'+(n>1?'s':'')+' × '+st.rooms+' room'+(st.rooms>1?'s':'')+(st.split==='split'?' ÷ 2':'')+' × '+bWhole(cur.rate+(cur.fee||0))+(cur.fee?' (incl. '+bWhole(cur.fee)+' resort fee)':'')+'</span><span>'+bWhole(cur.pre)+'</span></div><div class="eh-ln"><span>Taxes, about 14%</span><span>'+bWhole(cur.total-cur.pre)+'</span></div><div class="eh-ln"><b>Hotel total</b><b>'+bWhole(cur.total)+'</b></div></div>'+
+    '<small class="eh-fine">Hotel prices change a lot by date, so check your gym’s block before booking.</small>';
+  return html;
+}
+function edHotelsHtml(){
+  const cs = edComps();
+  const rows = cs.map(c=>{
+    const st = edSt(c), ht = ehHotel(c, st), nh = ehNoHotelMi(c), road = Math.round(ehAirMi(c, ED.home) || ehMiOne(c, st, ED.home)/1.2);
+    const note = (!st.hotel) ? '<small class="eh-fine" style="margin-top:0">'+(nh && road && road <= nh ? 'The gym only requires a hotel if you live more than '+nh+' mi away. You are about '+road+' mi, so we left it off. ' : 'Driving from home, so no hotel. ')+'Turn it on if you plan to stay overnight.</small>' : '';
+    const right = st.hotel ? bWhole(ht.total)+'<small>'+(ht.lo!==ht.hi ? ehRng(ht.lo, ht.hi) : 'your rate')+'</small>' : '<span class="eh-none">No hotel</span>';
+    return edAcc(c, ehCheck('hotel', st.hotel, 'I will stay in a hotel for this one')+(st.hotel ? edHotelInner(c, st) : note), right, fmtDate(c.start)+' · '+bEsc((c.loc||'').split('·')[0].trim())+(st.hotel ? ' · '+ht.n+' night'+(ht.n>1?'s':'') : ''));
+  }).join('');
+  const all = cs.map(c=>ehHotel(c, edSt(c))), tot = all.reduce((s,x)=>s+x.total,0), lo = all.reduce((s,x)=>s+x.lo,0), hi = all.reduce((s,x)=>s+x.hi,0);
+  return '<p class="eh-hint" style="margin:0 0 2px">Hotels for comps where you will stay overnight. Turn a trip on and we estimate a range, then you pick the nightly rate you expect.</p>'+rows+
+    '<div class="eh-tot"><span>Hotels still to come<br><small>likely '+ehRng(lo, hi)+'</small></span><b>'+bWhole(tot)+'</b></div>';
+}
+/* ---- step 4: everything else ---- */
+function edOtherHtml(){
+  const cs = edComps(), days = cs.reduce((s,c)=>s+ (c.end && c.end < isoFromDate(new Date()) ? 0 : ehDays(c, edSt(c))), 0);
+  const entries = cs.reduce((s,c)=>s+(Number(c.entryFee)||0), 0);
+  return '<p class="eh-hint" style="margin:0">Food, parking, souvenirs, team merch and anything else that adds up on a trip. Your budget counts a set amount for each day you are away.</p>'+
+    '<div class="eh-q">Spending allowance per trip day</div><div class="bud-money-in" style="max-width:160px"><span>$</span><input type="number" inputmode="decimal" min="0" step="1" data-ein="allow" data-key="allow" value="'+(ED.allow||'')+'" aria-label="Allowance per trip day"></div>'+
+    '<small class="eh-fine">This is the same setting as “Spending allowance per trip day” in your budget settings.</small>'+
+    '<div class="eh-q">Days away still to come <small>from your answers on the Travel and Hotels steps</small></div>'+
+    cs.filter(c=>!(c.end && c.end < isoFromDate(new Date()))).map(c=>'<div class="eh-ln first"><span>'+bEsc(c.name)+' <small class="eh-hint">'+fmtDate(c.start)+'</small></span><span>'+ehDays(c, edSt(c))+' day'+(ehDays(c, edSt(c))>1?'s':'')+'</span></div>').join('')+
+    '<div class="eh-q">Team merch, swag and parties <small>optional, for the season</small></div><div class="bud-money-in" style="max-width:160px"><span>$</span><input type="number" inputmode="decimal" min="0" step="1" data-ein="extra" data-key="extra" value="'+(ED.extra||'')+'" placeholder="e.g. 300" aria-label="Merch and swag budget"></div>'+
+    '<div class="eh-res"><div class="eh-big">'+bWhole(days*ED.allow + ED.extra)+'</div><div>'+days+' trip days at '+bWhole(ED.allow)+' a day'+(ED.extra?' plus '+bWhole(ED.extra)+' for merch and swag':'')+'.</div><small>'+(entries?'Comp entry fees on the schedule ('+bWhole(entries)+') are counted on their own. ':'')+'Real purchases you log replace this estimate as you go.</small></div>';
+}
+/* ---- step 5: total ---- */
+function edTotalHtml(){
+  const T = edTotals(), b = loadBudget(), gym = T.cats.gym.tot;
+  const row = (k, key, label) => '<span>'+label+'</span><span class="r">'+(b.track[key] ? (ED.inc[k] ? bWhole(T.fin[k]) : 'Not included') : 'Not tracking')+'</span>';
+  return '<p class="eh-hint" style="margin:0">Here is what your answers add up to. These fill in your category budgets, and the season budget follows.</p>'+
+    '<div class="eh-sum"><span>Gym fees <small class="eh-hint">(from the gym)</small></span><span class="r">'+bWhole(gym)+'</span>'+row('priv','privates','Private lessons')+row('travel','travel','Travel')+row('hotels','hotels','Hotels')+row('other','other','Everything else')+'<span class="t">Season budget</span><span class="r t">'+bWhole(T.season)+'</span></div>'+
+    (b.goalAuto ? '' : '<small class="eh-fine">Your season budget is set by hand at '+bWhole(b.goal)+'. Turn on “Set my season budget automatically” in your settings to use this total instead.</small>')+
+    '<small class="eh-fine">Each comp and each month of lessons also gets its own Estimate row, so you can see where the money goes. They shrink or disappear as real costs and lessons are added. You can change any budget by hand afterwards.</small>'+
+    '<div class="eh-sug"><b>Planning estimates, not advice.</b>Check with your coach and your gym’s travel info before you book.</div>';
+}
+/* ---- the sheet ---- */
+function edRender(keep){
+  if(!ED) return;
+  const body = document.getElementById('estBody'), old = document.getElementById('ehBody'), y = old ? old.scrollTop : 0;
+  const act = document.activeElement, key = act && act.dataset ? act.dataset.key : null, pos = key && act.selectionStart != null ? act.selectionStart : null;
+  const T = edTotals(), st = ED.step, i = ED_ORDER.indexOf(st), b = loadBudget();
+  const tabs = [['priv','Lessons','privates'], ['travel','Travel','travel'], ['hotels','Hotels','hotels'], ['other','Other','other']].map(x=>
+    '<button type="button" class="eh-stp'+(x[0]===st?' on':'')+((!ED.inc[x[0]] || !b.track[x[2]])?' off':'')+'" data-eh="go" data-v="'+x[0]+'"><b>'+x[1]+'</b><small>'+(!b.track[x[2]] ? 'off' : ED.inc[x[0]] ? bWhole(T.fin[x[0]]) : 'off')+'</small></button>').join('')+
+    '<button type="button" class="eh-stp'+(st==='total'?' on':'')+'" data-eh="go" data-v="total"><b>Total</b><small>'+bWhole(T.season)+'</small></button>';
+  const content = st==='priv' ? edPrivHtml() : st==='travel' ? edTravelHtml() : st==='hotels' ? edHotelsHtml() : st==='other' ? edOtherHtml() : edTotalHtml();
+  const incBox = st!=='total' ? '<label class="eh-check eh-inc"><input type="checkbox" data-eh="inc" data-v="'+st+'" '+(ED.inc[st]?'checked':'')+'><span>Include this in my budget</span></label>' : '';
+  body.innerHTML = '<div class="eh-wrap" role="document"><div class="eh-top"><div class="eh-head"><h2 id="estTitle">'+ED_TITLE[st]+'</h2><button type="button" class="est-x" data-eh="close" aria-label="Close">×</button></div><div class="eh-steps">'+tabs+'</div></div>'+
+    '<div class="eh-body" id="ehBody">'+content+incBox+'</div>'+
+    '<div class="eh-foot">'+(i>0?'<button type="button" class="eh-sec" data-eh="go" data-v="'+ED_ORDER[i-1]+'">Back</button>':'')+(st==='total' ? '<button type="button" class="pay-btn" data-eh="apply">Use these budgets</button>' : '<button type="button" class="pay-btn" data-eh="go" data-v="'+ED_ORDER[i+1]+'">Next: '+ED_NEXT[st]+'</button>')+'</div></div>';
+  const nb = document.getElementById('ehBody'); if(nb && keep) nb.scrollTop = y;
+  if(key){ const n = body.querySelector('[data-key="'+key+'"]'); if(n){ n.focus(); try{ if(pos != null) n.setSelectionRange(pos, pos); }catch(e){} } }
+}
+async function edLookupHome(silent){
+  const zip = ED.home.zip; if(!ED || zip.length !== 5) return;
+  try{
+    const pt = await zipPoint(zip); if(!ED || ED.home.zip !== zip) return;
+    ED.home.lat = pt.lat; ED.home.lon = pt.lon; ED.home.name = pt.name;
+    if(!ED.home.airEdit){ const A = AIRPORTS.SAN; ED.home.airMi = CONFIG.storageKey==='nova' ? (ED.home.airMi || 25) : Math.max(1, Math.round(milesBetween(pt, {lat:A[1], lon:A[2]})*1.2)); }
+    ED.homeMsg = ''; edRender(true);
+  }catch(e){ if(!ED) return; ED.homeMsg = e && e.message==='zip' ? 'We could not find that ZIP code.' : 'Could not look that up right now. You can type the miles for each trip instead.'; edRender(true); }
+}
+function edApply(){
+  const b = loadBudget(), T = edTotals(), fin = T.fin, plan = edPlan();
+  b.plan = b.plan || {};
+  const p = plan.privates; if(p){ p.label = (p.label||'').trim().slice(0,40); p.savedAt = plan.savedAt; b.plan.privates = p; } else { delete b.plan.privates; }
+  b.plan.trips = plan.trips; b.plan.inc = plan.inc; b.plan.home = plan.home; b.plan.otherExtra = plan.otherExtra; b.plan.comps = plan.comps; b.plan.savedAt = plan.savedAt;
+  b.allowance = ED.allow; if(ED.home.zip.length===5) b.homeZip = ED.home.zip;
+  [['priv','privates'], ['travel','travel'], ['hotels','hotels'], ['other','other']].forEach(x=>{ if(ED.inc[x[0]] && b.track[x[1]]){ b.caps[x[1]] = fin[x[0]]; } });
+  saveBudget(b); closeEstimateHelper(); renderBudget(); renderComps();
+  window.scrollTo(0, 0);
+}
+(function wireEstimateHelper(){
+  const sh = document.getElementById('estSheet'); if(!sh) return;
+  sh.addEventListener('click', e=>{
+    if(!ED) return;
+    if(e.target === sh){ closeEstimateHelper(); return; }
+    const t = e.target.closest('[data-eh]'); if(!t) return;
+    const a = t.dataset.eh, v = t.dataset.v, k = t.dataset.k, c = ED.openAcc ? compBySlug(ED.openAcc) : null, ov = c ? edOv(ED.openAcc) : null, st = c ? edSt(c) : null;
+    if(a==='close') closeEstimateHelper();
+    else if(a==='go'){ ED.step = v; ED.openAcc = null; edRender(); document.getElementById('ehBody').scrollTop = 0; }
+    else if(a==='apply') edApply();
+    else if(a==='goal'){ const g = ED.priv.goals, i = g.indexOf(v); if(i>=0) g.splice(i,1); else g.push(v); edRender(true); }
+    else if(a==='mins'){ ED.priv.mins = Number(v); edRender(true); }
+    else if(a==='inc'){ ED.inc[v] = t.checked; edRender(true); }
+    else if(a==='acc'){ ED.openAcc = ED.openAcc===v ? null : v; edRender(true); }
+    else if(a==='set' && ov){ ov[k] = (k==='bags' || k==='pp' || k==='days') ? Number(v) : v; if(k==='days') ov.nightsAdj = null; edRender(true); }
+    else if(a==='tg' && ov){ ov[k] = t.checked; edRender(true); }
+    else if(a==='stp' && ov){
+      const d = Number(t.dataset.d);
+      if(k==='n') ov.nightsAdj = Math.min(14, Math.max(1, ehNights(c, st)+d));
+      else if(k==='r') ov.rooms = Math.min(6, Math.max(1, st.rooms+d));
+      else if(k==='bags') ov.bags = Math.min(6, Math.max(0, st.bags+d));
+      else if(k==='pp') ov.pp = Math.min(10, Math.max(1, st.pp+d));
+      edRender(true);
+    }
+  });
+  sh.addEventListener('input', e=>{
+    if(!ED) return;
+    const el = e.target, k = el.dataset.ein; if(!k) return;
+    const ov = ED.openAcc ? edOv(ED.openAcc) : null;
+    if(k==='pace'){ ED.priv.pace = Number(el.value)||3; edRender(true); }
+    else if(k==='label'){ ED.priv.label = el.value; }
+    else if(k==='zip'){ ED.home.zip = el.value.replace(/\D/g,'').slice(0,5); ED.home.lat = null; clearTimeout(edTimer); if(ED.home.zip.length===5) edTimer = setTimeout(()=>edLookupHome(), 350); }
+    else if(k==='airMi'){ ED.home.airMi = Math.max(0, Number(el.value)||0); ED.home.airEdit = true; edRender(true); }
+    else if(k==='allow'){ ED.allow = Math.max(0, Number(el.value)||0); edRender(true); }
+    else if(k==='extra'){ ED.extra = Math.max(0, Number(el.value)||0); edRender(true); }
+    else if(k==='tripmi' && ov){ ov.mi = Math.max(0, Number(el.value)||0) || null; edRender(true); }
+    else if(k==='block' && ov){ ov.block = Math.max(0, Number(el.value)||0) || null; edRender(true); }
+  });
+  sh.addEventListener('change', e=>{
+    if(!ED) return;
+    if(e.target.dataset.ein==='until'){ if(e.target.value){ ED.priv.until = e.target.value; edRender(true); } }
+  });
+  document.addEventListener('keydown', e=>{ if(e.key==='Escape' && !sh.hidden && ED) closeEstimateHelper(); });
 })();
 
 /* ---- private lessons on the calendar ---- */
