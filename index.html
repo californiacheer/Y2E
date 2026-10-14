@@ -1062,6 +1062,8 @@ header.top .header-star{display:none;}
 
 /* collapsible 'all teams' list */
 .team-times{margin-top:8px;}
+.tt-label{margin-top:10px; font-size:11.5px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:var(--text-muted);}
+.tt-note{margin-top:8px; font-size:12px; color:var(--text-muted); line-height:1.45;}
 .team-times summary{cursor:pointer; font-weight:700; color:var(--accent); list-style:none;}
 .team-times summary::-webkit-details-marker{display:none;}
 .team-times summary::after{content:" \203A";}
@@ -1324,6 +1326,9 @@ html.page-navy .app-disclaimer button.disc-link{color:rgba(255,255,255,.92);}
 .bud-auto-goal{display:flex; flex-direction:column; gap:3px; margin-left:54px;}
 .bud-auto-goal b{font-size:22px; font-variant-numeric:tabular-nums;}
 .bud-auto-goal small{color:var(--text-muted); font-size:12.5px; line-height:1.4;}
+.exp-datehint{display:flex; flex-wrap:wrap; gap:2px 12px; align-items:center; margin-top:-6px;}
+.exp-datehint small{color:var(--text-muted); font-size:12px; font-weight:400;}
+.exp-datehint .bud-link{padding:0; font-size:12px;}
 .bud-seg{display:flex; border:1px solid var(--border); border-radius:11px; overflow:hidden; margin-bottom:12px;}
 .bud-seg button{flex:1; border:none; background:var(--surface); color:var(--text-muted); font:inherit; font-size:13px; font-weight:700; padding:9px 6px; cursor:pointer;}
 .bud-seg button.active{background:var(--accent); color:#fff;}
@@ -1564,8 +1569,9 @@ html.page-navy .app-disclaimer button.disc-link{color:rgba(255,255,255,.92);}
       </div>
       <div class="exp-row2">
         <label>Amount<div class="bud-money-in"><span>$</span><input type="number" inputmode="decimal" min="0" step="0.01" id="expAmt" placeholder="0.00"></div></label>
-        <label>Date<input type="date" id="expDate" class="cal-input" style="margin-top:0"></label>
+        <label>Date paid<input type="date" id="expDate" class="cal-input" style="margin-top:0"></label>
       </div>
+      <div class="exp-datehint"><small>Change this if you paid on a different day.</small><button type="button" class="bud-link" onclick="document.getElementById('expDate').value=isoFromDate(new Date())">Set to today</button></div>
       <label>Note <small>(optional)</small><input type="text" id="expNote" class="cal-input" style="margin-top:0" maxlength="80" ></label>
       <div class="exp-err" id="expErr" role="alert"></div>
       <div class="exp-actions"><button type="button" class="pay-btn" id="expSave">Save</button><button type="button" class="linkbtn" id="expCancel" style="cursor:pointer;">Cancel</button></div>
@@ -1760,7 +1766,7 @@ const marlonLogo = "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAUDB
 const feed = [
   {date:"2026-10-09", dateLabel:"Due Oct 9", postedDate:"2026-10-07", expires:"2026-10-09", tag:"deadline", title:"Practice gear remake form", body:'Issue with your practice gear — blue shorts or bra straps bunched together? Fill out the form by Friday, Oct 9 and Varsity will remake any item with issues. Try swapping gear with your team rep first. <a href="https://forms.cloud.microsoft/pages/responsepage.aspx?id=Dy5MyVsFTU2ATChthztwzk1zkpuwpm9IgqBpQcaRug1UNTk0OUxBSkpERTk5SVpSRzNVNTdQNDdTNy4u&route=shorturl" target="_blank">Open the form →</a>'},
   {date:"2026-10-07", postedDate:"2026-10-07", tag:"info", title:"Fall classes are live 🎉", body:'50% off for team families! <a href="https://app.iclasspro.com/portal/calisanmarcos/classes" target="_blank">Sign up in iClass →</a>'},
-  {date:"2026-10-24", postedDate:"2026-10-07", tag:"event", title:"In-House Showcase · Y2K performs 9:56 AM", body:'Sat, Oct 24 · Bring your noisemakers and shakers! Parking is at Allen’s Bro’s Mortuary + the space north of the building — the gym lot will not be open. See the Events tab for every team\'s time.'},
+  {date:"2026-10-24", postedDate:"2026-10-07", tag:"event", title:"In-House Showcase · Y2K performs 10:25 AM", body:'Sat, Oct 24 · Report at 8:30 AM. Bring your noisemakers and shakers! Parking is at Allen’s Bro’s Mortuary + the space north of the building — the gym lot will not be open. See the Events tab for every team\'s time.'},
   {date:"2026-11-15", dateLabel:"Nov 15", postedDate:"2026-10-15", expires:"2026-11-15", tag:"event", hideFromComingUp:true, title:"Showcase tickets 🎟️", body:'Tickets for Showcase at UCI’s Bren Events Center go on sale Oct 15 — $25 online, $35 same day. Athletes don’t need a ticket; parents, siblings and friends do. <a href="https://ucirvinetickets.evenue.net/events/SPEC" target="_blank">Buy tickets →</a> · <a href="https://docs.google.com/spreadsheets/d/1_MpWAbs6NeyRTwq9JyjikT3i5iQB1LpuvhHiUT9jFYM/edit?gid=498534653#gid=498534653" target="_blank">Draft schedule →</a>'},
   {date:"2026-09-30", postedDate:"2026-09-30", tag:"info", title:"Makeup shopping list is ready", body:'Everything the girls need for comp makeup, in one list. It\'s also saved under Quick links on the Home tab. <a href="https://y2k-team-makeup.teraheater.chatgpt.site/" target="_blank">Open the list →</a>'},
   {date:"2026-09-16", expires:"2026-09-16", tag:"deadline", title:"\"Fight for the Cure\" shirt pre-order", body:'The gym\'s breast cancer awareness tee — 100% of proceeds go to UCSD Moore\'s Cancer Center. Pre-order only, closes at midnight, delivered first week of October. <a href="https://caliproshop.com/collections/pre-orders" target="_blank">Order now →</a>'},
@@ -1794,7 +1800,7 @@ const fundraisers = [
   {emoji:"📣", title:"Parent Meeting", date:"2026-10-13", end:"2026-10-13", meta:"Tue, Oct 13, 2026 · 6:30 PM", extra:"We'll go over the routine and what needs to be worked on as we prepare for season."},
   {emoji:"🤸", title:"GLOW Stunt Clinic", date:"2026-10-17", end:"2026-10-17", meta:"Sat, Oct 17, 2026 · 6:00–8:30 PM · $50/athlete · Stunt clinic with the reigning NCA &amp; back-to-back World Champs. Includes a special commemorative bow, free action shots, and pizza.", extra:"Add $10 for a commemorative GLOW tee (sizes YS–AL) — include shirt size in your Venmo note.",
     pay:["Venmo $50 to @GLOWLAG — include athlete's name and age"], icon:"glow_bow"},
-  {emoji:"🎉", title:"In-house Show-Offs", date:"2026-10-24", end:"2026-10-24", meta:"Sat, Oct 24, 2026 · Y2K performs at 9:56 AM", extra:'Bring your noisemakers and shakers! Parking: Allen’s Bro’s Mortuary + the space north of the building (except Southern Contracting Co.) — the gym lot will not be open. Vendors, fundraising and booths on site.<details class="team-times"><summary>See all teams\' times (AM)</summary><div class="tt-grid"><span class=""><span>Tiny\'s</span><span>9:00</span></span><span class=""><span>Bliss</span><span>9:07</span></span><span class=""><span>Mini Mint</span><span>9:14</span></span><span class=""><span>Junior Gold</span><span>9:21</span></span><span class=""><span>Surge</span><span>9:28</span></span><span class=""><span>Shazam</span><span>9:35</span></span><span class=""><span>C3</span><span>9:42</span></span><span class=""><span>WhiteGold</span><span>9:49</span></span><span class="me"><span>Y2K</span><span>9:56</span></span><span class=""><span>J3</span><span>10:17</span></span><span class=""><span>JSlay</span><span>10:24</span></span><span class=""><span>Blush</span><span>10:31</span></span><span class=""><span>Onyx</span><span>10:38</span></span><span class=""><span>Rapture</span><span>10:45</span></span><span class=""><span>Sugar</span><span>10:52</span></span><span class=""><span>Spice</span><span>10:59</span></span><span class=""><span>Glow</span><span>11:06</span></span><span class=""><span>Sparkle</span><span>11:13</span></span><span class=""><span>COED</span><span>11:20</span></span><span class=""><span>Lady Bullets</span><span>11:28</span></span><span class=""><span>Reign</span><span>11:35</span></span></div></details>'},
+  {emoji:"🎉", title:"In-house Show-Offs", date:"2026-10-24", end:"2026-10-24", meta:"Sat, Oct 24, 2026 · Y2K reports 8:30 AM · performs 10:25 AM", extra:'Bring your noisemakers and shakers! Parking: Allen’s Bro’s Mortuary + the space north of the building (except Southern Contracting Co.) — the gym lot will not be open. Vendors, fundraising and booths on site.<details class="team-times"><summary>See the schedule (Y2K and all teams)</summary><div class="tt-label">Y2K\'s day</div><div class="tt-grid"><span class="me"><span>Report</span><span>8:30 AM</span></span><span class="me"><span>Check-in</span><span>9:36 AM</span></span><span class="me"><span>Mat 1</span><span>9:41 AM</span></span><span class="me"><span>Mat 2</span><span>9:53 AM</span></span><span class="me"><span>Full floor</span><span>10:05 AM</span></span><span class="me"><span>On deck</span><span>10:17 AM</span></span><span class="me"><span>Perform</span><span>10:25 AM</span></span></div><div class="tt-label">Every team\'s performance time</div><div class="tt-grid"><span class=""><span>Tiny\'s</span><span>9:05 AM</span></span><span class=""><span>Bliss</span><span>9:15 AM</span></span><span class=""><span>Mints</span><span>9:25 AM</span></span><span class=""><span>Jr Gold</span><span>9:35 AM</span></span><span class=""><span>Surge</span><span>9:45 AM</span></span><span class=""><span>Shazam</span><span>9:55 AM</span></span><span class=""><span>C3</span><span>10:05 AM</span></span><span class=""><span>WhiteGold</span><span>10:15 AM</span></span><span class="me"><span>Y2K</span><span>10:25 AM</span></span><span class=""><span>OPEN</span><span>10:35 AM</span></span><span style="grid-column:1/-1;justify-content:center;font-weight:700;border-top:1px dashed var(--border);border-bottom:1px dashed var(--border);padding:2px 0">Break</span><span class=""><span>J3</span><span>11:05 AM</span></span><span class=""><span>Jslay</span><span>11:15 AM</span></span><span class=""><span>Blush</span><span>11:25 AM</span></span><span class=""><span>Onyx</span><span>11:35 AM</span></span><span class=""><span>Rapture</span><span>11:45 AM</span></span><span class=""><span>Sugar</span><span>11:55 AM</span></span><span class=""><span>Spice</span><span>12:05 PM</span></span><span class=""><span>Glow</span><span>12:15 PM</span></span><span class=""><span>Sparkle</span><span>12:25 PM</span></span><span class=""><span>COED</span><span>12:35 PM</span></span><span class=""><span>Lady Bullets</span><span>12:45 PM</span></span><span class=""><span>Reign</span><span>12:55 PM</span></span></div><div class="tt-note">Report times: Tiny\'s, Bliss, Mints, Jr Gold, Surge 8:00 AM · Shazam, C3, WhiteGold, Y2K, OPEN 8:30 AM · J3, Jslay, Blush, Onyx, Rapture, Sugar, Spice 9:00 AM · Glow, Sparkle, COED, Lady Bullets, Reign 9:30 AM.</div></details>'},
   {emoji:"💃", title:"Dance Choreo", date:"2026-10-27", end:"2026-10-27", meta:"Tue, Oct 27, 2026 · 4:00–6:30 PM"},
   {emoji:"🎃", title:"Trunk or Treat", date:"2026-10-29", end:"2026-10-29", meta:"Thu, Oct 29, 2026 · 6:00 PM", extra:"Send a bag of candy to your team rep, or volunteer to decorate your vehicle for the trunk-or-treat — if you volunteer a vehicle, please stay for all teams that evening. Athletes come to practice in costume (optional) over their practice gear and still need to be able to tumble and stunt."},
   {emoji:"📸", title:"Team Photo Days", date:"2026-12-01", end:"2026-12-02", meta:"Dec 1–2, 2026 · San Marcos — details to come in team chat."}
@@ -3190,7 +3196,7 @@ function openExpenseSheet(pre){
   compSel.innerHTML = '<option value="">General (not tied to a comp)</option>' +
     competitions.filter(c=>c.attending!==false).map(c=>'<option value="'+slugify(c.name)+'">'+bEsc(c.name)+'</option>').join('');
   compSel.value = pre.comp || '';
-  document.getElementById('expDate').value = pre.date || isoFromDate(new Date());
+  document.getElementById('expDate').value = pre.date || ((pre.origin==='comp' && !pre.id && ['flight','hotel','rental'].indexOf(pre.type)>=0) ? '' : isoFromDate(new Date()));
   document.getElementById('expAmt').value = pre.amt!=null ? pre.amt : '';
   document.getElementById('expMiles').value = pre.miles!=null ? pre.miles : '';
   document.getElementById('expNote').value = pre.note || '';
@@ -3214,6 +3220,7 @@ function saveExpenseFromSheet(){
   const amt = parseFloat(document.getElementById('expAmt').value);
   const err = document.getElementById('expErr');
   if(!(amt > 0)){ err.textContent = 'Enter an amount greater than $0.'; return; }
+  if(!document.getElementById('expDate').value && !expEditId && ['flight','hotel','rental'].indexOf(t.id)>=0){ err.textContent = 'Pick the date you paid. Tap “Set to today” if it was today.'; return; }
   const b = loadBudget();
   const miles = parseFloat(document.getElementById('expMiles').value);
   const rec = {
