@@ -1319,6 +1319,11 @@ html.page-navy .app-disclaimer button.disc-link{color:rgba(255,255,255,.92);}
 .mile-body .bud-tbtn{align-self:flex-start;}
 .mile-body small{font-weight:400; color:var(--text-muted); line-height:1.45;}
 .mile-body .mile-out{font-weight:600; color:var(--text);}
+.bud-warnbar{margin-top:12px; font-size:12.5px; line-height:1.45; color:var(--warn); background:var(--warn-soft); padding:9px 11px; border-radius:10px; font-weight:600;}
+.bud-warnbar .bud-link{color:inherit; padding:0; font-size:inherit;}
+.bud-auto-goal{display:flex; flex-direction:column; gap:3px; margin-left:54px;}
+.bud-auto-goal b{font-size:22px; font-variant-numeric:tabular-nums;}
+.bud-auto-goal small{color:var(--text-muted); font-size:12.5px; line-height:1.4;}
 .bud-seg{display:flex; border:1px solid var(--border); border-radius:11px; overflow:hidden; margin-bottom:12px;}
 .bud-seg button{flex:1; border:none; background:var(--surface); color:var(--text-muted); font:inherit; font-size:13px; font-weight:700; padding:9px 6px; cursor:pointer;}
 .bud-seg button.active{background:var(--accent); color:#fff;}
@@ -1540,6 +1545,11 @@ html.page-navy .app-disclaimer button.disc-link{color:rgba(255,255,255,.92);}
         <div class="mile-calc">
           <button type="button" class="bud-link" id="mileToggle" aria-expanded="false" aria-controls="mileBody">Estimate miles from my ZIP code</button>
           <div class="mile-body" id="mileBody" hidden>
+            <label>Driving to<select id="mileTo" class="cal-input" style="margin-top:0"><option value="venue">The venue</option><option value="airport">The airport</option></select></label>
+            <div id="mileAirWrap" hidden>
+              <label>Which airport?<select id="mileAir" class="cal-input" style="margin-top:0"><option value="SAN">San Diego (SAN)</option><option value="LAX">Los Angeles (LAX)</option><option value="SNA">Orange County (SNA)</option><option value="ONT">Ontario (ONT)</option><option value="LGB">Long Beach (LGB)</option><option value="BUR">Burbank (BUR)</option><option value="PSP">Palm Springs (PSP)</option><option value="other">Another airport (enter its ZIP)</option></select></label>
+              <label id="mileAirZipWrap" hidden>Airport ZIP code<input type="text" inputmode="numeric" maxlength="5" id="mileAirZip" class="cal-input" style="margin-top:0" placeholder="5 digits"></label>
+            </div>
             <div class="exp-row2">
               <label>Your ZIP code<input type="text" inputmode="numeric" maxlength="5" id="mileZip" class="cal-input" style="margin-top:0" placeholder="e.g. 92078"></label>
               <label>Round trips<input type="number" inputmode="numeric" min="1" max="30" id="mileTrips" class="cal-input" style="margin-top:0" value="1"></label>
@@ -2980,13 +2990,13 @@ const CONFIG = {storageKey:'y2k', tabs:{budget:true}, budget:{
 const BUDGET_CATS = [
   {key:'gym',      label:'Gym fees',         hint:'Tuition and other fees from the gym. Filled in for you.'},
   {key:'privates', label:'Private lessons',  hint:'Add a lesson on the Calendar and its price is counted for you.'},
-  {key:'travel',   label:'Travel',           hint:'Flights, gas & mileage, rental cars, Uber/Lyft, parking, bags.'},
+  {key:'travel',   label:'Travel',           hint:'Flights, mileage (or gas), rental cars, Uber/Lyft, parking, bags.'},
   {key:'hotels',   label:'Hotels',           hint:'Hotel stays for comps.'},
   {key:'other',    label:'Everything else',  hint:'Comp entry fees, food, souvenirs, team & gym merch, swag, team parties.'}
 ];
 const EXPENSE_TYPES = [
   {id:'flight',    cat:'travel',   label:'Flight', paste:true},
-  {id:'gas',       cat:'travel',   label:'Gas / mileage', miles:true},
+  {id:'gas',       cat:'travel',   label:'Mileage / gas', miles:true},
   {id:'rental',    cat:'travel',   label:'Rental car', paste:true},
   {id:'rideshare', cat:'travel',   label:'Uber / Lyft / taxi'},
   {id:'parking',   cat:'travel',   label:'Parking, tolls & bag fees'},
@@ -3015,6 +3025,7 @@ function loadBudget(){
   const b = {
     enabled: !!raw.enabled, setupDone: !!raw.setupDone,
     goal: Number(raw.goal)||0,
+    goalAuto: raw.goalAuto!=null ? !!raw.goalAuto : !(Number(raw.goal)>0),
     allowance: raw.allowance!=null ? Number(raw.allowance)||0 : (cfg.defaultAllowance||0),
     mileage: raw.mileage!=null ? Number(raw.mileage)||0 : (cfg.mileageRate||0),
     track: Object.assign({gym:true, privates:true, travel:true, hotels:true, other:true}, raw.track||{}),
@@ -3116,6 +3127,29 @@ function budgetTotals(win){
   return t;
 }
 
+/* ---- the season budget can set itself from gym fees + the category budgets ---- */
+function autoGoal(b){
+  const t = budgetTotals();
+  let g = 0;
+  BUDGET_CATS.forEach(c=>{
+    if(!b.track[c.key]) return;
+    const x = t.byCat[c.key], proj = x.spent + x.planned, cap = Number(b.caps && b.caps[c.key]) || 0;
+    g += (c.key==='privates' || c.key==='travel' || c.key==='hotels') && cap > 0 ? cap : proj;
+  });
+  return Math.round(g);
+}
+function planBase(b){
+  const t = budgetTotals();
+  let g = 0;
+  BUDGET_CATS.forEach(c=>{
+    if(!b.track[c.key]) return;
+    const x = t.byCat[c.key], cap = Number(b.caps && b.caps[c.key]) || 0;
+    if(c.key==='gym') g += x.spent + x.planned; else if(cap > 0) g += cap;
+  });
+  return Math.round(g);
+}
+function effGoal(b){ return b.goalAuto ? autoGoal(b) : (Number(b.goal)||0); }
+
 /* ---- turning it on / off ---- */
 function goTab(name){ const btn = document.querySelector('#tabs button[data-tab="'+name+'"]'); if(btn) btn.click(); }
 function syncBudgetUI(){
@@ -3172,7 +3206,7 @@ function closeExpenseSheet(){ expEditId = null; document.getElementById('expShee
 function syncExpenseForm(){
   const t = expType(document.getElementById('expType').value), b = loadBudget();
   document.getElementById('expMilesWrap').hidden = !t.miles;
-  document.getElementById('expRateNote').textContent = t.miles ? ('Rate: '+bMoney(b.mileage,true)+' per mile (change it under Edit budget settings)') : '';
+  document.getElementById('expRateNote').textContent = t.miles ? ('Rate: $'+Number(b.mileage).toFixed(3).replace(/0$/,'')+' per mile. This rate already includes gas, so skip logging gas for the same trip. Change it under Edit budget settings.') : '';
   document.getElementById('expUntracked').hidden = !!b.track[t.cat];
 }
 function saveExpenseFromSheet(){
@@ -3221,11 +3255,11 @@ function compBudgetSection(c, slug){
     const v = sum(['hotel']);
     rows.push(row('Hotel', v ? 'Logged' : (bk.hotel ? 'Marked booked — add what you paid' : 'Not logged yet'), v, 'hotel', v?'+ Add':'Add cost', !!v));
   }
-  if(c.travel==='local' || c.travel==='overnight'){
-    const mv = sum(['gas']);
-    rows.push(row('Mileage', mv ? 'Logged' : 'Estimate from your ZIP code', mv, 'gas', mv ? '+ Add' : 'Estimate', !!mv, ',calc:true'));
+  if(c.travel==='local' || c.travel==='overnight' || c.travel==='required'){
+    const mv = sum(['gas']), air = c.travel==='required';
+    rows.push(row(air ? 'Airport mileage' : 'Mileage', mv ? 'Logged' : (air ? 'Drive to and from the airport' : 'Estimate from your ZIP code'), mv, 'gas', mv ? '+ Add' : 'Estimate', !!mv, ',calc:true'+(air ? ",to:'airport'" : '')));
   }
-  rows.push(row('Gas, food &amp; other', 'Your daily allowance is counted automatically', 0, 'food', '+ Add', true));
+  rows.push(row('Other expenses', 'Food, parking, souvenirs and more. Your daily allowance is counted automatically.', 0, 'food', '+ Add', true));
   const t = budgetTotals().items.filter(i=>i.comp===slug).reduce((s,i)=>s+i.amt,0);
   return '<div class="compx-section"><div class="compx-section-label"><span class="cxl-ic">'+ICON_WALLET+'</span>Trip budget'+(t?' <span class="bud-sec-total">'+bWhole(t)+' so far</span>':'')+'</div>'+rows.join('')+'</div>';
 }
@@ -3236,14 +3270,17 @@ function budgetSettingsHtml(b, first){
   const capKeys = ['privates','travel','hotels'];
   const capSum = capKeys.filter(k=>b.track[k]).reduce((t,k)=>t+(Number(b.caps[k])||0),0);
   return '<div class="bud-settings">'+
-    '<label class="bud-field">Season budget goal <small>(optional)</small><div class="bud-money-in"><span>$</span><input type="number" inputmode="decimal" min="0" step="1" id="budGoal" value="'+(b.goal||'')+'" placeholder="e.g. 6000"></div></label>'+
+    '<label class="bud-cat-pick"><span class="bud-switch"><input type="checkbox" data-bud-auto '+(b.goalAuto?'checked':'')+'><span class="bud-slider"></span></span><span><b>Set my season budget automatically</b><small>Gym fees plus the category budgets below. Turn off to type your own number.</small></span></label>'+
+    (b.goalAuto
+      ? '<div class="bud-auto-goal"><span class="bud-field-label">Season budget</span><b>'+bWhole(effGoal(b))+'</b><small>Categories without a budget count at what is expected so far.</small></div>'
+      : '<label class="bud-field">Season budget goal<div class="bud-money-in"><span>$</span><input type="number" inputmode="decimal" min="0" step="1" id="budGoal" value="'+(b.goal||'')+'" placeholder="e.g. 6000"></div></label>')+
     '<div class="bud-field-label">What do you want to track?</div>'+
     BUDGET_CATS.map(c=>'<label class="bud-cat-pick"><span class="bud-switch"><input type="checkbox" data-bud-cat="'+c.key+'" '+(b.track[c.key]?'checked':'')+'><span class="bud-slider"></span></span><span><b>'+c.label+'</b><small>'+c.hint+'</small></span></label>'+
       ((capKeys.indexOf(c.key)>=0 && b.track[c.key]) ? '<label class="bud-field bud-cap">Season budget for '+c.label.toLowerCase()+' <small>(optional)</small><div class="bud-money-in"><span>$</span><input type="number" inputmode="decimal" min="0" step="1" data-bud-cap="'+c.key+'" value="'+(Number(b.caps[c.key])||'')+'" placeholder="e.g. '+({privates:'2000',travel:'3000',hotels:'2500'}[c.key])+'"></div></label>' : '')).join('')+
-    (capSum>0 ? '<small class="bud-cap-sum">Your category budgets add up to '+bWhole(capSum)+(b.goal>0 ? ' of your '+bWhole(b.goal)+' season goal.'+(capSum>b.goal ? ' That is more than the goal.' : '') : '.')+'</small>' : '')+
+    (!b.goalAuto && capSum>0 ? '<small class="bud-cap-sum">Your category budgets add up to '+bWhole(capSum)+(b.goal>0 ? ' of your '+bWhole(b.goal)+' season goal.'+(capSum+planBase(Object.assign({}, b, {caps:{privates:0,travel:0,hotels:0}}))>b.goal ? ' With gym fees that is more than the goal.' : '') : '.')+'</small>' : '')+
     '<div class="bud-two">'+
       '<label class="bud-field">Spending allowance per trip day<div class="bud-money-in"><span>$</span><input type="number" inputmode="decimal" min="0" step="1" id="budAllow" value="'+(b.allowance||0)+'"></div><small>Food, souvenirs and fun. Counted automatically for every comp. Set to 0 to track only what you log.</small></label>'+
-      '<label class="bud-field">Cost per mile<div class="bud-money-in"><span>$</span><input type="number" inputmode="decimal" min="0" step="0.005" id="budMile" value="'+(b.mileage||0)+'"></div><small>Used by “Gas / mileage”. The IRS standard business rate is a common choice.</small></label>'+
+      '<label class="bud-field">Cost per mile<div class="bud-money-in"><span>$</span><input type="number" inputmode="decimal" min="0" step="0.005" id="budMile" value="'+(b.mileage||0)+'"></div><small>Used by “Mileage / gas”. The IRS standard business rate is a common choice. It covers gas, maintenance, insurance and wear on the car, so there is no need to log gas separately for those trips.</small></label>'+
     '</div>'+
     '<label class="bud-field">Your home ZIP code <small>(optional)</small><input type="text" inputmode="numeric" maxlength="5" id="budZip" class="cal-input" style="margin-top:0" value="'+bEsc(b.homeZip||'')+'" placeholder="e.g. 92078"><small>Only used to estimate driving miles to comps. Skip it if you would rather type miles yourself.</small></label>'+
     (first ? '<button type="button" class="pay-btn bud-start" data-bud-act="start">Start tracking</button>' : '')+
@@ -3304,10 +3341,12 @@ function renderBudget(){
     root.innerHTML = html; return;
   }
 
-  const total = t.spent + t.planned, goal = b.goal;
+  const total = t.spent + t.planned, goal = effGoal(b);
   const base = (win || !(goal > 0)) ? Math.max(total, 1) : Math.max(goal, total);
   const spentPct = Math.min(100, t.spent/base*100), planPct = Math.min(100-spentPct, t.planned/base*100);
   const left = goal - total;
+  const pbase = planBase(b);
+  const goalWarn = (!b.goalAuto && goal>0 && pbase>goal) ? '<div class="bud-warnbar">Your gym fees and category budgets add up to '+bWhole(pbase)+', more than your '+bWhole(goal)+' season goal. <button type="button" class="bud-link" data-bud-act="auto-goal">Set it automatically</button></div>' : '';
   const segHtml = '<div class="bud-seg" role="group" aria-label="Budget period">'+[['week','Week'],['month','Month'],['season','Season']].map(p=>'<button type="button" data-bud-view="'+p[0]+'" class="'+(b.view===p[0]?'active':'')+'" aria-pressed="'+(b.view===p[0])+'">'+p[1]+'</button>').join('')+'</div>';
   html += '<div class="section-title">My budget</div>';
   if(win){
@@ -3325,7 +3364,7 @@ function renderBudget(){
   } else {
     html += '<div class="card bud-summary">'+segHtml+
       '<div class="bud-sum-top"><div><div class="bud-kicker">Spent so far</div><div class="bud-big">'+bWhole(t.spent)+'</div></div>'+
-      (goal>0 ? '<div class="bud-goal-r"><div class="bud-kicker">Season goal</div><div class="bud-goal-n">'+bWhole(goal)+'</div></div>' : '<div class="bud-goal-r"><button type="button" class="bud-link" data-bud-act="goal">Set a goal</button></div>')+'</div>'+
+      (goal>0 ? '<div class="bud-goal-r"><div class="bud-kicker">'+(b.goalAuto ? 'Season budget · auto' : 'Season goal')+'</div><div class="bud-goal-n">'+bWhole(goal)+'</div></div>' : '<div class="bud-goal-r"><button type="button" class="bud-link" data-bud-act="goal">Set a goal</button></div>')+'</div>'+
       '<div class="bud-bar" role="img" aria-label="'+bWhole(t.spent)+' spent, '+bWhole(t.planned)+' coming up'+(goal>0?', of a '+bWhole(goal)+' goal':'')+'">'+
         '<span class="bud-bar-spent'+(goal>0&&t.spent>goal?' over':'')+'" style="width:'+spentPct+'%"></span><span class="bud-bar-plan" style="width:'+planPct+'%"></span></div>'+
       '<div class="bud-legend"><span><i class="k spent"></i>Paid</span><span><i class="k plan"></i>Upcoming</span></div>'+
@@ -3333,7 +3372,7 @@ function renderBudget(){
         '<div><div class="bud-kicker">Coming up</div><div class="bud-stat-n">'+bWhole(t.planned)+'</div></div>'+
         '<div><div class="bud-kicker">Season total</div><div class="bud-stat-n">'+bWhole(total)+'</div></div>'+
         (goal>0 ? '<div><div class="bud-kicker">'+(left<0?'Over by':'Left')+'</div><div class="bud-stat-n '+(left<0?'bad':'good')+'">'+bWhole(Math.abs(left))+'</div></div>' : '')+
-      '</div></div>';
+      '</div>'+goalWarn+'</div>';
   }
 
   /* categories */
@@ -3386,7 +3425,7 @@ function renderBudget(){
   html += logged.length ? '<div class="bud-log">'+logged.map(e=>{
     const ty = expType(e.type);
     return '<div class="bud-item np"><span class="bud-item-d">'+fmtDate(e.date)+'</span><span class="bud-item-l">'+bEsc(expLabel(e))+(e.miles?' · '+e.miles+' mi':'')+(b.track[ty.cat]?'':' <em>not counted</em>')+'</span><b>'+bMoney(e.amt)+'</b><button type="button" class="bud-ed" data-exp-edit="'+e.id+'" aria-label="Edit this expense" title="Edit">'+PENCIL_SVG+'</button><button type="button" class="bud-x" data-bud-del="'+e.id+'" aria-label="Remove">×</button></div>';
-  }).join('')+'</div><p class="bud-hint">Tap ✎ to change the amount, date or note. Tap × to remove.</p>' : '<p class="bud-empty" style="margin-top:12px;">Nothing added here yet. Gas, food, merch, anything else you spend: add it and it shows up above.</p>';
+  }).join('')+'</div><p class="bud-hint">Tap ✎ to change the amount, date or note. Tap × to remove.</p>' : '<p class="bud-empty" style="margin-top:12px;">Nothing added here yet. Food, merch, anything else you spend: add it and it shows up above.</p>';
   if(hiddenN > 0) html += '<p class="bud-hint">'+hiddenN+' cost'+(hiddenN>1?'s':'')+' you added from the Comp Schedule tab '+(hiddenN>1?'are':'is')+' counted in the lists above, not shown here.</p>';
   html += '</div>';
 
@@ -3430,6 +3469,7 @@ function budgetCsv(){ return budgetRows().map(r=>r.map(v=>'"'+String(v).replace(
     else if(a==='goal'){ b.setupDone = b.setupDone; const d = root.querySelector('details.bud-tools-d'); const det = root.querySelector('.bud-tools details'); if(det){ det.open = true; det.scrollIntoView({behavior:'smooth', block:'center'}); const g=document.getElementById('budGoal'); if(g) setTimeout(()=>g.focus(),350); } }
     else if(a==='start'){ b.setupDone = true; saveBudget(b); renderBudget(); window.scrollTo(0,0); }
     else if(a==='off'){ setBudgetEnabled(false); }
+    else if(a==='auto-goal'){ b.goalAuto = true; saveBudget(b); renderBudget(); }
     else if(a==='edit-cancel'){ budEditKey = null; renderBudget(); }
     else if(a==='restore'){ const cat = act.dataset.cat; budgetItems().filter(i=>i.cat===cat && i.skipped).forEach(i=>{ delete b.over[i.key]; }); saveBudget(b); renderBudget(); renderComps(); }
     else if(a==='edit-save' || a==='edit-series' || a==='edit-reset'){
@@ -3469,6 +3509,7 @@ function budgetCsv(){ return budgetRows().map(r=>r.map(v=>'"'+String(v).replace(
   root.addEventListener('change', e=>{
     const b = loadBudget(), el = e.target;
     if(el.dataset && el.dataset.budCat){ b.track[el.dataset.budCat] = el.checked; saveBudget(b); renderBudget(); renderComps(); return; }
+    if(el.hasAttribute && el.hasAttribute('data-bud-auto')){ if(!el.checked) b.goal = autoGoal(b); b.goalAuto = !!el.checked; saveBudget(b); renderBudget(); return; }
     if(el.dataset && el.dataset.budCap){ b.caps[el.dataset.budCap] = Math.max(0, parseFloat(el.value)||0); saveBudget(b); if(b.setupDone) renderBudget(); return; }
     if(el.id==='budZip'){ b.homeZip = String(el.value).replace(/\D/g,'').slice(0,5); saveBudget(b); return; }
     if(el.id==='budGoal'){ b.goal = Math.max(0, parseFloat(el.value)||0); saveBudget(b); if(b.setupDone) renderBudget(); }
@@ -3661,40 +3702,67 @@ function zipPoint(zip){
   });
 }
 let mileTripsTouched = false;
-function mileDefaultTrips(c){
+const AIRPORTS = {
+  SAN:['San Diego International (SAN)', 32.7336, -117.1897], LAX:['Los Angeles International (LAX)', 33.9416, -118.4085],
+  SNA:['John Wayne / Orange County (SNA)', 33.6757, -117.8682], ONT:['Ontario International (ONT)', 34.0560, -117.6012],
+  LGB:['Long Beach (LGB)', 33.8177, -118.1516], BUR:['Hollywood Burbank (BUR)', 34.2007, -118.3590], PSP:['Palm Springs (PSP)', 33.8297, -116.5067]
+};
+function mileDefaultTrips(c, to){
+  if(to === 'airport') return 2;
   if(!c) return 1;
   return c.travel==='local' ? Math.max(1, bDaysBetween(c.start, c.end||c.start)+1) : 1;
 }
+function mileSyncTo(){
+  const to = document.getElementById('mileTo').value, air = document.getElementById('mileAir').value;
+  document.getElementById('mileAirWrap').hidden = to !== 'airport';
+  document.getElementById('mileAirZipWrap').hidden = !(to === 'airport' && air === 'other');
+  if(!mileTripsTouched) document.getElementById('mileTrips').value = mileDefaultTrips(compBySlug(document.getElementById('expComp').value), to);
+}
 function resetMileCalc(pre){
-  const b = loadBudget();
+  const b = loadBudget(), c = compBySlug(document.getElementById('expComp').value);
   document.getElementById('mileZip').value = b.homeZip || '';
   document.getElementById('mileVenueZip').value = '';
+  document.getElementById('mileAirZip').value = '';
   document.getElementById('mileVenueWrap').hidden = true;
   document.getElementById('mileOut').textContent = '';
   mileTripsTouched = false;
-  document.getElementById('mileTrips').value = mileDefaultTrips(compBySlug(document.getElementById('expComp').value));
+  document.getElementById('mileTo').value = (pre && pre.to === 'airport') || (c && c.travel === 'required' && !(pre && pre.to)) ? 'airport' : 'venue';
+  document.getElementById('mileAir').value = CONFIG.storageKey === 'nova' ? 'other' : 'SAN';
+  mileSyncTo();
   const open = !!(pre && pre.calc) && !(pre && pre.id);
   document.getElementById('mileBody').hidden = !open;
   document.getElementById('mileToggle').setAttribute('aria-expanded', open ? 'true' : 'false');
 }
 async function mileCalculate(){
   const out = document.getElementById('mileOut'), zip = document.getElementById('mileZip').value.replace(/\D/g,'');
-  const c = compBySlug(document.getElementById('expComp').value);
+  const to = document.getElementById('mileTo').value, c = compBySlug(document.getElementById('expComp').value);
   if(zip.length !== 5){ out.textContent = 'Enter your 5-digit ZIP code.'; return; }
-  if(!c){ out.textContent = 'Pick which comp this is for, up in “Which comp?”.'; return; }
-  let venue = compGeo(c), vzip = '';
-  if(!venue){
-    document.getElementById('mileVenueWrap').hidden = false;
-    vzip = document.getElementById('mileVenueZip').value.replace(/\D/g,'');
-    if(vzip.length !== 5){ out.textContent = 'Enter the venue’s ZIP code (it’s in the address on the event page).'; return; }
+  let venue = null, vzip = '', airKey = '';
+  if(to === 'airport'){
+    airKey = document.getElementById('mileAir').value;
+    if(airKey === 'other'){
+      vzip = document.getElementById('mileAirZip').value.replace(/\D/g,'');
+      if(vzip.length !== 5){ out.textContent = 'Enter the airport’s 5-digit ZIP code.'; return; }
+    } else { const A = AIRPORTS[airKey]; venue = {lat:A[1], lon:A[2], label:A[0]}; }
+  } else {
+    if(!c){ out.textContent = 'Pick which comp this is for, up in “Which comp?”.'; return; }
+    venue = compGeo(c);
+    if(!venue){
+      document.getElementById('mileVenueWrap').hidden = false;
+      vzip = document.getElementById('mileVenueZip').value.replace(/\D/g,'');
+      if(vzip.length !== 5){ out.textContent = 'Enter the venue’s ZIP code (it’s in the address on the event page).'; return; }
+    }
   }
   out.textContent = 'Looking up the distance…';
   try{
     const home = await zipPoint(zip), dest = venue || await zipPoint(vzip);
     const one = Math.max(1, Math.round(milesBetween(home, dest)*1.2)), trips = Math.max(1, Math.min(30, parseInt(document.getElementById('mileTrips').value,10)||1)), total = one*2*trips;
     const mi = document.getElementById('expMiles'); mi.value = total; mi.dispatchEvent(new Event('input', {bubbles:true}));
+    const note = document.getElementById('expNote');
+    if(to === 'airport' && !note.value) note.value = 'To and from the airport'+(airKey && airKey !== 'other' ? ' ('+airKey+')' : '');
     const b = loadBudget(); if(b.homeZip !== zip){ b.homeZip = zip; saveBudget(b); }
-    out.textContent = 'About '+one+' miles each way from '+home.name+' to '+(venue ? venue.label : 'ZIP '+vzip)+'. '+(trips>1 ? one*2+' miles round trip × '+trips+' trips = ' : 'Round trip = ')+total+' miles.'+(one > 500 ? ' That is a very long drive. Most families fly this one.' : '')+' This is an estimate. Change the miles below if you know better.';
+    const where = venue ? venue.label : (to === 'airport' ? 'the airport (ZIP '+vzip+')' : 'ZIP '+vzip);
+    out.textContent = 'About '+one+' miles each way from '+home.name+' to '+where+'. '+(trips>1 ? one*2+' miles round trip × '+trips+' trips = ' : 'Round trip = ')+total+' miles.'+(to === 'airport' && trips === 2 ? ' That counts a drop-off and a pick-up. Change the round trips if someone else does one of them.' : '')+(one > 500 ? ' That is a very long drive. Most families fly this one.' : '')+' This is an estimate. Change the miles below if you know better.';
   }catch(e){
     out.textContent = e && e.message==='zip' ? 'We could not find ZIP code '+e.zip+'. Check it and try again.' : 'Could not look that up right now. Check your connection, or type the miles yourself below.';
   }
@@ -3710,7 +3778,9 @@ async function mileCalculate(){
     tg.addEventListener('click', ()=>{ const body = document.getElementById('mileBody'); body.hidden = !body.hidden; tg.setAttribute('aria-expanded', body.hidden ? 'false' : 'true'); });
     document.getElementById('mileGo').addEventListener('click', mileCalculate);
     document.getElementById('mileTrips').addEventListener('input', ()=>{ mileTripsTouched = true; });
-    document.getElementById('expComp').addEventListener('change', ()=>{ if(!mileTripsTouched) document.getElementById('mileTrips').value = mileDefaultTrips(compBySlug(document.getElementById('expComp').value)); });
+    document.getElementById('mileTo').addEventListener('change', mileSyncTo);
+    document.getElementById('mileAir').addEventListener('change', mileSyncTo);
+    document.getElementById('expComp').addEventListener('change', ()=>{ if(!mileTripsTouched) document.getElementById('mileTrips').value = mileDefaultTrips(compBySlug(document.getElementById('expComp').value), document.getElementById('mileTo').value); });
   }
 })();
 
