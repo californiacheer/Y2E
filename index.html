@@ -1258,6 +1258,39 @@ html.page-navy .app-disclaimer button.disc-link{color:rgba(255,255,255,.92);}
 .trv-chip:hover{background:var(--accent); color:#fff;}
 .trv-note{font-size:11.5px; color:var(--text-muted); line-height:1.4;}
 .compx-travel-detail + .compx-toggle-row{margin-top:16px;}
+
+/* ---- v3: status colors + period view ---- */
+:root{--st-up:color-mix(in srgb,var(--accent) 42%,var(--surface)); --st-up-soft:var(--accent-soft);}
+.bud-item-l em.st{font-style:normal; font-size:10.5px; font-weight:700; letter-spacing:.04em; text-transform:uppercase; padding:1px 7px; border-radius:99px; margin-left:6px; white-space:nowrap;}
+.bud-item-l em.st-paid{background:var(--accent); color:#fff;}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]) .bud-item-l em.st-paid{color:#0f1a40;} }
+:root[data-theme="dark"] .bud-item-l em.st-paid{color:#0f1a40;}
+.bud-item-l em.st-up{background:var(--st-up-soft); color:var(--accent-ink); box-shadow:inset 0 0 0 1px var(--st-up);}
+.bud-item-l em.st-est{background:var(--warn-soft); color:var(--warn);}
+.bud-item.s-paid{box-shadow:inset 3px 0 0 var(--accent); padding-left:10px;}
+.bud-item.s-up{box-shadow:inset 3px 0 0 var(--st-up); padding-left:10px;}
+.bud-item.s-est{box-shadow:inset 3px 0 0 var(--warn); padding-left:10px;}
+.bud-bar-spent{background:var(--accent);}
+.bud-bar-plan{background:var(--st-up);}
+.bud-legend .k.spent{background:var(--accent);}
+.bud-legend .k.plan{background:var(--st-up);}
+.bud-key{display:flex; flex-wrap:wrap; gap:6px 8px; align-items:center; margin:2px 0 12px; font-size:12px; color:var(--text-muted); line-height:1.5;}
+.bud-key .st{font-style:normal; font-size:10.5px; font-weight:700; letter-spacing:.04em; text-transform:uppercase; padding:2px 8px; border-radius:99px;}
+.bud-key .st-paid{background:var(--success-soft); color:var(--success);}
+.bud-key .st-up{background:var(--st-up-soft); color:var(--st-up);}
+.bud-key .st-est{background:var(--warn-soft); color:var(--warn);}
+.bud-seg{display:flex; border:1px solid var(--border); border-radius:11px; overflow:hidden; margin-bottom:12px;}
+.bud-seg button{flex:1; border:none; background:var(--surface); color:var(--text-muted); font:inherit; font-size:13px; font-weight:700; padding:9px 6px; cursor:pointer;}
+.bud-seg button.active{background:var(--accent); color:#fff;}
+.bud-seg button + button{border-left:1px solid var(--border);}
+.bud-nav{display:flex; align-items:center; justify-content:space-between; gap:8px; margin:0 0 12px;}
+.bud-nav-l{font-size:14px; font-weight:700; text-align:center; flex:1;}
+.bud-nav-l small{display:block; font-size:12px; font-weight:500; color:var(--text-muted);}
+.bud-nav button{flex:0 0 34px; width:34px; height:34px; border-radius:50%; border:1px solid var(--border); background:var(--surface-2); color:var(--text); font-size:18px; line-height:1; cursor:pointer;}
+.bud-nav .bud-link{flex:0 0 auto; width:auto; height:auto; border:none; background:none;}
+.bud-next{margin-top:14px; padding-top:12px; border-top:1px solid var(--border);}
+.bud-next .bud-kicker{margin-bottom:4px;}
+.bud-kicker .dot{display:inline-block; width:8px; height:8px; border-radius:50%; margin-right:6px; vertical-align:0;}
 </style>
 </head>
 <body>
@@ -2055,22 +2088,41 @@ function flightToolsHtml(c, bk){
   return '<div class="trv-tools">'+out+'<div class="trv-note">Quick links only. They open Google, FlightAware or your airline for live gate and delay info.</div></div>';
 }
 const HOTEL_SITES = [
-  [/gaylord\s+rockies/i, 'https://www.gaylordhotels.com/gaylord-rockies/'],
-  [/gaylord\s+opryland/i, 'https://www.gaylordhotels.com/gaylord-opryland/'],
-  [/gaylord\s+texan/i, 'https://www.gaylordhotels.com/gaylord-texan/'],
-  [/gaylord\s+palms/i, 'https://www.gaylordhotels.com/gaylord-palms/'],
-  [/gaylord\s+national/i, 'https://www.gaylordhotels.com/gaylord-national/']
+  [/gaylord\s+rockies/i, 'https://www.gaylordhotels.com/gaylord-rockies/', 'Gaylord Rockies'],
+  [/gaylord\s+opryland/i, 'https://www.gaylordhotels.com/gaylord-opryland/', 'Gaylord Opryland'],
+  [/gaylord\s+texan/i, 'https://www.gaylordhotels.com/gaylord-texan/', 'Gaylord Texan'],
+  [/gaylord\s+palms/i, 'https://www.gaylordhotels.com/gaylord-palms/', 'Gaylord Palms'],
+  [/gaylord\s+national/i, 'https://www.gaylordhotels.com/gaylord-national/', 'Gaylord National'],
+  [/hilton|hampton|doubletree|embassy suites|homewood suites|home2|tru by|canopy|curio|tapestry/i, 'https://www.hilton.com', 'Hilton'],
+  [/marriott|courtyard|residence inn|fairfield|springhill|towneplace|sheraton|westin|renaissance|aloft|moxy|ac hotel|element|four points|delta hotels|autograph|le m[eé]ridien|gaylord/i, 'https://www.marriott.com', 'Marriott'],
+  [/hyatt/i, 'https://www.hyatt.com', 'Hyatt'],
+  [/holiday inn|crowne plaza|intercontinental|staybridge|candlewood|hotel indigo|even hotels|kimpton|avid hotel|voco/i, 'https://www.ihg.com', 'IHG'],
+  [/wyndham|la quinta|ramada|days inn|super 8|hawthorn|microtel|baymont|travelodge|howard johnson/i, 'https://www.wyndhamhotels.com', 'Wyndham'],
+  [/comfort inn|comfort suites|quality inn|sleep inn|clarion|cambria|econo lodge|mainstay|choice hotels|rodeway/i, 'https://www.choicehotels.com', 'Choice Hotels'],
+  [/best western|sureStay|surestay/i, 'https://www.bestwestern.com', 'Best Western'],
+  [/radisson|park inn|country inn/i, 'https://www.radissonhotels.com', 'Radisson'],
+  [/omni/i, 'https://www.omnihotels.com', 'Omni'],
+  [/loews/i, 'https://www.loewshotels.com', 'Loews'],
+  [/great wolf/i, 'https://www.greatwolf.com', 'Great Wolf Lodge'],
+  [/drury/i, 'https://www.druryhotels.com', 'Drury']
 ];
 function hotelToolsHtml(c, bk){
   const name = String(bk.hotelDetail||'').trim();
   if(!name) return '';
   const city = String(c.loc||'').split('·')[0].trim();
-  let site = null;
-  for(const [re,u] of HOTEL_SITES){ if(re.test(name)){ site = u; break; } }
-  const chip = site
-    ? '<a class="trv-chip" href="'+site+'" target="_blank" rel="noopener noreferrer">Hotel website ↗</a>'
-    : '<a class="trv-chip" href="https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(name+(city?', '+city:''))+'" target="_blank" rel="noopener noreferrer">Hotel details ↗</a>';
-  const note = site ? '' : '<div class="trv-note">Opens the hotel in Maps near '+(city?city.replace(/&/g,'&amp;').replace(/</g,'&lt;'):'the comp')+' with its website, phone and photos. If it is a big chain, add the city or street so the right location comes up.</div>';
+  let hit = null;
+  for(const row of HOTEL_SITES){ if(row[0].test(name)){ hit = row; break; } }
+  const esc = x => String(x).replace(/&/g,'&amp;').replace(/</g,'&lt;');
+  let chip, note;
+  if(hit){
+    const gaylord = /gaylordhotels\.com/.test(hit[1]);
+    chip = '<a class="trv-chip" href="'+hit[1]+'" target="_blank" rel="noopener noreferrer">'+esc(hit[2])+' website ↗</a>';
+    note = gaylord ? '' : '<div class="trv-note">Opens the '+esc(hit[2])+' site. Use your confirmation number there to check or change your stay.</div>';
+  } else {
+    const q = name+(city?' '+city:'')+' hotel official website';
+    chip = '<a class="trv-chip" href="https://www.google.com/search?q='+encodeURIComponent(q)+'" target="_blank" rel="noopener noreferrer">Find hotel website ↗</a>';
+    note = '<div class="trv-note">Searches for the hotel’s own site, where you can check or change your reservation.</div>';
+  }
   return '<div class="trv-tools"><div class="trv-leg">'+chip+'</div>'+note+'</div>';
 }
 function travelToggleRow(field, yes, detail, link, title, sub, placeholder, back, tools){
@@ -2883,7 +2935,8 @@ const EXPENSE_TYPES = [
   {id:'food',      cat:'other',    label:'Food & drinks', allow:true},
   {id:'souv',      cat:'other',    label:'Souvenirs & fun', allow:true},
   {id:'trip_other',cat:'other',    label:'Other trip spending', allow:true},
-  {id:'entry',     cat:'other',    label:'Comp entry / spectator fees'},
+  {id:'entry',     cat:'other',    label:'Comp entry fee'},
+  {id:'tickets',   cat:'other',    label:'Spectator tickets & fees'},
   {id:'merch',     cat:'other',    label:'Gym or team merch'},
   {id:'swag',      cat:'other',    label:'Team swag, parties & gifts'},
   {id:'gym_extra', cat:'gym',      label:'Gym fee (not on the list)'},
@@ -2906,7 +2959,8 @@ function loadBudget(){
     mileage: raw.mileage!=null ? Number(raw.mileage)||0 : (cfg.mileageRate||0),
     track: Object.assign({gym:true, privates:true, travel:true, hotels:true, other:true}, raw.track||{}),
     expenses: Array.isArray(raw.expenses) ? raw.expenses : [],
-    over: (raw.over && typeof raw.over === 'object') ? raw.over : {}
+    over: (raw.over && typeof raw.over === 'object') ? raw.over : {},
+    view: (raw.view==='week' || raw.view==='month') ? raw.view : 'season'
   };
   return b;
 }
@@ -2951,7 +3005,11 @@ function budgetItems(){
   competitions.forEach(c=>{
     if(c.attending===false) return;
     const slug = slugify(c.name), end = c.end||c.start;
-    if(c.entryFee) items.push({key:'e:'+slug, cat:'other', label:c.name+' — entry fee', amt:Number(c.entryFee)||0, date:c.start, status:st(c.start), src:'auto', comp:slug});
+    if(c.entryFee){
+      const loggedEntry = b.expenses.filter(e=>e.comp===slug && e.type==='entry').reduce((a,e)=>a+(Number(e.amt)||0),0);
+      const feeLeft = Math.max(0, (Number(c.entryFee)||0) - loggedEntry);
+      if(feeLeft > 0) items.push({key:'e:'+slug, cat:'other', label:c.name+' — entry fee'+(loggedEntry>0?' (balance)':''), amt:feeLeft, date:c.start, status:st(c.start), src:'auto', comp:slug});
+    }
     if(b.allowance > 0){
       const days = compDays(c), est = b.allowance*days;
       const actual = b.expenses.filter(e=>e.comp===slug && expType(e.type).allow).reduce((s,e)=>s+e.amt,0);
@@ -2973,9 +3031,9 @@ function budgetItems(){
   });
   return items;
 }
-function budgetTotals(){
+function budgetTotals(win){
   const b = loadBudget();
-  const all = budgetItems().filter(i=>b.track[i.cat]);
+  const all = budgetItems().filter(i=>b.track[i.cat] && (!win || (i.date >= win.from && i.date <= win.to)));
   const items = all.filter(i=>!i.skipped);
   const t = {spent:0, planned:0, byCat:{}, items};
   BUDGET_CATS.forEach(c=> t.byCat[c.key] = {spent:0, planned:0, items:[], removed:[]});
@@ -3043,7 +3101,7 @@ function closeExpenseSheet(){ expEditId = null; document.getElementById('expShee
 function syncExpenseForm(){
   const t = expType(document.getElementById('expType').value), b = loadBudget();
   document.getElementById('expMilesWrap').hidden = !t.miles;
-  document.getElementById('expRateNote').textContent = t.miles ? ('Rate: '+bMoney(b.mileage,true)+' per mile (change it in Budget settings)') : '';
+  document.getElementById('expRateNote').textContent = t.miles ? ('Rate: '+bMoney(b.mileage,true)+' per mile (change it under Edit budget settings)') : '';
   document.getElementById('expUntracked').hidden = !!b.track[t.cat];
 }
 function saveExpenseFromSheet(){
@@ -3111,12 +3169,30 @@ function budgetSettingsHtml(b, first){
   '</div>';
 }
 const PENCIL_SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 013 3L7 19l-4 1 1-4z"/></svg>';
-let budOpen = new Set(), budSettingsOpen = false, budEditKey = null, expEditId = null;
+let budOpen = new Set(), budSettingsOpen = false, budEditKey = null, expEditId = null, budOffset = 0;
+/* ---- week / month / season window ---- */
+function budWindow(view, off){
+  if(view !== 'week' && view !== 'month') return null;
+  off = off || 0;
+  const now = new Date(); now.setHours(0,0,0,0);
+  if(view === 'week'){
+    const s = new Date(now); s.setDate(s.getDate() - s.getDay() + off*7);
+    const e = new Date(s); e.setDate(e.getDate() + 6);
+    const from = isoFromDate(s), to = isoFromDate(e);
+    return {view:view, from:from, to:to, name:'week', title: off===0 ? 'This week' : off===1 ? 'Next week' : off===-1 ? 'Last week' : 'Week of '+s.toLocaleDateString('en-US',{month:'short',day:'numeric'}), range: fmtRange(from,to)};
+  }
+  const s = new Date(now.getFullYear(), now.getMonth()+off, 1), e = new Date(now.getFullYear(), now.getMonth()+off+1, 0);
+  const from = isoFromDate(s), to = isoFromDate(e);
+  return {view:view, from:from, to:to, name:'month', title: off===0 ? 'This month' : off===1 ? 'Next month' : off===-1 ? 'Last month' : s.toLocaleDateString('en-US',{month:'long'}), range: s.toLocaleDateString('en-US',{month:'long', year:'numeric'})};
+}
+
 function budItemHtml(i){
   const editing = budEditKey === i.key;
   const canRemove = true;
-  let row = '<div class="bud-item'+(i.skipped?' gone':'')+'"><span class="bud-item-d">'+fmtDate(i.date)+'</span><span class="bud-item-l">'+bEsc(i.label)+
-    (i.src==='estimate'?' <em>est.</em>':'')+(i.edited?' <em>edited</em>':'')+(i.status==='planned'&&i.src!=='estimate'&&i.src!=='you'?' <em>upcoming</em>':'')+'</span>'+
+  const stk = i.src==='estimate' ? 'est' : (i.status==='planned' ? 'up' : 'paid');
+  const stl = {est:'Estimate', up:'Upcoming', paid:'Paid'}[stk];
+  let row = '<div class="bud-item s-'+stk+(i.skipped?' gone':'')+'"><span class="bud-item-d">'+fmtDate(i.date)+'</span><span class="bud-item-l">'+bEsc(i.label)+
+    ' <em class="st st-'+stk+'">'+stl+'</em>'+(i.edited?' <em>edited</em>':'')+'</span>'+
     '<button type="button" class="bud-amt-btn" '+(i.src==='you' ? 'data-exp-edit="'+i.id+'"' : 'data-bud-edit="'+bEsc(i.key)+'"')+' aria-label="Edit '+bEsc(i.label)+'">'+bMoney(i.amt)+'</button>'+
     '<button type="button" class="bud-ed" '+(i.src==='you' ? 'data-exp-edit="'+i.id+'"' : 'data-bud-edit="'+bEsc(i.key)+'"')+' aria-label="Edit '+bEsc(i.label)+'" title="Edit">'+PENCIL_SVG+'</button>'+
     (i.src==='you' ? '<button type="button" class="bud-x" data-bud-del="'+i.id+'" aria-label="Remove">×</button>' : '<button type="button" class="bud-x" data-bud-skip="'+bEsc(i.key)+'" aria-label="Remove this one">×</button>')+'</div>';
@@ -3130,11 +3206,15 @@ function budItemHtml(i){
   }
   return row;
 }
+function budAgendaRow(i){
+  const stk = i.src==='estimate' ? 'est' : 'up';
+  return '<div class="bud-item s-'+stk+'"><span class="bud-item-d">'+fmtDate(i.date)+'</span><span class="bud-item-l">'+bEsc(i.label)+' <em class="st st-'+stk+'">'+(stk==='est'?'Estimate':'Upcoming')+'</em></span><b>'+bMoney(i.amt)+'</b></div>';
+}
 function renderBudget(){
   const root = document.getElementById('budgetRoot');
   if(!root) return;
   if(!budgetOn()){ root.innerHTML = ''; return; }
-  const b = loadBudget(), t = budgetTotals(), today = isoFromDate(new Date());
+  const b = loadBudget(), win = budWindow(b.view, budOffset), t = budgetTotals(win), tAll = budgetTotals(), today = isoFromDate(new Date());
   let html = '';
 
   if(!b.setupDone){
@@ -3143,24 +3223,39 @@ function renderBudget(){
   }
 
   const total = t.spent + t.planned, goal = b.goal;
-  const base = goal > 0 ? Math.max(goal, total) : Math.max(total, 1);
+  const base = (win || !(goal > 0)) ? Math.max(total, 1) : Math.max(goal, total);
   const spentPct = Math.min(100, t.spent/base*100), planPct = Math.min(100-spentPct, t.planned/base*100);
   const left = goal - total;
+  const segHtml = '<div class="bud-seg" role="group" aria-label="Budget period">'+[['week','Week'],['month','Month'],['season','Season']].map(p=>'<button type="button" data-bud-view="'+p[0]+'" class="'+(b.view===p[0]?'active':'')+'" aria-pressed="'+(b.view===p[0])+'">'+p[1]+'</button>').join('')+'</div>';
   html += '<div class="section-title">My budget</div>';
-  html += '<div class="card bud-summary">'+
-    '<div class="bud-sum-top"><div><div class="bud-kicker">Spent so far</div><div class="bud-big">'+bWhole(t.spent)+'</div></div>'+
-    (goal>0 ? '<div class="bud-goal-r"><div class="bud-kicker">Season goal</div><div class="bud-goal-n">'+bWhole(goal)+'</div></div>' : '<div class="bud-goal-r"><button type="button" class="bud-link" data-bud-act="goal">Set a goal</button></div>')+'</div>'+
-    '<div class="bud-bar" role="img" aria-label="'+bWhole(t.spent)+' spent, '+bWhole(t.planned)+' coming up'+(goal>0?', of a '+bWhole(goal)+' goal':'')+'">'+
-      '<span class="bud-bar-spent'+(goal>0&&t.spent>goal?' over':'')+'" style="width:'+spentPct+'%"></span><span class="bud-bar-plan" style="width:'+planPct+'%"></span></div>'+
-    '<div class="bud-legend"><span><i class="k spent"></i>Spent</span><span><i class="k plan"></i>Coming up</span></div>'+
-    '<div class="bud-stats">'+
-      '<div><div class="bud-kicker">Coming up</div><div class="bud-stat-n">'+bWhole(t.planned)+'</div></div>'+
-      '<div><div class="bud-kicker">Season total</div><div class="bud-stat-n">'+bWhole(total)+'</div></div>'+
-      (goal>0 ? '<div><div class="bud-kicker">'+(left<0?'Over by':'Left')+'</div><div class="bud-stat-n '+(left<0?'bad':'good')+'">'+bWhole(Math.abs(left))+'</div></div>' : '')+
-    '</div></div>';
+  if(win){
+    const nextUp = t.items.filter(i=>i.status==='planned').sort((x,y)=>x.date<y.date?-1:1);
+    html += '<div class="card bud-summary">'+segHtml+
+      '<div class="bud-nav"><button type="button" data-bud-nav="-1" aria-label="Previous '+win.name+'">‹</button><div class="bud-nav-l">'+win.title+'<small>'+win.range+'</small></div>'+
+      (budOffset!==0 ? '<button type="button" class="bud-link" data-bud-nav="0">Today</button>' : '')+'<button type="button" data-bud-nav="1" aria-label="Next '+win.name+'">›</button></div>'+
+      '<div class="bud-sum-top"><div><div class="bud-kicker"><i class="dot" style="background:var(--success)"></i>Spent</div><div class="bud-big">'+bWhole(t.spent)+'</div></div>'+
+      '<div class="bud-goal-r"><div class="bud-kicker"><i class="dot" style="background:var(--st-up)"></i>Coming up</div><div class="bud-goal-n">'+bWhole(t.planned)+'</div></div></div>'+
+      '<div class="bud-bar" role="img" aria-label="'+bWhole(t.spent)+' spent, '+bWhole(t.planned)+' coming up '+win.title.toLowerCase()+'"><span class="bud-bar-spent" style="width:'+spentPct+'%"></span><span class="bud-bar-plan" style="width:'+planPct+'%"></span></div>'+
+      '<div class="bud-legend"><span><i class="k spent"></i>Paid</span><span><i class="k plan"></i>Upcoming</span></div>'+
+      '<div class="bud-stats"><div><div class="bud-kicker">Total '+win.name+'</div><div class="bud-stat-n">'+bWhole(total)+'</div></div></div>'+
+      (nextUp.length ? '<div class="bud-next"><div class="bud-kicker">Still to come</div>'+nextUp.slice(0,6).map(i=>budAgendaRow(i)).join('')+(nextUp.length>6 ? '<div class="bud-hint">+ '+(nextUp.length-6)+' more below</div>' : '')+'</div>' : (t.planned===0 && t.spent===0 ? '<div class="bud-empty" style="margin-top:12px;">Nothing scheduled for this '+win.name+'.</div>' : ''))+
+    '</div>';
+  } else {
+    html += '<div class="card bud-summary">'+segHtml+
+      '<div class="bud-sum-top"><div><div class="bud-kicker">Spent so far</div><div class="bud-big">'+bWhole(t.spent)+'</div></div>'+
+      (goal>0 ? '<div class="bud-goal-r"><div class="bud-kicker">Season goal</div><div class="bud-goal-n">'+bWhole(goal)+'</div></div>' : '<div class="bud-goal-r"><button type="button" class="bud-link" data-bud-act="goal">Set a goal</button></div>')+'</div>'+
+      '<div class="bud-bar" role="img" aria-label="'+bWhole(t.spent)+' spent, '+bWhole(t.planned)+' coming up'+(goal>0?', of a '+bWhole(goal)+' goal':'')+'">'+
+        '<span class="bud-bar-spent'+(goal>0&&t.spent>goal?' over':'')+'" style="width:'+spentPct+'%"></span><span class="bud-bar-plan" style="width:'+planPct+'%"></span></div>'+
+      '<div class="bud-legend"><span><i class="k spent"></i>Paid</span><span><i class="k plan"></i>Upcoming</span></div>'+
+      '<div class="bud-stats">'+
+        '<div><div class="bud-kicker">Coming up</div><div class="bud-stat-n">'+bWhole(t.planned)+'</div></div>'+
+        '<div><div class="bud-kicker">Season total</div><div class="bud-stat-n">'+bWhole(total)+'</div></div>'+
+        (goal>0 ? '<div><div class="bud-kicker">'+(left<0?'Over by':'Left')+'</div><div class="bud-stat-n '+(left<0?'bad':'good')+'">'+bWhole(Math.abs(left))+'</div></div>' : '')+
+      '</div></div>';
+  }
 
   /* categories */
-  html += '<div class="section-title">Where it goes</div><div class="card bud-cats">';
+  html += '<div class="section-title">Where it goes'+(win ? ' · '+win.title : '')+'</div><div class="card bud-cats">';
   const maxCat = Math.max(1, ...BUDGET_CATS.map(c=>{ const x=t.byCat[c.key]; return x.spent+x.planned; }));
   BUDGET_CATS.forEach(c=>{
     const on = b.track[c.key], x = t.byCat[c.key], tot = x.spent + x.planned;
@@ -3183,7 +3278,7 @@ function renderBudget(){
   const comps = competitions.filter(c=>c.attending!==false).slice().sort((a,b2)=>a.start<b2.start?-1:1);
   html += '<div class="section-title">Trip by trip</div><div class="card bud-trips">';
   comps.forEach(c=>{
-    const slug = slugify(c.name), its = t.items.filter(i=>i.comp===slug);
+    const slug = slugify(c.name), its = tAll.items.filter(i=>i.comp===slug);
     const sumT = ids => its.filter(i=>ids.includes(i.type)).reduce((s,i)=>s+i.amt,0);
     const flight = sumT(['flight']), hotel = sumT(['hotel']);
     const totalC = its.reduce((s,i)=>s+i.amt,0);
@@ -3210,7 +3305,7 @@ function renderBudget(){
 
   /* settings & tools */
   html += '<div class="section-title">Settings &amp; tools</div><div class="card bud-tools">'+
-    '<details'+(budSettingsOpen?' open':'')+'><summary>Budget settings</summary>'+budgetSettingsHtml(b,false)+'</details>'+
+    '<details'+(budSettingsOpen?' open':'')+'><summary>Edit budget settings</summary>'+budgetSettingsHtml(b,false)+'</details>'+
     '<div class="bud-tool-row"><button type="button" class="bud-btn" data-bud-act="copy">Copy for a spreadsheet</button><button type="button" class="bud-btn" data-bud-act="csv">Download CSV</button></div>'+
     '<div class="note bud-note"><b>How this works.</b> Gym fees, private lessons (added on the Calendar; weekly ones count through the last comp unless you set a “repeat until” date) and comp entry fees fill in automatically. Your daily spending allowance is counted for every comp until you log real spending for it. Anything you add counts as spent right away. This is a personal tracker with estimates, not financial advice, and it is saved only on this device, so it will not sync to another phone.</div>'+
     '<div class="bud-tool-row"><button type="button" class="bud-btn quiet" data-bud-act="off">Turn off budget tracking</button><button type="button" class="bud-btn danger" data-bud-act="erase">Erase my budget data</button></div>'+
@@ -3237,6 +3332,10 @@ function budgetCsv(){ return budgetRows().map(r=>r.map(v=>'"'+String(v).replace(
     if(xe){ const rec = loadBudget().expenses.find(x=>x.id===xe.dataset.expEdit); if(rec) openExpenseSheet({id:rec.id, type:rec.type, comp:rec.comp, date:rec.date, amt:rec.amt, miles:rec.miles, note:rec.note}); return; }
     const edt = e.target.closest('[data-bud-edit]');
     if(edt){ budEditKey = (budEditKey===edt.dataset.budEdit) ? null : edt.dataset.budEdit; renderBudget(); const f = document.getElementById('budEditAmt'); if(f){ f.focus(); f.select(); } return; }
+    const vw = e.target.closest('[data-bud-view]');
+    if(vw){ const b1 = loadBudget(); b1.view = vw.dataset.budView; saveBudget(b1); budOffset = 0; renderBudget(); return; }
+    const nv = e.target.closest('[data-bud-nav]');
+    if(nv){ const d = Number(nv.dataset.budNav); budOffset = d===0 ? 0 : budOffset + d; renderBudget(); return; }
     const act = e.target.closest('[data-bud-act]');
     if(!act) return;
     const a = act.dataset.budAct, b = loadBudget();
