@@ -1436,8 +1436,19 @@ html.page-navy .app-disclaimer button.disc-link{color:rgba(255,255,255,.92);}
 .eh-plan .arr{margin-left:auto; font-size:20px;}
 .eh-helplink{margin:2px 0 8px; display:inline-block;}
 
+.eh-real{border-radius:12px; padding:10px 12px; margin-top:12px; background:var(--success-soft); color:var(--success); font-size:13px; line-height:1.45;}
+.eh-real b{display:block; font-size:14px;}
+.eh-real small{display:block; color:var(--text-muted); font-size:12px; margin-top:2px;}
+
 :root[data-theme="dark"] .eh-pill.on{color:#0f1a40;}
 @media (prefers-color-scheme: dark){ :root:not([data-theme="light"]) .eh-pill.on{color:#0f1a40;} }
+.bk-cost{display:flex; flex-direction:column; gap:6px; margin-top:2px;}
+.bk-cost .bud-money-in{border-radius:8px; background:var(--surface-2); padding:0 9px;}
+.bk-cost .bud-money-in input{font-size:12.5px; padding:6px 0; text-transform:none; letter-spacing:0; font-weight:400;}
+.bud-field select.cal-input{width:100%;}
+.trip-add{margin:8px 0 12px;}
+.bud-addrow{display:flex; justify-content:center; margin:18px 0 4px;}
+.bud-addrow .pay-btn{margin:0; width:100%; max-width:440px; padding:13px 18px; font-size:14px; text-align:center;}
 .bud-seg{display:flex; border:1px solid var(--border); border-radius:11px; overflow:hidden; margin-bottom:12px;}
 .bud-seg button{flex:1; border:none; background:var(--surface); color:var(--text-muted); font:inherit; font-size:13px; font-weight:700; padding:9px 6px; cursor:pointer;}
 .bud-seg button.active{background:var(--accent); color:#fff;}
@@ -1680,7 +1691,8 @@ html.page-navy .app-disclaimer button.disc-link{color:rgba(255,255,255,.92);}
         <label>Amount<div class="bud-money-in"><span>$</span><input type="number" inputmode="decimal" min="0" step="0.01" id="expAmt" placeholder="0.00"></div></label>
         <label>Date paid<input type="date" id="expDate" class="cal-input" style="margin-top:0"></label>
       </div>
-      <div class="exp-datehint"><small>Change this if you paid on a different day.</small><button type="button" class="bud-link" onclick="document.getElementById('expDate').value=isoFromDate(new Date())">Set to today</button></div>
+      <div class="exp-datehint"><small>Change this if you paid on a different day.</small><button type="button" class="bud-link" onclick="document.getElementById('expDate').value=isoFromDate(new Date());syncExpStatus()">Set to today</button></div>
+      <label>Status<select id="expStatus" class="cal-input" style="margin-top:0"><option value="paid">Paid</option><option value="planned">Upcoming (not paid yet)</option><option value="est">Estimate</option></select><small id="expStatusNote"></small></label>
       <label>Note <small>(optional)</small><input type="text" id="expNote" class="cal-input" style="margin-top:0" maxlength="80" ></label>
       <div class="exp-err" id="expErr" role="alert"></div>
       <div class="exp-actions"><button type="button" class="pay-btn" id="expSave">Save</button><button type="button" class="linkbtn" id="expCancel" style="cursor:pointer;">Cancel</button></div>
@@ -2313,7 +2325,7 @@ function hotelToolsHtml(c, bk){
   }
   return '<div class="trv-tools"><div class="trv-leg">'+chip+'</div>'+note+'</div>';
 }
-function travelToggleRow(field, yes, detail, link, title, sub, placeholder, back, tools){
+function travelToggleRow(field, yes, detail, link, title, sub, placeholder, back, tools, cost, paid){
   const safeDetail = (detail||'').replace(/"/g,'&quot;');
   const safeLink = (link||'').replace(/"/g,'&quot;');
   const safeBack = (back||'').replace(/"/g,'&quot;');
@@ -2332,6 +2344,7 @@ function travelToggleRow(field, yes, detail, link, title, sub, placeholder, back
         ? `<div class="flt-pair"><label class="flt-lbl">Flight there<input type="text" class="booking-link-input" data-field="airDetail" placeholder="e.g. DL 1234" value="${safeDetail}"></label><label class="flt-lbl">Flight back<input type="text" class="booking-link-input" data-field="airBack" placeholder="e.g. DL 5678" value="${safeBack}"></label></div>`
         : `<input type="text" class="booking-link-input" data-field="${field}Detail" placeholder="${placeholder}" value="${safeDetail}">`}
       <input type="text" class="booking-link-input" data-field="${field}Link" placeholder="Confirmation link or number (optional)" value="${safeLink}">
+      ${budgetOn() ? `<div class="bk-cost"><div class="flt-pair"><label class="flt-lbl">What it cost<div class="bud-money-in"><span>$</span><input type="number" inputmode="decimal" min="0" step="0.01" data-field="${field}Cost" placeholder="Total (optional)" aria-label="What it cost" value="${Number(cost)>0?Number(cost):''}"></div></label><label class="flt-lbl">Date paid<input type="date" class="booking-link-input" data-field="${field}Paid" aria-label="Date paid" value="${(paid===undefined && Number(cost)>0) ? isoFromDate(new Date()) : (paid||'')}"></label></div><div class="trv-note">Goes straight to your Budget tab. Not paid yet? Clear the date and it shows as Upcoming.</div></div>` : ''}
       ${confirmHtml(link)}
       ${tools||''}
     </div>`;
@@ -2496,15 +2509,14 @@ function renderComps(){
 
       if(c.flightSearch || c.housing){
         let travelRows = '';
-        if(c.flightSearch) travelRows += travelToggleRow('air', !!bk.air, bk.airDetail, bk.airLink, 'Booked your flight?', 'Once you say yes, log both flight numbers (like DL 1234) for the family calendar and get quick status links.', 'Airline / flight # (optional)', bk.airBack, flightToolsHtml(c, bk));
-        if(c.housing) travelRows += travelToggleRow('hotel', !!bk.hotel, bk.hotelDetail, bk.hotelLink, 'Booked your hotel?', 'Once you say yes, you can log the hotel name for the family calendar.', 'Hotel name (optional)', '', hotelToolsHtml(c, bk));
+        if(c.flightSearch) travelRows += travelToggleRow('air', !!bk.air, bk.airDetail, bk.airLink, 'Booked your flight?', 'Once you say yes, log both flight numbers (like DL 1234) for the family calendar and get quick status links.', 'Airline / flight # (optional)', bk.airBack, flightToolsHtml(c, bk), bk.airCost, bk.airPaid);
+        if(c.housing) travelRows += travelToggleRow('hotel', !!bk.hotel, bk.hotelDetail, bk.hotelLink, 'Booked your hotel?', 'Once you say yes, you can log the hotel name for the family calendar.', 'Hotel name (optional)', '', hotelToolsHtml(c, bk), bk.hotelCost, bk.hotelPaid);
         sectionsHtml += `<div class="compx-section" data-slug="${slug}">
           <div class="compx-section-label"><span class="cxl-ic">${ICON_CHECK}</span>My Travel</div>
           ${travelRows}
         </div>`;
       }
 
-      sectionsHtml += compBudgetSection(c, slug);
 
       calHtml = `<div class="cal-add-row">📅 <a href="${gcalLink(c,bk)}" target="_blank">Add to Google Calendar</a> &nbsp;·&nbsp; <a href="${outlookLink(c,bk)}" target="_blank">Add to Outlook</a>
         <div class="cal-note">Includes whatever flight/hotel info you've entered above. If that info changes, add it again and delete the old event — this doesn't auto-update.</div>
@@ -2544,7 +2556,7 @@ function renderComps(){
         state[slug] = state[slug] || {};
         state[slug][field] = yes;
         saveBooking(state);
-        renderComps();
+        renderComps(); if(typeof renderBudget === 'function') renderBudget();
       });
     });
   });
@@ -2554,9 +2566,14 @@ function renderComps(){
       const slug = section.dataset.slug;
       const state = loadBooking();
       state[slug] = state[slug] || {};
-      state[slug][inp.dataset.field] = inp.value.trim();
+      const fld = inp.dataset.field, val = inp.value.trim();
+      if(/Cost$/.test(fld)){
+        const n = Math.max(0, Math.round((parseFloat(val)||0)*100)/100), pf = fld.replace(/Cost$/, 'Paid');
+        state[slug][fld] = n || '';
+        if(n && state[slug][pf] === undefined) state[slug][pf] = isoFromDate(new Date());
+      } else { state[slug][fld] = val; }
       saveBooking(state);
-      renderComps();
+      renderComps(); if(typeof renderBudget === 'function') renderBudget();
     });
   });
   updateExpandCollapseLabel();
@@ -3241,9 +3258,9 @@ function ehDefault(c, h){
   const road = ehRoad(c, h), hay = ehHay(c), flyOnly = EH_FLYONLY.test(hay);
   const kind = c.travel==='required' ? 'fly' : c.travel==='local' ? 'local' : ((flyOnly || road > 400) ? 'fly' : 'local');
   const raw = ehRawDays(c), days = kind==='fly' ? compDays(c) : Math.min(raw, 2);
-  const nh = ehNoHotelMi(c);
+  const nh = ehNoHotelMi(c), bkx = (typeof loadBooking==='function' ? loadBooking() : {})[slugify(c.name)] || {}, bkHotel = !!bkx.hotel;
   const air = ehAirMi(c, h) || (road ? road/1.2 : 0);
-  const hotel = kind==='fly' || (nh ? air > nh : (c.housing==='required' || (air > 50 && days > 1)));
+  const hotel = kind==='fly' || bkHotel || ehLogged(slugify(c.name))(['hotel']) > 0 || (nh ? air > nh : (c.housing==='required' || (air > 50 && days > 1)));
   return {kind:kind, days:days, tripMode:(road > 50 && days > 1) ? 'once' : 'each', mode:kind==='fly' ? 'fly' : 'drive',
     pp:2, bags:1, tier:'mid', home:'drop', ground:null, needGround:true, needHome:true,
     stay:(kind==='fly' || c.housing==='required') ? 'on' : 'near', hotel:hotel, nightsAdj:null, htier:'mid',
@@ -3278,18 +3295,18 @@ function ehTravel(c, st, h, rate){
   if(st.kind==='local' || st.mode==='drive'){
     const trips = st.kind==='local' ? (st.tripMode==='each' ? ehDays(c, st) : 1) : 1;
     const mi = one*2*trips, amt = mi*rate;
-    return {total:amt, lo:amt, hi:amt, unknown:!one, parts:{mileage:amt}, lines:[['Mileage · '+Math.round(mi).toLocaleString('en-US')+' mi at $'+Number(rate).toFixed(3).replace(/0$/,'')+' a mile, gas included', amt]]};
+    return {total:amt, lo:amt, hi:amt, unknown:!one, parts:{mileage:amt}, lines:[['Mileage · '+Math.round(mi).toLocaleString('en-US')+' mi at $'+Number(rate).toFixed(3).replace(/0$/,'')+' a mile, gas included', amt]], lk:['mileage']};
   }
   const fare = ehFare(c, h), price = fare[{lo:0, mid:1, hi:2}[st.tier]], fl = price*st.pp, nb = st.pp*st.bags, bag = nb*70;
   const g = ehGround(c, st, st.stay), useR = (st.ground || (g.rental < g.ride ? 'rental' : 'ride')) === 'rental';
   const gr = st.needGround ? (useR ? g.rental : g.ride) : 0, hc = st.needHome ? ehHomeLeg(c, st, h, rate) : 0;
   const lo = fare[0]*st.pp + bag + (st.needGround ? g.best : 0) + (st.needHome ? ehHomeLeg(c, st, h, rate, 'drop') : 0);
   const hi = fare[2]*st.pp + bag + (st.needGround ? Math.max(g.ride, g.rental) : 0) + (st.needHome ? ehHomeLeg(c, st, h, rate, 'park') : 0);
-  const lines = [['Flights · '+st.pp+' × '+bMoney(price), fl]];
-  if(nb) lines.push(['Checked bags · '+st.pp+' '+(st.pp===1?'person':'people')+' × '+st.bags+' = '+nb+' bag'+(nb===1?'':'s')+' at $70 round trip', bag]);
-  if(st.needHome) lines.push(['Getting to the airport from home', hc]);
-  if(st.needGround) lines.push([useR ? 'Rental car, parking and gas' : 'Rideshare', gr]);
-  return {total:fl+bag+gr+hc, lo:lo, hi:hi, g:g, useR:useR, fare:fare, parts:{air:fl+bag, ground:gr, home:hc}, lines:lines};
+  const lines = [['Flights · '+st.pp+' × '+bMoney(price), fl]], lk = ['air'];
+  if(nb){ lines.push(['Checked bags · '+st.pp+' '+(st.pp===1?'person':'people')+' × '+st.bags+' = '+nb+' bag'+(nb===1?'':'s')+' at $70 round trip', bag]); lk.push('bags'); }
+  if(st.needHome){ lines.push(['Getting to the airport from home', hc]); lk.push('home'); }
+  if(st.needGround){ lines.push([useR ? 'Rental car, parking and gas' : 'Rideshare', gr]); lk.push('ground'); }
+  return {total:fl+bag+gr+hc, lo:lo, hi:hi, g:g, useR:useR, fare:fare, parts:{air:fl, bags:bag, ground:gr, home:hc}, lines:lines, lk:lk};
 }
 function ehHotel(c, st, stay){
   if(!st.hotel) return {total:0, lo:0, hi:0, rate:0, fee:0, useB:false, n:0};
@@ -3300,7 +3317,39 @@ function ehHotel(c, st, stay){
   const calc = x => (x + fee)*n*st.rooms*f*1.14;
   return {total:calc(rate), lo:useB ? calc(rate) : calc(lo), hi:useB ? calc(rate) : calc(hi), rate:rate, fee:fee, useB:useB, n:n, lor:lo, hir:hi, mid:mid, pre:calc(rate)/1.14};
 }
-const EH_PART_TYPES = {air:['flight'], ground:['rental','rideshare'], home:['gas','parking'], mileage:['gas']};
+const EH_PART_TYPES = {air:['flight'], bags:['parking'], ground:['rental','rideshare'], home:['gas'], mileage:['gas']};
+/* real money already entered for a comp: logged on the Budget tab, or typed on the Comp Schedule tab (My Travel) */
+function ehLogged(slug, b){
+  b = b || loadBudget();
+  const bk = (typeof loadBooking==='function' ? loadBooking() : {})[slug] || {}, ex = b.expenses.filter(e=>e.comp===slug);
+  const bkAmt = type => { if(ex.some(e=>e.type===type)) return 0; return type==='flight' ? (bk.air ? Number(bk.airCost)||0 : 0) : (bk.hotel ? Number(bk.hotelCost)||0 : 0); };
+  return types => ex.filter(e=>types.indexOf(e.type)>=0).reduce((s,e)=>s+(Number(e.amt)||0), 0) + (types.indexOf('flight')>=0 ? bkAmt('flight') : 0) + (types.indexOf('hotel')>=0 ? bkAmt('hotel') : 0);
+}
+function ehReal(c){
+  const b = loadBudget(), slug = slugify(c.name), bk = (typeof loadBooking==='function' ? loadBooking() : {})[slug] || {}, L = ehLogged(slug, b);
+  const cat = k => b.expenses.filter(e=>e.comp===slug && expType(e.type).cat===k).reduce((s,e)=>s+(Number(e.amt)||0), 0);
+  const flight = L(['flight']), hotel = L(['hotel']);
+  const exFlight = b.expenses.filter(e=>e.comp===slug && e.type==='flight').reduce((s,e)=>s+(Number(e.amt)||0), 0), exHotel = b.expenses.filter(e=>e.comp===slug && e.type==='hotel').reduce((s,e)=>s+(Number(e.amt)||0), 0);
+  return {flight:flight, hotel:hotel, travel:cat('travel') + (flight - exFlight), hotels:cat('hotels') + (hotel - exHotel),
+    bkAir:!!bk.air, bkHotel:!!bk.hotel, hotelName:bk.hotelDetail||'', slug:slug};
+}
+/* what is still estimated for a comp after the real costs */
+function ehRest(c, st, h, rate, b){
+  const slug = slugify(c.name), logged = ehLogged(slug, b), out = {travel:0, hotel:0, travelAny:false, hotelAny:false, t:null, ht:null};
+  const t = ehTravel(c, st, h, rate); out.t = t;
+  const done = (c.end||c.start) < isoFromDate(new Date());
+  Object.keys(t.parts).forEach(k=>{
+    const l = logged(EH_PART_TYPES[k]); if(l > 0) out.travelAny = true;
+    out.travel += (done || (k==='air' && l > 0)) ? 0 : Math.max(0, t.parts[k] - l);
+  });
+  if(st.hotel){ const ht = ehHotel(c, st), l = logged(['hotel']); out.ht = ht; out.hotelAny = l > 0; out.hotel = (done || l > 0) ? 0 : ht.total; }
+  return out;
+}
+/* a trip's travel and hotel in total: what is real plus what is still estimated */
+function ehTrip(c, st, h, rate, b){
+  const R = ehReal(c), r = ehRest(c, st, h, rate, b);
+  return {R:R, r:r, travel:R.travel + r.travel, hotel:R.hotels + r.hotel, hasT:R.travel > 0, hasH:R.hotels > 0};
+}
 /* estimate rows: what is still to come for a comp, after the real costs already logged for it */
 function ehEstimateItems(b, plan, today){
   const out = [];
@@ -3309,17 +3358,9 @@ function ehEstimateItems(b, plan, today){
   competitions.forEach(c=>{
     if(c.attending===false) return;
     const end = c.end||c.start; if(end < today) return;
-    const slug = slugify(c.name), st = ehState(c, plan);
-    const logged = types => b.expenses.filter(e=>e.comp===slug && types.indexOf(e.type)>=0).reduce((s,e)=>s+(Number(e.amt)||0), 0);
-    if(inc.travel !== false){
-      const t = ehTravel(c, st, h, rate); let rest = 0, any = false;
-      Object.keys(t.parts).forEach(k=>{ const l = logged(EH_PART_TYPES[k]); if(l > 0) any = true; rest += Math.max(0, t.parts[k] - l); });
-      if(rest >= 1) out.push({key:'tq:'+slug, cat:'travel', label:c.name+' — travel estimate'+(any ? ' (balance)' : ''), amt:Math.round(rest), date:c.start, status:'planned', src:'estimate', comp:slug});
-    }
-    if(inc.hotels !== false && st.hotel){
-      const ht = ehHotel(c, st), l = logged(['hotel']), rest = Math.max(0, ht.total - l);
-      if(rest >= 1) out.push({key:'hq:'+slug, cat:'hotels', label:c.name+' — hotel estimate'+(l > 0 ? ' (balance)' : ''), amt:Math.round(rest), date:c.start, status:'planned', src:'estimate', comp:slug});
-    }
+    const slug = slugify(c.name), st = ehState(c, plan), r = ehRest(c, st, h, rate, b);
+    if(inc.travel !== false && r.travel >= 1) out.push({key:'tq:'+slug, cat:'travel', label:c.name+' — travel estimate'+(r.travelAny ? ' (balance)' : ''), amt:Math.round(r.travel), date:c.start, status:'planned', src:'estimate', comp:slug});
+    if(inc.hotels !== false && st.hotel && r.hotel >= 1) out.push({key:'hq:'+slug, cat:'hotels', label:c.name+' — hotel estimate'+(r.hotelAny ? ' (balance)' : ''), amt:Math.round(r.hotel), date:c.start, status:'planned', src:'estimate', comp:slug});
   });
   if(inc.other !== false && Number(plan.otherExtra) > 0){
     const l = b.expenses.filter(e=>e.type==='merch' || e.type==='swag').reduce((s,e)=>s+(Number(e.amt)||0), 0), rest = Math.max(0, Number(plan.otherExtra) - l);
@@ -3402,6 +3443,14 @@ function plSegments(p, existing){
 }
 
 /* ---- every dollar the budget knows about ---- */
+/* a logged cost counts as paid on its date, but mileage for a comp that has not happened yet waits for the event */
+function expAutoStatus(e){
+  const t = isoFromDate(new Date());
+  if(e.type === 'gas' && e.comp){ const c = compBySlug(e.comp); if(c && c.start > t) return 'planned'; }
+  return (e.date && e.date > t) ? 'planned' : 'paid';
+}
+function expStatus(e){ return (e.status === 'paid' || e.status === 'planned' || e.status === 'est') ? e.status : expAutoStatus(e); }
+function itemKind(i){ return (i.est || (i.src === 'estimate' && !i.forced)) ? 'est' : (i.status === 'planned' ? 'up' : 'paid'); }
 function budgetItems(){
   const b = loadBudget(), items = [], today = isoFromDate(new Date());
   const allowNow = (PLAN_DRAFT && PLAN_DRAFT.allow != null) ? Number(PLAN_DRAFT.allow) : b.allowance;
@@ -3434,7 +3483,22 @@ function budgetItems(){
   });
   b.expenses.forEach(e=>{
     const t = expType(e.type), cn = e.comp && compBySlug(e.comp);
-    items.push({key:'x:'+e.id, cat:t.cat, label:expLabel(e), amt:Number(e.amt)||0, date:e.date, status:'paid', src:'you', id:e.id, comp:e.comp||'', type:e.type});
+    const sk = expStatus(e); let xd = e.date;
+    if(e.type === 'gas' && e.comp && !e.status){ const cc = compBySlug(e.comp); if(cc && cc.start > xd) xd = cc.start; }
+    items.push({key:'x:'+e.id, cat:t.cat, label:expLabel(e), amt:Number(e.amt)||0, date:xd, status: sk==='paid' ? 'paid' : 'planned', est: sk==='est', src:'you', id:e.id, comp:e.comp||'', type:e.type});
+  });
+  /* flight and hotel costs typed on the Comp Schedule tab (a cost you also logged here wins, so nothing counts twice) */
+  const bkAll = loadBooking();
+  competitions.forEach(c=>{
+    if(c.attending === false) return;
+    const slug = slugify(c.name), bk = bkAll[slug] || {};
+    [['air','flight','travel'], ['hotel','hotel','hotels']].forEach(m=>{
+      const amt = Number(bk[m[0]+'Cost']) || 0;
+      if(!bk[m[0]] || !(amt > 0)) return;
+      if(b.expenses.some(e=>e.comp===slug && e.type===m[1])) return;
+      const pd = bk[m[0]+'Paid'], day = pd === undefined ? today : pd, at = c.travelStart || c.start;
+      items.push({key:'k:'+m[1]+':'+slug, cat:m[2], label: m[1]==='flight' ? 'Flight — '+c.name : c.name+(bk.hotelDetail ? ' · '+bk.hotelDetail : ''), amt:amt, date: day || at, status: (day ? day <= today : at <= today) ? 'paid' : 'planned', src:'booking', comp:slug, type:m[1], bkf:m[0]});
+    });
   });
   const plan = activePlan().privates;
   if(plan){
@@ -3448,10 +3512,12 @@ function budgetItems(){
   }
   ehEstimateItems(b, activePlan(), today).forEach(i=>items.push(i));
   items.forEach(i=>{
+    i.nkind = itemKind(i);
     const o = b.over[i.key];
     if(!o) return;
-    if(o.skip){ i.skipped = true; }
-    else if(o.amt != null){ i.orig = i.amt; i.amt = Number(o.amt)||0; i.edited = true; }
+    if(o.skip){ i.skipped = true; return; }
+    if(o.amt != null){ i.orig = i.amt; i.amt = Number(o.amt)||0; i.edited = true; }
+    if(o.status){ i.forced = true; i.est = o.status === 'est'; i.status = o.status === 'paid' ? 'paid' : 'planned'; i.stChanged = true; }
   });
   return items;
 }
@@ -3537,6 +3603,8 @@ function openExpenseSheet(pre){
   document.getElementById('expAmt').value = pre.amt!=null ? pre.amt : '';
   document.getElementById('expMiles').value = pre.miles!=null ? pre.miles : '';
   document.getElementById('expNote').value = pre.note || '';
+  expStatTouched = !!pre.status; if(pre.status) document.getElementById('expStatus').value = pre.status;
+  syncExpStatus();
   document.getElementById('expTitle').textContent = expEditId ? 'Edit expense' : 'Add an expense';
   document.getElementById('expSave').textContent = expEditId ? 'Save changes' : 'Save';
   document.getElementById('expErr').textContent = '';
@@ -3544,6 +3612,14 @@ function openExpenseSheet(pre){
   syncExpenseForm();
   resetReceiptUI(); resetMileCalc(pre);
   setTimeout(()=>{ const f = document.getElementById(pre.calc ? 'mileZip' : 'expAmt'); if(f) f.focus(); }, 60);
+}
+let expStatTouched = false;
+function syncExpStatus(){
+  const sel = document.getElementById('expStatus'); if(!sel) return;
+  const rec = {type:document.getElementById('expType').value, comp:document.getElementById('expComp').value, date:document.getElementById('expDate').value}, auto = expAutoStatus(rec);
+  if(!expStatTouched) sel.value = auto;
+  const note = document.getElementById('expStatusNote');
+  note.textContent = (rec.type==='gas' && rec.comp && auto==='planned' && !expStatTouched) ? 'Mileage counts as paid on the day of the event, so it shows as Upcoming until then.' : sel.value==='planned' ? 'Counts toward your plan, but not as spent yet.' : sel.value==='est' ? 'A rough number. Counts toward your plan, not as spent.' : '';
 }
 function closeExpenseSheet(){ expEditId = null; document.getElementById('expSheet').hidden = true; document.body.style.overflow = ''; }
 function syncExpenseForm(){
@@ -3568,6 +3644,7 @@ function saveExpenseFromSheet(){
     miles: t.miles && miles>0 ? miles : undefined,
     origin: expEditId ? (expOrigin || undefined) : (expOrigin || 'budget')
   };
+  const stSel = document.getElementById('expStatus').value; if(stSel && stSel !== expAutoStatus(rec)) rec.status = stSel;
   const ix = expEditId ? b.expenses.findIndex(e=>e.id===expEditId) : -1;
   if(ix>=0){ b.expenses[ix] = rec; if(b.over) delete b.over['x:'+expEditId]; } else b.expenses.push(rec);
   saveBudget(b);
@@ -3632,7 +3709,7 @@ function budgetSettingsHtml(b, first){
   '</div>';
 }
 const PENCIL_SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 013 3L7 19l-4 1 1-4z"/></svg>';
-let budOpen = new Set(), budSettingsOpen = false, budEditKey = null, expEditId = null, budOffset = 0, expOrigin = null;
+let budOpen = new Set(), budSettingsOpen = false, budEditKey = null, budEditScope = '', expEditId = null, budOffset = 0, expOrigin = null;
 /* ---- week / month / season window ---- */
 function budWindow(view, off){
   if(view !== 'week' && view !== 'month') return null;
@@ -3649,9 +3726,9 @@ function budWindow(view, off){
   return {view:view, from:from, to:to, name:'month', title: off===0 ? 'This month' : off===1 ? 'Next month' : off===-1 ? 'Last month' : s.toLocaleDateString('en-US',{month:'long'}), range: s.toLocaleDateString('en-US',{month:'long', year:'numeric'})};
 }
 
-function budItemHtml(i){
-  const editing = budEditKey === i.key;
-  const stk = i.src==='estimate' ? 'est' : (i.status==='planned' ? 'up' : 'paid');
+function budItemHtml(i, scope){
+  const editing = budEditKey === i.key && budEditScope === (scope || '');
+  const stk = itemKind(i);
   const stl = {est:'Estimate', up:'Upcoming', paid:'Paid'}[stk];
   const ea = i.src==='you' ? 'data-exp-edit="'+i.id+'"' : 'data-bud-edit="'+bEsc(i.key)+'"';
   let row = '<div class="bud-item s-'+stk+(i.skipped?' gone':'')+'"><span class="bud-item-d">'+fmtDate(i.date)+'</span>'+
@@ -3663,15 +3740,17 @@ function budItemHtml(i){
   if(editing){
     row += '<div class="bud-edit"><label class="bud-field">Your share of this one<div class="bud-money-in"><span>$</span><input type="number" inputmode="decimal" min="0" step="0.01" id="budEditAmt" value="'+(Math.round(i.amt*100)/100)+'"></div></label>'+
       '<small class="bud-edit-note">Splitting with another parent? Enter just your half.'+(i.edited?' Original amount: '+bMoney(i.orig,true)+'.':'')+'</small>'+
+      '<label class="bud-field">Status<select id="budEditStatus" class="cal-input" style="margin-top:0"><option value="paid"'+(stk==='paid'?' selected':'')+'>Paid</option><option value="planned"'+(stk==='up'?' selected':'')+'>Upcoming (not paid yet)</option>'+(i.src==='booking' ? '' : '<option value="est"'+(stk==='est'?' selected':'')+'>Estimate</option>')+'</select></label>'+
+      '<small class="bud-edit-note">Booked but not paid yet? Choose Upcoming. Paid something early, like your gym fees in full? Choose Paid.</small>'+
       '<div class="bud-edit-actions"><button type="button" class="bud-tbtn" data-bud-act="edit-save" data-key="'+bEsc(i.key)+'">Save</button>'+
       (i.series ? '<button type="button" class="bud-tbtn ghost" data-bud-act="edit-series" data-key="'+bEsc(i.key)+'">Save for this and all later</button>' : '')+
-      (i.edited ? '<button type="button" class="bud-tbtn ghost" data-bud-act="edit-reset" data-key="'+bEsc(i.key)+'">Back to '+bMoney(i.orig,true)+'</button>' : '')+
+      ((i.edited || i.stChanged) ? '<button type="button" class="bud-tbtn ghost" data-bud-act="edit-reset" data-key="'+bEsc(i.key)+'">Back to '+(i.edited ? bMoney(i.orig,true) : ({est:'Estimate', up:'Upcoming', paid:'Paid'})[i.nkind])+'</button>' : '')+
       '<button type="button" class="bud-link" data-bud-act="edit-cancel">Cancel</button></div></div>';
   }
   return row;
 }
 function budAgendaRow(i){
-  const stk = i.src==='estimate' ? 'est' : 'up';
+  const stk = itemKind(i)==='est' ? 'est' : 'up';
   return '<div class="bud-item ro s-'+stk+'"><span class="bud-item-d">'+fmtDate(i.date)+'</span><span class="bud-item-p"><em class="st st-'+stk+'">'+(stk==='est'?'Estimate':'Upcoming')+'</em></span><span class="bud-item-l">'+bEsc(i.label)+'</span><b>'+bMoney(i.amt)+'</b></div>';
 }
 function renderBudget(){
@@ -3738,7 +3817,7 @@ function renderBudget(){
       (on ? '<span class="bud-cat-tot">'+bWhole(tot)+(cap>0 ? '<small class="bud-cat-of">of '+bWhole(cap)+'</small>' : '')+'</span>' : '')+
       '<span class="bud-chev" aria-hidden="true">›</span></summary>'+
       (on ? '<div class="bud-minibar"><span class="bud-bar-spent'+(cap>0 && x.spent>cap ? ' over' : '')+'" style="width:'+sp+'%"></span><span class="bud-bar-plan" style="width:'+pp+'%"></span></div>' : '')+
-      '<div class="bud-items">'+(on ? (items.length ? items.map(i=>budItemHtml(i)).join('')+'<p class="bud-hint">Tap ✎ to change an amount (say, when you split it with another parent). Tap × to remove.</p>' : '<div class="bud-empty">Nothing here yet.</div>') : '<div class="bud-empty">Switch on to count '+c.label.toLowerCase()+' in your budget.</div>')+
+      '<div class="bud-items">'+(on ? (items.length ? items.map(i=>budItemHtml(i, c.key)).join('')+'<p class="bud-hint">Tap ✎ to change an amount (say, when you split it with another parent). Tap × to remove.</p>' : '<div class="bud-empty">Nothing here yet.</div>') : '<div class="bud-empty">Switch on to count '+c.label.toLowerCase()+' in your budget.</div>')+
         (on && x.removed.length ? '<div class="bud-removed">'+x.removed.length+' removed · <button type="button" class="bud-link" data-bud-act="restore" data-cat="'+c.key+'">Put them back</button></div>' : '')+'</div>'+
     '</details>';
   });
@@ -3746,35 +3825,23 @@ function renderBudget(){
 
   /* trips */
   const comps = competitions.filter(c=>c.attending!==false).slice().sort((a,b2)=>a.start<b2.start?-1:1);
-  html += '<div class="section-title">Trip by trip</div><div class="card bud-trips">';
+  html += '<div class="section-title">Trip by trip</div><div class="card bud-cats">';
   comps.forEach(c=>{
-    const slug = slugify(c.name), its = tAll.items.filter(i=>i.comp===slug);
-    const sumT = ids => its.filter(i=>ids.includes(i.type)).reduce((s,i)=>s+i.amt,0);
-    const flight = sumT(['flight']), hotel = sumT(['hotel']);
-    const totalC = its.reduce((s,i)=>s+i.amt,0);
-    const chips = [];
-    if(c.flightSearch) chips.push(flight ? '<span class="bud-chip ok">Flights '+bWhole(flight)+'</span>' : '<span class="bud-chip todo">Flights not logged</span>');
-    const hbk = (loadBooking()[slug]||{}).hotel;
-    if(c.housing==='required' || hbk || hotel) chips.push(hotel ? '<span class="bud-chip ok">Hotel '+bWhole(hotel)+'</span>' : '<span class="bud-chip todo">Hotel not logged</span>');
-    const rest = totalC - flight - hotel;
-    if(rest>0) chips.push('<span class="bud-chip">Other '+bWhole(rest)+'</span>');
-    html += '<div class="bud-trip"><div class="bud-trip-top"><div><div class="bud-trip-name">'+bEsc(c.name)+'</div><div class="bud-trip-d">'+fmtRange(c.start,c.end)+(c.end<today?' · done':'')+'</div></div><div class="bud-trip-tot">'+bWhole(totalC)+'</div></div>'+
-      '<div class="bud-chips">'+chips.join('')+'</div>'+
-      '<button type="button" class="bud-link" onclick="openExpenseSheet({comp:\''+slug+'\'})">+ Add expense</button></div>';
+    const slug = slugify(c.name), key = 'trip:'+slug, its = tAll.items.filter(i=>i.comp===slug).slice().sort((x1,x2)=>x1.date<x2.date?-1:1);
+    const spent = its.filter(i=>i.status==='paid').reduce((s0,i)=>s0+i.amt,0), plan = its.filter(i=>i.status!=='paid').reduce((s0,i)=>s0+i.amt,0), est = spent + plan;
+    const sp = est ? spent/est*100 : 0, pp = est ? plan/est*100 : 0;
+    html += '<details class="bud-cat" data-cat="'+key+'"'+(budOpen.has(key)?' open':'')+'><summary>'+
+      '<span class="bud-cat-main"><span class="bud-cat-name">'+bEsc(c.name)+'</span><span class="bud-cat-sub">'+fmtRange(c.start,c.end)+(c.end<today?' · done':'')+(est ? ' · '+bWhole(plan)+' left' : '')+'</span></span>'+
+      '<span class="bud-cat-tot">'+bWhole(spent)+(est ? '<small class="bud-cat-of">of '+bWhole(est)+' est.</small>' : '')+'</span>'+
+      '<span class="bud-chev" aria-hidden="true">›</span></summary>'+
+      (est ? '<div class="bud-minibar"><span class="bud-bar-spent" style="width:'+sp+'%"></span><span class="bud-bar-plan" style="width:'+pp+'%"></span></div>' : '')+
+      '<div class="bud-items">'+(its.length ? its.map(i=>budItemHtml(i, key)).join('') : '<div class="bud-empty">Nothing here yet.</div>')+
+      '<button type="button" class="bud-tbtn trip-add" onclick="openExpenseSheet({comp:\''+slug+'\'})">+ Add expense</button></div></details>';
   });
   html += '</div>';
 
-  /* log: only what was added from this tab (costs added on the Comp Schedule tab live in the lists above) */
-  const fromComp = e => e.origin==='comp' || (!e.origin && e.comp && (e.type==='flight' || e.type==='hotel'));
-  const logged = b.expenses.filter(e=>!fromComp(e)).sort((a,b2)=>a.date<b2.date?1:-1);
-  const hiddenN = b.expenses.length - logged.length;
-  html += '<div class="section-title">Expenses I added</div><div class="card"><button type="button" class="pay-btn" data-bud-act="add">+ Add an expense</button>';
-  html += logged.length ? '<div class="bud-log">'+logged.map(e=>{
-    const ty = expType(e.type);
-    return '<div class="bud-item np"><span class="bud-item-d">'+fmtDate(e.date)+'</span><span class="bud-item-l">'+bEsc(expLabel(e))+(e.miles?' · '+e.miles+' mi':'')+(b.track[ty.cat]?'':' <em>not counted</em>')+'</span><b>'+bMoney(e.amt)+'</b><button type="button" class="bud-ed" data-exp-edit="'+e.id+'" aria-label="Edit this expense" title="Edit">'+PENCIL_SVG+'</button><button type="button" class="bud-x" data-bud-del="'+e.id+'" aria-label="Remove">×</button></div>';
-  }).join('')+'</div><p class="bud-hint">Tap ✎ to change the amount, date or note. Tap × to remove.</p>' : '<p class="bud-empty" style="margin-top:12px;">Nothing added here yet. Food, merch, anything else you spend: add it and it shows up above.</p>';
-  if(hiddenN > 0) html += '<p class="bud-hint">'+hiddenN+' cost'+(hiddenN>1?'s':'')+' you added from the Comp Schedule tab '+(hiddenN>1?'are':'is')+' counted in the lists above, not shown here.</p>';
-  html += '</div>';
+  /* add an expense */
+  html += '<div class="bud-addrow"><button type="button" class="pay-btn" data-bud-act="add">+ Add an expense</button></div>';
 
   /* settings & tools */
   html += '<div class="section-title">Settings &amp; tools</div><div class="card bud-tools">'+
@@ -3789,7 +3856,7 @@ function renderBudget(){
 function budgetRows(){
   const t = budgetTotals();
   return [['Date','Category','Item','Amount','Status']].concat(t.items.slice().sort((a,b)=>a.date<b.date?-1:1).map(i=>[
-    i.date, (BUDGET_CATS.find(c=>c.key===i.cat)||{}).label, i.label, i.amt.toFixed(2), i.status==='paid'?(i.src==='estimate'?'Estimated':'Spent'):'Coming up']));
+    i.date, (BUDGET_CATS.find(c=>c.key===i.cat)||{}).label, i.label, i.amt.toFixed(2), ({est:'Estimated', paid:'Spent', up:'Coming up'})[itemKind(i)]]));
 }
 function budgetCsv(){ return budgetRows().map(r=>r.map(v=>'"'+String(v).replace(/"/g,'""')+'"').join(',')).join('\n'); }
 
@@ -3800,11 +3867,16 @@ function budgetCsv(){ return budgetRows().map(r=>r.map(v=>'"'+String(v).replace(
     const del = e.target.closest('[data-bud-del]');
     if(del){ removeExpense(del.dataset.budDel); return; }
     const skip = e.target.closest('[data-bud-skip]');
-    if(skip){ const b0 = loadBudget(); b0.over[skip.dataset.budSkip] = {skip:true}; saveBudget(b0); if(budEditKey===skip.dataset.budSkip) budEditKey = null; renderBudget(); renderComps(); return; }
+    if(skip){
+      const key0 = skip.dataset.budSkip;
+      if(/^k:/.test(key0)){ const p0 = key0.split(':'), bk0 = loadBooking(), r0 = bk0[p0.slice(2).join(':')]; if(r0){ r0[(p0[1]==='flight' ? 'air' : 'hotel')+'Cost'] = ''; saveBooking(bk0); } }
+      else { const b0 = loadBudget(); b0.over[key0] = {skip:true}; saveBudget(b0); }
+      if(budEditKey===key0) budEditKey = null; renderBudget(); renderComps(); return;
+    }
     const xe = e.target.closest('[data-exp-edit]');
-    if(xe){ const rec = loadBudget().expenses.find(x=>x.id===xe.dataset.expEdit); if(rec) openExpenseSheet({id:rec.id, type:rec.type, comp:rec.comp, date:rec.date, amt:rec.amt, miles:rec.miles, note:rec.note, origin:rec.origin}); return; }
+    if(xe){ const rec = loadBudget().expenses.find(x=>x.id===xe.dataset.expEdit); if(rec) openExpenseSheet({id:rec.id, type:rec.type, comp:rec.comp, date:rec.date, amt:rec.amt, miles:rec.miles, note:rec.note, origin:rec.origin, status:rec.status}); return; }
     const edt = e.target.closest('[data-bud-edit]');
-    if(edt){ budEditKey = (budEditKey===edt.dataset.budEdit) ? null : edt.dataset.budEdit; renderBudget(); const f = document.getElementById('budEditAmt'); if(f){ f.focus(); f.select(); } return; }
+    if(edt){ const dd = edt.closest('details[data-cat]'); const sc = dd ? dd.dataset.cat : ''; budEditKey = (budEditKey===edt.dataset.budEdit && budEditScope===sc) ? null : edt.dataset.budEdit; budEditScope = sc; renderBudget(); const f = document.getElementById('budEditAmt'); if(f){ f.focus(); f.select(); } return; }
     const vw = e.target.closest('[data-bud-view]');
     if(vw){ const b1 = loadBudget(); b1.view = vw.dataset.budView; saveBudget(b1); budOffset = 0; renderBudget(); return; }
     const nv = e.target.closest('[data-bud-nav]');
@@ -3825,10 +3897,23 @@ function budgetCsv(){ return budgetRows().map(r=>r.map(v=>'"'+String(v).replace(
       const item = budgetItems().find(i=>i.key===key);
       if(!item){ budEditKey = null; renderBudget(); return; }
       const amt = input ? Math.max(0, Math.round((parseFloat(input.value)||0)*100)/100) : item.amt;
+      const sel = document.getElementById('budEditStatus'), chosen = sel ? sel.value : null, todayS = isoFromDate(new Date());
       if(a==='edit-reset'){ delete b.over[key]; }
-      else if(item.src==='you'){ const ex = b.expenses.find(x=>x.id===item.id); if(ex) ex.amt = amt; }
-      else if(a==='edit-series' && item.series){ budgetItems().filter(i=>i.series===item.series && i.date>=item.date).forEach(i=>{ b.over[i.key] = {amt}; }); }
-      else { b.over[key] = {amt}; }
+      else if(item.src==='you'){ const ex = b.expenses.find(x=>x.id===item.id); if(ex){ ex.amt = amt; if(chosen){ if(chosen === expAutoStatus(ex)) delete ex.status; else ex.status = chosen; } } }
+      else if(item.src==='booking'){
+        const bkS = loadBooking(), r0 = bkS[item.comp] = bkS[item.comp] || {}, pf = item.bkf+'Paid';
+        r0[item.bkf+'Cost'] = amt;
+        if(chosen === 'paid'){ if(!r0[pf] || r0[pf] > todayS) r0[pf] = todayS; }
+        else if(chosen){ if(!(r0[pf] > todayS)) r0[pf] = ''; }
+        saveBooking(bkS);
+      }
+      else if(a==='edit-series' && item.series){ budgetItems().filter(i=>i.series===item.series && i.date>=item.date).forEach(i=>{ const o2 = b.over[i.key] || {}; o2.amt = amt; b.over[i.key] = o2; }); }
+      else {
+        const o = b.over[key] || {}, baseAmt = item.edited ? item.orig : item.amt;
+        if(Math.abs(amt - baseAmt) > 0.004) o.amt = amt; else delete o.amt;
+        if(chosen && chosen !== ({est:'est', up:'planned', paid:'paid'})[item.nkind]) o.status = chosen; else delete o.status;
+        if(o.amt == null && !o.status) delete b.over[key]; else b.over[key] = o;
+      }
       saveBudget(b); budEditKey = null; renderBudget(); renderComps();
     }
     else if(a==='erase'){ if(confirm('Erase everything in your budget (goal, settings and every expense you added)? This cannot be undone.')){ try{ localStorage.removeItem(BUDGET_KEY); }catch(err){} budOpen.clear(); budEditKey = null; syncBudgetUI(); renderHero(); renderBudget(); renderComps(); goTab('home'); } }
@@ -3869,6 +3954,8 @@ function budgetCsv(){ return budgetRows().map(r=>r.map(v=>'"'+String(v).replace(
   document.getElementById('expSheet').addEventListener('click', e=>{ if(e.target.id==='expSheet') closeExpenseSheet(); });
   document.addEventListener('keydown', e=>{ if(e.key==='Escape' && !document.getElementById('expSheet').hidden) closeExpenseSheet(); });
   document.getElementById('expType').addEventListener('change', syncExpenseForm);
+  ['expType','expComp','expDate'].forEach(id=>document.getElementById(id).addEventListener('change', syncExpStatus));
+  document.getElementById('expStatus').addEventListener('change', ()=>{ expStatTouched = true; syncExpStatus(); });
   document.getElementById('expSave').addEventListener('click', saveExpenseFromSheet);
   document.getElementById('expMiles').addEventListener('input', ()=>{
     const m = parseFloat(document.getElementById('expMiles').value), r = loadBudget().mileage;
@@ -4139,6 +4226,19 @@ const ED_NEXT = {priv:'Travel', travel:'Hotels', hotels:'Everything else', other
 const ED_TITLE = {priv:'Private lessons plan', travel:'Travel plan', hotels:'Hotels plan', other:'Everything else', total:'Your season budget'};
 const r10up = n => Math.ceil((Number(n)||0)/10 - 0.05)*10;
 function edComps(){ return competitions.filter(c=>c.attending!==false); }
+function edTrips(){ const t = isoFromDate(new Date()); return edComps().filter(c=>(c.end||c.start) >= t); }
+function edRate(){ return Number(loadBudget().mileage) || 0.725; }
+/* a cost the parent already entered, with a box to add one when they said they booked but left the price blank */
+function edRealBox(title, amt, where){ return '<div class="eh-real"><b>'+title+': '+bWhole(amt)+'</b><small>'+where+' We use your real number, not an estimate.</small></div>'; }
+function edCostBox(kind, what){
+  return '<div class="eh-q">Already booked? <small>enter what you paid for '+what+'</small></div><div class="bud-money-in" style="max-width:170px"><span>$</span><input type="number" inputmode="decimal" min="0" step="0.01" data-ein="bk'+kind+'" aria-label="What you paid for '+what+'" placeholder="total"></div><small class="eh-fine">You said yes to booked on the Comp Schedule tab. Add the cost here or there, and it replaces the estimate.</small>';
+}
+function edSaveBkCost(slug, kind, amt){
+  const st = loadBooking(); st[slug] = st[slug] || {};
+  st[slug][kind+'Cost'] = amt > 0 ? amt : '';
+  if(amt > 0 && st[slug][kind+'Paid'] === undefined) st[slug][kind+'Paid'] = isoFromDate(new Date());
+  saveBooking(st); if(ED) ED.bkTouched = true;
+}
 function edInit(step){
   const b = loadBudget(), plan = b.plan || {}, p = plan.privates, lens = privateLengths();
   const home = Object.assign({zip:b.homeZip||'', lat:null, lon:null, airMi:null}, plan.home||{}); if(b.homeZip && !home.zip) home.zip = b.homeZip;
@@ -4177,7 +4277,7 @@ function openEstimateHelper(step){
   sh.querySelector('.exp-card').classList.add('eh-card');
   edRender();
 }
-function closeEstimateHelper(){ document.getElementById('estSheet').hidden = true; document.body.style.overflow = ''; ED = null; }
+function closeEstimateHelper(){ const t = ED && ED.bkTouched; document.getElementById('estSheet').hidden = true; document.body.style.overflow = ''; ED = null; if(t){ renderBudget(); renderComps(); } }
 /* ---- little builders ---- */
 function ehPills(k, opts, cur){ return '<div class="eh-pills">'+opts.map(o=>'<button type="button" class="eh-pill'+(String(cur)===String(o[0])?' on':'')+'" data-eh="set" data-k="'+k+'" data-v="'+o[0]+'" aria-pressed="'+(String(cur)===String(o[0]))+'">'+o[1]+'</button>').join('')+'</div>'; }
 function ehStep(k, val, label){ return '<div class="eh-step"><button type="button" data-eh="stp" data-k="'+k+'" data-d="-1" aria-label="Fewer">−</button><output>'+val+'</output><button type="button" data-eh="stp" data-k="'+k+'" data-d="1" aria-label="More">+</button>'+(label?'<span class="eh-hint">'+label+'</span>':'')+'</div>'; }
@@ -4226,7 +4326,7 @@ function edTripInner(c, st){
   if(st.kind==='local'){
     return '<div class="eh-td">'+(one ? 'About '+one+' mi each way from your ZIP.' : 'Add your ZIP above, or type the miles each way.')+'</div>'+miBox+ehDaysPicker(c, st)+
       (ehDays(c, st) > 1 ? '<div class="eh-q">How many drives?</div>'+ehPills('tripMode', [['each','Drive each day ('+ehDays(c, st)+')'], ['once','There and back once']], st.tripMode) : '')+
-      '<small class="eh-fine">Rate '+'$'+Number(loadBudget().mileage||0.725).toFixed(3).replace(/0$/,'')+' per mile. It already includes gas.</small>';
+      '<small class="eh-fine">Rate '+'$'+Number(loadBudget().mileage||0.725).toFixed(3).replace(/0$/,'')+' per mile. It already includes gas.</small>'+edLines(t, c);
   }
   const driveMi = one, air = ehAirMi(c, h);
   let html = '<div class="eh-td">'+(c.travelStart && c.travelEnd ? 'Fly in '+fmtDate(c.travelStart)+', fly out '+fmtDate(c.travelEnd)+' ('+compDays(c)+' days), from the gym’s schedule.' : compDays(c)+' days.')+'</div>';
@@ -4234,13 +4334,19 @@ function edTripInner(c, st){
   if(sug) html += '<div class="eh-sug">'+sug+'</div>';
   if(!flyOnly) html += '<div class="eh-q">How are you getting there?</div>'+ehPills('mode', [['fly','Fly'], ['drive','Drive']], st.mode);
   if(st.mode==='drive' && !flyOnly){
-    return html+(driveMi ? '' : miBox)+'<small class="eh-fine">Driving '+(driveMi*2).toLocaleString('en-US')+' mi round trip. Extra hotel nights on the road go in Hotels.</small>'+edLines(t);
+    return html+(driveMi ? '' : miBox)+'<small class="eh-fine">Driving '+(driveMi*2).toLocaleString('en-US')+' mi round trip. Extra hotel nights on the road go in Hotels.</small>'+edLines(t, c);
   }
+  const R = ehReal(c);
   html += '<div class="eh-q">How many people are flying?</div>'+ehStep('pp', st.pp, st.pp===1?'person':'people')+
-    '<div class="eh-q">Checked bags <small>per person</small></div>'+ehStep('bags', st.bags, 'per person · '+(st.pp*st.bags)+' total · about '+bWhole(st.pp*st.bags*70)+' round trip')+
-    '<div class="eh-q">Flight price to expect <small>per person, round trip</small></div>'+ehPills('tier', [['lo','Low '+bWhole(t.fare[0])], ['mid','Typical '+bWhole(t.fare[1])], ['hi','High '+bWhole(t.fare[2])]], st.tier)+
+    '<div class="eh-q">Checked bags <small>per person</small></div>'+ehStep('bags', st.bags, 'per person · '+(st.pp*st.bags)+' total · about '+bWhole(st.pp*st.bags*70)+' round trip');
+  if(R.flight > 0){
+    html += edRealBox('Your flights', R.flight, 'Entered on the Comp Schedule or Budget tab.');
+  } else {
+    html += '<div class="eh-q">Flight price to expect <small>per person, round trip</small></div>'+ehPills('tier', [['lo','Low '+bWhole(t.fare[0])], ['mid','Typical '+bWhole(t.fare[1])], ['hi','High '+bWhole(t.fare[2])]], st.tier)+
     '<small class="eh-fine">Prices vary a lot by day and how early you book. '+(c.flightSearch ? '<a href="'+flightsLink(c.flightSearch)+'" target="_blank" rel="noopener">Check real prices on Google Flights</a>' : '<a href="'+flightsLink('Flights to '+((city&&city.name)||c.loc||'the venue'))+'" target="_blank" rel="noopener">Check real prices on Google Flights</a>')+'</small>'+
-    ehCheck('needGround', st.needGround, 'I need a ride or rental car there');
+    (R.bkAir ? edCostBox('air', 'your flights') : '');
+  }
+  html += ehCheck('needGround', st.needGround, 'I need a ride or rental car there');
   if(st.needGround){
     const g = t.g;
     html += '<div class="eh-cmp">'+
@@ -4250,31 +4356,46 @@ function edTripInner(c, st){
   }
   html += ehCheck('needHome', st.needHome, 'Include getting to the airport from home <small>(about '+(h.airMi||25)+' mi)</small>');
   if(st.needHome) html += ehPills('home', [['drop','Someone drops us off'], ['park','Park at the airport'], ['ride','Rideshare']], st.home);
-  return html+edLines(t);
+  return html+edLines(t, c);
 }
-function edLines(t){ return '<div class="eh-res">'+t.lines.map(l=>'<div class="eh-ln"><span>'+l[0]+'</span><span>'+bWhole(l[1])+'</span></div>').join('')+'</div>'; }
+function edLines(t, c){
+  const L = c ? ehLogged(slugify(c.name)) : null;
+  return '<div class="eh-res">'+t.lines.map((l,ix)=>{
+    const k = t.lk ? t.lk[ix] : null, lg = (L && k) ? L(EH_PART_TYPES[k]) : 0;
+    if(!(lg > 0)) return '<div class="eh-ln"><span>'+l[0]+'</span><span>'+bWhole(l[1])+'</span></div>';
+    const amt = k==='air' ? lg : Math.max(l[1], lg);
+    return '<div class="eh-ln"><span>'+(k==='air' ? 'Flights · what you entered' : l[0]+' · '+bWhole(lg)+' already logged')+'</span><span>'+bWhole(amt)+'</span></div>';
+  }).join('')+'</div>';
+}
 function edAcc(c, inner, right, sub){
   const slug = slugify(c.name), open = ED.openAcc===slug;
   return '<div class="eh-acc"><button type="button" data-eh="acc" data-v="'+slug+'" aria-expanded="'+open+'"><span><span class="eh-tn">'+bEsc(c.name)+'</span><span class="eh-td">'+sub+'</span></span><span class="eh-tamt">'+right+'</span></button>'+(open?'<div class="eh-in">'+inner+'</div>':'')+'</div>';
 }
 function edTravelHtml(){
-  const h = ED.home, rate = Number(loadBudget().mileage)||0.725, cs = edComps();
-  const rows = cs.map(c=>{
-    const st = edSt(c), t = ehTravel(c, st, h, rate), fly = st.kind==='fly' && st.mode==='fly';
-    const right = t.unknown ? '<small>add miles</small>' : bWhole(t.total)+'<small>'+(t.lo!==t.hi ? ehRng(t.lo, t.hi) : 'estimate')+'</small>';
+  const h = ED.home, rate = edRate(), cs = edTrips(), b = loadBudget();
+  const trips = cs.map(c=>{ const st = edSt(c); return {c:c, st:st, t:ehTravel(c, st, h, rate), T:ehTrip(c, st, h, rate, b)}; });
+  const rows = trips.map(x=>{
+    const c = x.c, st = x.st, t = x.t, fly = st.kind==='fly' && st.mode==='fly', tot = x.T.travel;
+    const right = (t.unknown && !x.T.hasT) ? '<small>add miles</small>' : bWhole(tot)+'<small>'+(x.T.hasT ? 'incl. '+bWhole(x.T.R.travel)+' you entered' : (t.lo!==t.hi ? ehRng(t.lo, t.hi) : 'estimate'))+'</small>';
     return edAcc(c, edTripInner(c, st), right, '<span class="eh-chip'+(fly?' fly':'')+'">'+(fly?'FLY':'DRIVE')+'</span>'+fmtDate(c.start)+' · '+bEsc((c.loc||'').split('·')[0].trim()));
   }).join('');
-  const all = cs.map(c=>ehTravel(c, edSt(c), h, rate)), tot = all.reduce((s,t)=>s+t.total,0), lo = all.reduce((s,t)=>s+t.lo,0), hi = all.reduce((s,t)=>s+t.hi,0);
-  return edHomeHtml()+'<p class="eh-hint" style="margin:10px 0 2px">Mileage for local comps, flights for the far ones. Tap a trip to change the details. Anything you do not need can be turned off.</p>'+rows+
-    '<div class="eh-tot"><span>Travel still to come<br><small>likely '+ehRng(lo, hi)+'</small></span><b>'+bWhole(tot)+'</b></div>';
+  const tot = trips.reduce((s,x)=>s+x.T.travel,0), real = trips.reduce((s,x)=>s+x.T.R.travel,0), lo = trips.reduce((s,x)=>s+(x.T.hasT ? x.T.travel : x.t.lo),0), hi = trips.reduce((s,x)=>s+(x.T.hasT ? x.T.travel : x.t.hi),0);
+  return edHomeHtml()+'<p class="eh-hint" style="margin:10px 0 2px">Mileage for local comps, flights for the far ones. Tap a trip to change the details. Anything you do not need can be turned off. Costs you already entered are used as they are.</p>'+(rows || '<small class="eh-fine">No upcoming trips on your schedule.</small>')+
+    '<div class="eh-tot"><span>Travel for upcoming trips<br><small>'+(real > 0 ? 'includes '+bWhole(real)+' you entered' : 'likely '+ehRng(lo, hi))+'</small></span><b>'+bWhole(tot)+'</b></div>';
 }
 /* ---- step 3: hotels ---- */
+function edHotelReal(c, st, R){
+  const n = ehNights(c, st), fly = st.kind==='fly' && st.mode==='fly' && st.needGround;
+  return edRealBox('Your hotel'+(R.hotelName ? ' · '+bEsc(R.hotelName) : ''), R.hotel, 'Entered on the Comp Schedule or Budget tab for '+n+' night'+(n>1?'s':'')+'.')+
+    (fly ? '<div class="eh-q">Where is your hotel? <small>this only changes the ride or rental car estimate on the Travel step</small></div>'+ehPills('stay', [['on','At the venue'], ['near','Nearby'], ['far','Farther out']], st.stay) : '');
+}
 function edHotelInner(c, st){
-  const h = ED.home, n = ehNights(c, st), city = ehCity(c) || EH_GENERIC, cur = ehHotel(c, st);
+  const h = ED.home, n = ehNights(c, st), city = ehCity(c) || EH_GENERIC, cur = ehHotel(c, st), R = ehReal(c);
+  if(R.hotel > 0) return edHotelReal(c, st, R);
   const stays = [['on','Right at the venue'], ['near','Nearby'], ['far','Farther out']];
   const cards = stays.map(s=>{ const x = ehHotel(c, st, s[0]), g = (st.kind==='fly' && st.mode==='fly' && st.needGround) ? ehGround(c, st, s[0]).best : 0; return {s:s, x:x, g:g, all:x.total+g}; });
   const min = Math.min.apply(null, cards.map(k=>k.all));
-  let html = (ehRecStay(c) ? '<div class="eh-sug" style="margin-top:0">'+bEsc(ehRecStay(c))+'</div>' : '')+
+  let html = (R.bkHotel ? edCostBox('hotel', 'your hotel') : '')+(ehRecStay(c) ? '<div class="eh-sug" style="margin-top:0">'+bEsc(ehRecStay(c))+'</div>' : '')+
     (st.kind==='fly' ? '<div class="eh-td">'+(c.travelStart && c.travelEnd ? 'Fly in '+fmtDate(c.travelStart)+', fly out '+fmtDate(c.travelEnd)+', so ' : '')+n+' night'+(n>1?'s':'')+'.</div>' : ehDaysPicker(c, st))+
     '<div class="eh-q">Where would you stay? <small>hotel'+((st.kind==='fly' && st.needGround)?' plus getting around':'')+', for the trip</small></div><div class="eh-cmp one">'+
     cards.map(k=>'<button type="button" class="eh-opt'+(st.stay===k.s[0]?' on':'')+'" data-eh="set" data-k="stay" data-v="'+k.s[0]+'"><span class="eh-orow"><b>'+k.s[1]+'</b><span class="eh-amt">'+bWhole(k.all)+'</span></span>'+(k.all===min?'<span class="eh-tag">Cheapest all-in</span>':'')+'<small>Hotel '+(k.x.useB?bWhole(k.x.total)+' at your block rate':ehRng(k.x.lo, k.x.hi))+' for '+n+' night'+(n>1?'s':'')+(k.g?' + '+bWhole(k.g)+' for '+(k.s[0]==='on'?'airport rides':'rideshare or a rental car'):'')+(k.s[0]==='on' && city.onFee ? '. Includes resort and parking fees.' : '.')+'</small></button>').join('')+'</div>';
@@ -4289,16 +4410,18 @@ function edHotelInner(c, st){
   return html;
 }
 function edHotelsHtml(){
-  const cs = edComps();
-  const rows = cs.map(c=>{
-    const st = edSt(c), ht = ehHotel(c, st), nh = ehNoHotelMi(c), road = Math.round(ehAirMi(c, ED.home) || ehMiOne(c, st, ED.home)/1.2);
+  const cs = edTrips(), b = loadBudget(), h = ED.home, rate = edRate();
+  const trips = cs.map(c=>{ const st = edSt(c); return {c:c, st:st, ht:ehHotel(c, st), T:ehTrip(c, st, h, rate, b)}; });
+  const rows = trips.map(x=>{
+    const c = x.c, st = x.st, ht = x.ht, R = x.T.R, nh = ehNoHotelMi(c), road = Math.round(ehAirMi(c, h) || ehMiOne(c, st, h)/1.2);
+    if(R.hotel > 0) return edAcc(c, edHotelReal(c, st, R), bWhole(R.hotel)+'<small>you entered</small>', fmtDate(c.start)+' · '+bEsc((c.loc||'').split('·')[0].trim())+' · '+ehNights(c, st)+' night'+(ehNights(c, st)>1?'s':''));
     const note = (!st.hotel) ? '<small class="eh-fine" style="margin-top:0">'+(nh && road && road <= nh ? 'The gym only requires a hotel if you live more than '+nh+' mi away. You are about '+road+' mi, so we left it off. ' : 'Driving from home, so no hotel. ')+'Turn it on if you plan to stay overnight.</small>' : '';
     const right = st.hotel ? bWhole(ht.total)+'<small>'+(ht.lo!==ht.hi ? ehRng(ht.lo, ht.hi) : 'your rate')+'</small>' : '<span class="eh-none">No hotel</span>';
     return edAcc(c, ehCheck('hotel', st.hotel, 'I will stay in a hotel for this one')+(st.hotel ? edHotelInner(c, st) : note), right, fmtDate(c.start)+' · '+bEsc((c.loc||'').split('·')[0].trim())+(st.hotel ? ' · '+ht.n+' night'+(ht.n>1?'s':'') : ''));
   }).join('');
-  const all = cs.map(c=>ehHotel(c, edSt(c))), tot = all.reduce((s,x)=>s+x.total,0), lo = all.reduce((s,x)=>s+x.lo,0), hi = all.reduce((s,x)=>s+x.hi,0);
-  return '<p class="eh-hint" style="margin:0 0 2px">Hotels for comps where you will stay overnight. Turn a trip on and we estimate a range, then you pick the nightly rate you expect.</p>'+rows+
-    '<div class="eh-tot"><span>Hotels still to come<br><small>likely '+ehRng(lo, hi)+'</small></span><b>'+bWhole(tot)+'</b></div>';
+  const tot = trips.reduce((s,x)=>s+x.T.hotel,0), real = trips.reduce((s,x)=>s+x.T.R.hotels,0), lo = trips.reduce((s,x)=>s+(x.T.hasH ? x.T.hotel : x.ht.lo),0), hi = trips.reduce((s,x)=>s+(x.T.hasH ? x.T.hotel : x.ht.hi),0);
+  return '<p class="eh-hint" style="margin:0 0 2px">Hotels for comps where you will stay overnight. Turn a trip on and we estimate a range, then you pick the nightly rate you expect. If you already booked and entered the cost, that exact number is used.</p>'+(rows || '<small class="eh-fine">No upcoming trips on your schedule.</small>')+
+    '<div class="eh-tot"><span>Hotels for upcoming trips<br><small>'+(real > 0 ? 'includes '+bWhole(real)+' you entered' : 'likely '+ehRng(lo, hi))+'</small></span><b>'+bWhole(tot)+'</b></div>';
 }
 /* ---- step 4: everything else ---- */
 function edOtherHtml(){
@@ -4398,6 +4521,8 @@ function edApply(){
   });
   sh.addEventListener('change', e=>{
     if(!ED) return;
+    const kd = e.target.dataset.ein;
+    if((kd==='bkair' || kd==='bkhotel') && ED.openAcc){ edSaveBkCost(ED.openAcc, kd==='bkair' ? 'air' : 'hotel', Math.max(0, Math.round((parseFloat(e.target.value)||0)*100)/100)); edRender(true); return; }
     if(e.target.dataset.ein==='until'){ if(e.target.value){ ED.priv.until = e.target.value; edRender(true); } }
   });
   document.addEventListener('keydown', e=>{ if(e.key==='Escape' && !sh.hidden && ED) closeEstimateHelper(); });
