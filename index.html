@@ -1,12 +1,12 @@
 <!doctype html>
 <html lang="en">
 <head>
+<script>/* family-hub storage namespace: each child gets their own saved data */(function(){try{var ns=new URLSearchParams(location.search).get('ns');if(!ns)return;var P=Storage.prototype,g=P.getItem,s=P.setItem,r=P.removeItem;P.getItem=function(k){return g.call(this,ns+':'+k)};P.setItem=function(k,v){return s.call(this,ns+':'+k,v)};P.removeItem=function(k){return r.call(this,ns+':'+k)};}catch(e){}})();</script>
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex, nofollow, noarchive">
-<link rel="manifest" href="./manifest.json">
 <meta name="theme-color" content="#1688f5">
-<link rel="apple-touch-icon" href="./icons/apple-touch-icon.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Y2K Hub">
@@ -17,9 +17,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<link rel="manifest" href="./manifest.json">
 <meta name="theme-color" content="#1688f5">
-<link rel="apple-touch-icon" href="./icons/apple-touch-icon.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Y2K Hub">
@@ -671,6 +669,18 @@ main{max-width:980px; margin:0 auto; padding:20px 20px 60px;}
 /* student standouts */
 .standout-pill{grid-column:1/-1; justify-content:flex-start;}
 .standout-pill b{font-weight:700;}
+
+/* student standout spotlight */
+.so-spot{display:flex;align-items:center;gap:14px;padding:6px 2px;}
+.so-star{flex:0 0 auto;width:48px;height:48px;border-radius:50%;background:var(--accent-soft);display:flex;align-items:center;justify-content:center;font-size:24px;}
+.so-label{font-size:11.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--text-muted);}
+.so-name{font-size:22px;font-weight:800;line-height:1.15;color:var(--accent-ink);}
+.so-past{margin-top:12px;padding-top:2px;border-top:1px solid var(--border);}
+.so-past .team-times{margin-top:10px;}
+.so-row{display:flex;justify-content:space-between;gap:12px;padding:7px 0;font-size:14px;border-bottom:1px solid var(--border);}
+.so-row:last-child{border-bottom:0;}
+.so-row span{color:var(--text-muted);}
+.so-row b{font-weight:700;}
 
 /* faq accordion */
 .faq-item{border-bottom:1px solid var(--border);}
@@ -1815,7 +1825,7 @@ function outlookLink(c, bk){
 
 const competitions = [
   {name:"Showcase", loc:"Irvine, CA · Bren Event Center", address:"Bren Events Center, Irvine, CA", start:"2026-11-15", end:"2026-11-15", travel:"local",
-    housing:"optional", rosterLink:"https://docs.google.com/spreadsheets/d/1_MpWAbs6NeyRTwq9JyjikT3i5iQB1LpuvhHiUT9jFYM/edit?gid=498534653#gid=498534653", rosterLabel:"Draft schedule", ticketLink:"https://ucirvinetickets.evenue.net/events/SPEC", heroLinks:[{label:"Draft schedule ›", url:"https://docs.google.com/spreadsheets/d/1_MpWAbs6NeyRTwq9JyjikT3i5iQB1LpuvhHiUT9jFYM/edit?gid=498534653#gid=498534653"}, {label:"Buy tickets ›", url:"https://ucirvinetickets.evenue.net/events/SPEC"}]},
+    housing:"optional", rosterLink:"https://docs.google.com/spreadsheets/d/1_MpWAbs6NeyRTwq9JyjikT3i5iQB1LpuvhHiUT9jFYM/edit?gid=498534653#gid=498534653", rosterLabel:"Final schedule", ticketLink:"https://ucirvinetickets.evenue.net/events/SPEC", heroLinks:[{label:"Final schedule ›", url:"https://docs.google.com/spreadsheets/d/1_MpWAbs6NeyRTwq9JyjikT3i5iQB1LpuvhHiUT9jFYM/edit?gid=498534653#gid=498534653"}, {label:"Buy tickets ›", url:"https://ucirvinetickets.evenue.net/events/SPEC"}]},
   {name:"TSN", loc:"San Diego, CA", address:"San Diego, CA", start:"2026-11-21", end:"2026-11-21", travel:"local",
     housing:"optional", rosterLink:"https://www.thespiritnetwork.net/sd-tsc", rosterLabel:"Event page (roster posts closer to date)",
     dateChanged:true, note:"Date changed — moved from Sun 11/22 to Sat 11/21."},
@@ -1864,7 +1874,7 @@ const practiceAnnouncements = [
 
 const closures = [
   {name:"Thanksgiving Break", end:"2026-11-29", dates:"Nov 25 – 29, 2026"},
-  {name:"Winter Break", end:"2027-01-02", dates:"Dec 21, 2026 – Jan 2, 2027"}
+  {name:"Winter Break", end:"2027-01-03", dates:"Dec 21, 2026 – Jan 3, 2027"}
 ];
 
 const openGymDates = ["2026-09-11","2026-09-18","2026-09-25","2026-10-02","2026-10-09","2026-10-16","2026-10-23","2026-10-30","2026-11-06","2026-11-13","2026-11-20","2026-12-04","2026-12-11","2026-12-18"];
@@ -1919,12 +1929,17 @@ function startMins(f){
 }
 
 const feed = [
+  {date:"2026-11-18", dateLabel:"Nov 4–19", postedDate:"2026-11-04", expires:"2026-11-19", tag:"info", title:"Practices closed to viewers", body:"Closed to viewers from Nov 4 until Nov 18–19, when there’s a casual show-off for parents before our first competition. Minis, Tinys and private lessons are the exception."},
+  {date:"2026-11-19", dateLabel:"Nov 19", postedDate:"2026-11-04", expires:"2026-11-19", tag:"event", title:"Friendsgiving 🦃", body:"After practice. A sign-up/donation sheet is coming soon."},
+  {date:"2026-11-16", dateLabel:"Due Nov 16", postedDate:"2026-11-04", expires:"2026-11-16", tag:"deadline", title:"Team blankets (optional)", body:'Plush blanket · due midnight · arrives in 3–4 weeks. <a href="https://caliproshop.com/products/cali-blanket" target="_blank">Order blanket →</a>'},
+  {date:"2026-11-04", dateLabel:"Nov 4", postedDate:"2026-11-04", expires:"2026-11-11", tag:"info", title:"Team swag &amp; practice gear arriving", body:"August swag orders arrive this week, to your home or the gym (whichever you chose). Remake practice shorts have shipped too — they’ll be handed out when they arrive."},
+  {date:"2026-11-04", dateLabel:"Nov 4", postedDate:"2026-11-04", expires:"2026-11-11", tag:"info", title:"Winter classes — 50% off", body:'50% off for team families · last day Jan 28 · no classes Nov 23–29 or Dec 21–Jan 8. Nov + Dec are billed once, as one month. <a href="https://app.iclasspro.com/portal/calisanmarcos/classes" target="_blank">Sign up →</a>'},
   {date:"2026-11-07", postedDate:"2026-10-22", tag:"event", title:"New: Coed Stunt & Tumble Clinic — Nov 7", body:"6:00–8:00 PM · $50/athlete — see the Events tab for details."},
-  {date:"2026-10-25", dateLabel:"Due Oct 25", postedDate:"2026-10-17", expires:"2026-10-25", tag:"deadline", title:"Team T-shirts are open for order", body:"<span class=\"sk-cta\"><span>Your athlete’s shirt is free.</span><a href=\"https://caliproshop.com/products/team-t-shirt-2627-san-marcos?variant=67994522058976\" target=\"_blank\" class=\"sk-btn sm\">Order shirt →</a></span>"},
+  {date:"2026-10-25", dateLabel:"Due Oct 25", postedDate:"2026-10-17", expires:"2026-10-25", tag:"deadline", title:"Team T-shirts are open for order", body:"Your athlete’s shirt is free. <a href=\"https://caliproshop.com/products/team-t-shirt-2627-san-marcos?variant=67994522058976\" target=\"_blank\">Order shirt →</a>"},
   {date:"2026-10-09", dateLabel:"Due Oct 9", postedDate:"2026-10-07", expires:"2026-10-09", tag:"deadline", title:"Practice gear remake form", body:'Issue with your practice gear — blue shorts or bra straps bunched together? Fill out the form by Friday, Oct 9 and Varsity will remake any item with issues. Try swapping gear with your team rep first. <a href="https://forms.cloud.microsoft/pages/responsepage.aspx?id=Dy5MyVsFTU2ATChthztwzk1zkpuwpm9IgqBpQcaRug1UNTk0OUxBSkpERTk5SVpSRzNVNTdQNDdTNy4u&route=shorturl" target="_blank">Open the form →</a>'},
   {date:"2026-10-07", postedDate:"2026-10-07", tag:"info", title:"Fall classes are live 🎉", body:'50% off for team families! <a href="https://app.iclasspro.com/portal/calisanmarcos/classes" target="_blank">Sign up in iClass →</a>'},
   {date:"2026-10-24", postedDate:"2026-10-07", tag:"event", title:"In-House Showcase · Y2K performs 10:25 AM", body:'Sat, Oct 24 · Report at 8:30 AM. Details are in the Events tab.'},
-  {date:"2026-11-15", dateLabel:"Nov 15", postedDate:"2026-10-15", expires:"2026-11-15", tag:"event", hideFromComingUp:true, title:"Showcase tickets 🎟️", body:'Tickets for Showcase at UCI’s Bren Events Center go on sale Oct 15 — $25 online, $35 same day. Athletes don’t need a ticket; parents, siblings and friends do. <a href="https://ucirvinetickets.evenue.net/events/SPEC" target="_blank">Buy tickets →</a> · <a href="https://docs.google.com/spreadsheets/d/1_MpWAbs6NeyRTwq9JyjikT3i5iQB1LpuvhHiUT9jFYM/edit?gid=498534653#gid=498534653" target="_blank">Draft schedule →</a>'},
+  {date:"2026-11-15", dateLabel:"Nov 15", postedDate:"2026-11-04", expires:"2026-11-15", tag:"event", hideFromComingUp:true, title:"Showcase tickets 🎟️", body:'$26 online, $35 same day. Athletes don’t need a ticket; parents, siblings and friends do. <b>Y2K performs 3:19 PM.</b> CheerLive is producing the show. <a href="https://ucirvinetickets.evenue.net/events/SPEC" target="_blank">Buy tickets →</a> · <a href="https://docs.google.com/spreadsheets/d/1_MpWAbs6NeyRTwq9JyjikT3i5iQB1LpuvhHiUT9jFYM/edit?gid=498534653#gid=498534653" target="_blank">Final schedule →</a>'},
   {date:"2026-09-30", postedDate:"2026-09-30", tag:"info", title:"Makeup shopping list is ready", body:'Everything the girls need for comp makeup, in one list. It\'s also saved under Quick links on the Home tab. <a href="https://y2k-team-makeup.teraheater.chatgpt.site/" target="_blank">Open the list →</a>'},
   {date:"2026-09-16", expires:"2026-09-16", tag:"deadline", title:"\"Fight for the Cure\" shirt pre-order", body:'The gym\'s breast cancer awareness tee — 100% of proceeds go to UCSD Moore\'s Cancer Center. Pre-order only, closes at midnight, delivered first week of October. <a href="https://caliproshop.com/collections/pre-orders" target="_blank">Order now →</a>'},
   {date:"2026-09-28", dateLabel:"Ends Sep 28", expires:"2026-09-28", tag:"deadline", title:"Cookie Dough Fundraiser", body:'Online fundraiser, ships direct to the buyer — profit is 50% on sales, 80% on donations, credited straight to the athlete\'s iClass account. Sales end at midnight. <a href="https://brandnamefundraising.com/signup/868515110" target="_blank">Sign up →</a> &nbsp;·&nbsp; <a href="https://6q39gws4.r.us-east-1.awstrack.me/L0/https:%2F%2Ffiles.iclasspro.com%2F32838%2Fstudents%2F1789628624.REGISTRATION_INSTRUCTIONS_for_California_All_Stars_ALL_GROUPS.pdf/1/010001a0b01a92a0-f7f4ce2b-f83f-4d66-977b-4b973593f0f9-000000/_6wWomUBcYKu1RjakRj-0fwabjU=473" target="_blank">Registration info (PDF) →</a>'},
@@ -1941,6 +1956,8 @@ const feed = [
 ];
 
 const fundraisers = [
+  {emoji:"🏟️", title:"Showcase", date:"2026-11-15", end:"2026-11-15", meta:"Sun, Nov 15, 2026 · UC Irvine Bren Events Center · Photo 2:36 PM · Y2K performs 3:19 PM", when:"Photo 2:36 PM · Y2K performs 3:19 PM", extra:"<details class=\"team-times\"><summary>Read more info</summary><span class=\"sk\"><span class=\"sk-r\"><span class=\"sk-i\">🚪</span><span class=\"sk-t\"><b>Doors open 10:45 AM</b> · welcome message 10:55 AM</span></span><span class=\"sk-r\"><span class=\"sk-i\">🎟️</span><span class=\"sk-t\"><b>Tickets: $26 online, $35 same day</b> · athletes don’t need one · <a href=\"https://ucirvinetickets.evenue.net/events/SPEC\" target=\"_blank\">Buy tickets →</a></span></span><span class=\"sk-r\"><span class=\"sk-i\">📺</span><span class=\"sk-t\"><b>CheerLive</b> is producing the show</span></span><span class=\"sk-r\"><span class=\"sk-i\">📋</span><span class=\"sk-t\"><a href=\"https://docs.google.com/spreadsheets/d/1_MpWAbs6NeyRTwq9JyjikT3i5iQB1LpuvhHiUT9jFYM/edit?gid=498534653#gid=498534653\" target=\"_blank\">Full showcase schedule →</a></span></span></span><div class=\"tt-label\">Y2K’s day</div><div class=\"tt-grid\"><span class=\"me\"><span>Photo</span><span>2:36 PM</span></span><span class=\"me\"><span>Check-in</span><span>2:43 PM</span></span><span class=\"me\"><span>First mat</span><span>2:57 PM</span></span><span class=\"me\"><span>Floor 1</span><span>3:03 PM</span></span><span class=\"me\"><span>Floor 2</span><span>3:10 PM</span></span><span class=\"me\"><span>Perform</span><span>3:19 PM</span></span></div><div class=\"tt-label\">Every team’s performance time</div><div class=\"tt-grid\"><span class=\"\"><span>Tiny Divas</span><span>11:07 AM</span></span><span class=\"\"><span>Mini Mints</span><span>11:21 AM</span></span><span class=\"\"><span>Bliss</span><span>11:42 AM</span></span><span class=\"\"><span>Junior Gold</span><span>12:31 PM</span></span><span class=\"\"><span>Surge</span><span>12:52 PM</span></span><span style=\"grid-column:1/-1;justify-content:center;font-weight:700;border-top:1px dashed var(--border);border-bottom:1px dashed var(--border);padding:2px 0\">Break</span><span class=\"\"><span>Blush</span><span>1:41 PM</span></span><span class=\"\"><span>Shazam</span><span>1:55 PM</span></span><span class=\"\"><span>White Gold</span><span>2:23 PM</span></span><span class=\"me\"><span>Y2K</span><span>3:19 PM</span></span><span class=\"\"><span>Sugar</span><span>3:40 PM</span></span><span class=\"\"><span>Reign</span><span>3:47 PM</span></span><span style=\"grid-column:1/-1;justify-content:center;font-weight:700;border-top:1px dashed var(--border);border-bottom:1px dashed var(--border);padding:2px 0\">Break</span><span class=\"\"><span>Rapture</span><span>4:08 PM</span></span><span class=\"\"><span>Spice</span><span>4:15 PM</span></span><span class=\"\"><span>J3</span><span>4:57 PM</span></span><span class=\"\"><span>C3</span><span>5:32 PM</span></span><span class=\"\"><span>Jslay</span><span>6:21 PM</span></span><span class=\"\"><span>Onyx</span><span>6:42 PM</span></span><span class=\"\"><span>Glow</span><span>7:24 PM</span></span><span class=\"\"><span>Rangers</span><span>7:31 PM</span></span><span class=\"\"><span>Lady Bullets</span><span>7:38 PM</span></span><span class=\"\"><span>Coed</span><span>7:45 PM</span></span></div><div class=\"tt-note\">Times are from the final showcase schedule. Teams are listed in running order.</div></details>"},
+  {emoji:"🦃", title:"Friendsgiving", date:"2026-11-19", end:"2026-11-19", meta:"Thu, Nov 19, 2026 · after practice", when:"After practice", extra:"A sign-up/donation sheet is coming soon."},
   {emoji:"💙", title:"Support Coach Marlon", last:true, date:"2026-09-21", logo:true, badgeType:"fundraiser", badgeLabel:"Fundraiser", meta:'Longtime coach/choreographer Marlon Biete is in the ICU after a medical emergency in England. His gym and Unity All Stars are asking the cheer community to help cover medical, travel, and recovery costs. <a href="https://u888spyab.cc.rs6.net/tn.jsp?f=001IMIA87EXLHJQ7WT2m8oX0EJ-029YRypBtQolAXW5NGNz7HIob9VUtn0Izv3vzpk8V83ybPvZpoes-6T-pMb9_aDDz3tdZ7XcEZ4nWAixyMkBwd0o7pnbgNyeOw67ch2D3OhyxAbMx9glSllrSprvw2KyteE4oe9C&c=ZhSapUrGW5M09_103-zFGMNeJxZWWJFRLOpMRaDdthw-aeEQ9rxYYQ==&ch=bPwDEj4y0b5qmsYFLv65mxgznZ5KGRHdWok29GGDKDaqIfDk8yniZA==" target="_blank">Donate on GoFundMe →</a>'},
   {emoji:"🤸‍♀️", title:"Friday practices starting", date:"2026-09-11", end:"2026-09-11", meta:"Fridays effective 9/11/26 — Y2K 6:30–8:30 PM."},
   {emoji:"🎬", title:"Sparkle Movie Night", date:"2026-09-12", end:"2026-09-12", meta:"Sat, Sep 12, 2026 · doors 7:00p, movie 7:45p, pickup 9:30p · $10/person (incl. popcorn), concessions $1–2 · Gym parking lot", extra:"Showing: Bring It On",
@@ -1961,13 +1978,14 @@ const fundraisers = [
   {emoji:"🎉", title:"In-house Show-Offs", date:"2026-10-24", end:"2026-10-24", meta:"Sat, Oct 24, 2026 · Report 8:30 AM · Y2K performs 10:25 AM", when:"Report 8:30 AM · Y2K performs 10:25 AM", extra:'<details class="team-times"><summary>Read more info</summary><span class="sk"><span class="sk-r"><span class="sk-i">📣</span><span class="sk-t"><b>Bring noisemakers &amp; shakers!</b></span></span><span class="sk-r"><span class="sk-i">🅿️</span><span class="sk-t"><b>Where to park</b> <span class="sk-note" style="margin:0">· gym lot is closed</span><span class="sk-park"><span>Allen’s Bro’s</span><span>North of the gym (not Southern Contracting)</span><span>7/11 lot</span><span>Pizza Nova plaza lot</span></span></span></span><span class="sk-r"><span class="sk-i">🎟️</span><span class="sk-t"><b>Free entry</b> — bring a wrapped, gently used clothing item <i>or</i> a canned good (donated to Casa De Amparo)</span></span><span class="sk-r"><span class="sk-i">💺</span><span class="sk-t"><b>Parents &amp; siblings only</b> — seating is very limited</span></span><span class="sk-r"><span class="sk-i">👋</span><span class="sk-t"><b>Free to leave</b> once your team has performed</span></span><span class="sk-r"><span class="sk-i">💵</span><span class="sk-t"><b>Bring cash</b> for the vendor tents</span></span></span><div class="tt-label">Y2K\'s day</div><div class="tt-grid"><span class="me"><span>Report</span><span>8:30 AM</span></span><span class="me"><span>Check-in</span><span>9:36 AM</span></span><span class="me"><span>Mat 1</span><span>9:41 AM</span></span><span class="me"><span>Mat 2</span><span>9:53 AM</span></span><span class="me"><span>Full floor</span><span>10:05 AM</span></span><span class="me"><span>On deck</span><span>10:17 AM</span></span><span class="me"><span>Perform</span><span>10:25 AM</span></span></div><div class="tt-label">Every team\'s performance time</div><div class="tt-grid"><span class=""><span>Tiny\'s</span><span>9:05 AM</span></span><span class=""><span>Bliss</span><span>9:15 AM</span></span><span class=""><span>Mints</span><span>9:25 AM</span></span><span class=""><span>Jr Gold</span><span>9:35 AM</span></span><span class=""><span>Surge</span><span>9:45 AM</span></span><span class=""><span>Shazam</span><span>9:55 AM</span></span><span class=""><span>C3</span><span>10:05 AM</span></span><span class=""><span>WhiteGold</span><span>10:15 AM</span></span><span class="me"><span>Y2K</span><span>10:25 AM</span></span><span class=""><span>Lady Bullets</span><span>10:35 AM</span></span><span style="grid-column:1/-1;justify-content:center;font-weight:700;border-top:1px dashed var(--border);border-bottom:1px dashed var(--border);padding:2px 0">Break</span><span class=""><span>Onyx</span><span>11:15 AM</span></span><span class=""><span>Blush</span><span>11:25 AM</span></span><span class=""><span>Spice</span><span>11:35 AM</span></span><span class=""><span>Jslay</span><span>11:45 AM</span></span><span class=""><span>Sugar</span><span>11:55 AM</span></span><span style="grid-column:1/-1;justify-content:center;font-weight:700;border-top:1px dashed var(--border);border-bottom:1px dashed var(--border);padding:2px 0">Break</span><span class=""><span>Glow</span><span>12:15 PM</span></span><span class=""><span>Sparkle</span><span>12:25 PM</span></span><span class=""><span>Rapture</span><span>12:35 PM</span></span><span class=""><span>Reign</span><span>12:45 PM</span></span></div><div class="tt-note">Report times: Tiny\'s, Bliss, Mints, Jr Gold, Surge 8:00 AM · Shazam, C3, WhiteGold, Y2K, Lady Bullets 8:30 AM · Onyx 9:30 AM · Blush, Spice 9:45 AM · Jslay, Sugar 10:00 AM · Glow, Sparkle 10:45 AM · Rapture, Reign 11:00 AM.</div></details>'},
   {emoji:"💃", title:"Dance Choreo", date:"2026-10-27", end:"2026-10-27", meta:"Tue, Oct 27, 2026 · 4:00–6:30 PM"},
   {emoji:"🎃", title:"Trunk or Treat", date:"2026-10-29", end:"2026-10-29", meta:"Thu, Oct 29, 2026 · 6:00 PM", extra:"Send a bag of candy to your team rep, or volunteer to decorate your vehicle for the trunk-or-treat — if you volunteer a vehicle, please stay for all teams that evening. Athletes come to practice in costume (optional) over their practice gear and still need to be able to tumble and stunt."},
-  {emoji:"📸", title:"Team Photo Days", date:"2026-12-01", end:"2026-12-02", meta:"Dec 1–2, 2026 · San Marcos — details to come in team chat."}
+  {emoji:"📸", title:"Team Photo Days", date:"2026-12-01", end:"2026-12-02", meta:"Dec 1–2, 2026 · San Marcos — each team gets a one-hour slot. Times will be announced closer to the date."}
 ];
 
 const standouts = [
-  {month:"September", name:"Capri T"},
-  {month:"August", name:"Lila M"},
-  {month:"July", name:"Ava N"}
+  {month:"November", name:"Logan E"},
+  {month:"October", name:"Capri T"},
+  {month:"September", name:"Lila M"},
+  {month:"August", name:"Ava N"}
 ];
 
 const contacts = [
@@ -2765,9 +2783,16 @@ function renderContacts(){
 }
 
 function renderStandouts(){
-  document.getElementById('standoutsCard').innerHTML = `<div class="linkrow">` + standouts.map(s=>`
-    <div class="linkbtn standout-pill"><span class="ico">🌟</span> ${s.month}: <b>${s.name}</b></div>
-  `).join('') + `</div>`;
+  const card = document.getElementById('standoutsCard');
+  if(standouts.length===0){
+    const t = document.getElementById('standoutsTitle');
+    if(t){ t.style.display = 'none'; card.style.display = 'none'; return; }
+    card.innerHTML = `<p style="margin:0;font-size:13.5px;color:var(--text-muted);">No standouts announced yet — check back soon!</p>`;
+    return;
+  }
+  const cur = standouts[0], past = standouts.slice(1);
+  card.innerHTML = `<div class="so-spot"><div class="so-star">🌟</div><div><div class="so-label">${cur.month} Student Standout</div><div class="so-name">${cur.name}</div></div></div>`
+    + (past.length ? `<div class="so-past"><details class="team-times"><summary>Past standouts</summary>${past.map(s=>`<div class="so-row"><span>${s.month}</span><b>${s.name}</b></div>`).join('')}</details></div>` : '');
 }
 
 function renderPhotos(){
@@ -4612,13 +4637,6 @@ renderBudget();
 })();
 </script>
 
-<script>
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('./service-worker.js').catch(()=>{});
-  });
-}
-</script>
 
 <script>
 /* Suggest-an-Update form: auto-fit height to the Jotform form (no inner scrolling),
@@ -4652,13 +4670,6 @@ if ('serviceWorker' in navigator) {
 </body>
 </html>
 
-<script>
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('./service-worker.js').catch(()=>{});
-  });
-}
-</script>
 
 <script>
 /* =====================================================================
