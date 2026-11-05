@@ -1546,8 +1546,6 @@ html.page-navy .app-disclaimer button.disc-link{color:rgba(255,255,255,.92);}
         <a class="linkbtn" href="https://caliproshop.com" target="_blank"><span class="ico">🛍️</span> Pro Shop</a>
         <a class="linkbtn" href="https://californiaallstarsproshop.com" target="_blank"><span class="ico" id="icoRebel">👕</span> Rebel Uniform Shop</a>
         <a class="linkbtn" href="https://calisanmarcos.fullslate.com" target="_blank"><span class="ico">🤸</span> Book Private Lesson</a>
-        <a class="linkbtn" href="https://presto.eventpipe.com/event/1525a7d2-eb0c-4823-8240-3e4895689ee5" target="_blank"><span class="ico">🏨</span> ASCS Housing Block</a>
-        <a class="linkbtn" href="https://gallery.instant.evoto.ai/public/504TEzcSbsV" target="_blank" rel="noopener"><span class="ico">📸</span> In House Show Offs</a>
         <a class="linkbtn" href="https://y2k-team-makeup.teraheater.chatgpt.site/" target="_blank"><span class="ico">💄</span> Makeup Shopping List</a>
       </div>
     </div>
@@ -1851,6 +1849,7 @@ function outlookLink(c, bk){
 }
 
 const competitions = [
+  {name:"In-House Show-Offs", loc:"San Marcos, CA", address:"San Marcos, CA", start:"2026-10-24", end:"2026-10-24", hideTravelTag:true, showoff:true, photosLink:"https://gallery.instant.evoto.ai/public/504TEzcSbsV"},
   {name:"Showcase", loc:"Irvine, CA · Bren Event Center", address:"Bren Events Center, Irvine, CA", start:"2026-11-15", end:"2026-11-15", travel:"local",
     housing:"optional", rosterLink:"https://docs.google.com/spreadsheets/d/1_MpWAbs6NeyRTwq9JyjikT3i5iQB1LpuvhHiUT9jFYM/edit?gid=498534653#gid=498534653", rosterLabel:"Final schedule", ticketLink:"https://ucirvinetickets.evenue.net/events/SPEC", heroLinks:[{label:"Final schedule ›", url:"https://docs.google.com/spreadsheets/d/1_MpWAbs6NeyRTwq9JyjikT3i5iQB1LpuvhHiUT9jFYM/edit?gid=498534653#gid=498534653"}, {label:"Buy tickets ›", url:"https://ucirvinetickets.evenue.net/events/SPEC"}, {label:"Details ›", js:"openShowcaseDetails()"}], details:true},
   {name:"TSN", loc:"San Diego, CA", address:"San Diego, CA", start:"2026-11-21", end:"2026-11-21", travel:"local",
@@ -2595,6 +2594,7 @@ function renderComps(){
       if(c.bookingLinks) c.bookingLinks.slice(1).forEach(bl=>{
         gcards.push(bl.url ? gcard(ICON_LINK, bl.label, 'View →', bl.url) : gcard(ICON_LINK, bl.label, 'Link coming soon', null, true));
       });
+      if(c.showoff){ gcards.splice(0, gcards.length, gcard(ICON_CAMERA,'Photos','View photos →', c.photosLink)); }
       if(c.details){
         const detailsCard = '<div class="compx-gcard gc-btn" role="button" tabindex="0" onclick="openShowcaseDetails()" onkeydown="if(event.key===\'Enter\')openShowcaseDetails()"><div class="gc-ic">'+ICON_INFO+'</div><div class="gc-lbl">Showcase details</div><div class="gc-sub">View →</div></div>';
         const pick = lbl => { const i = gcards.findIndex(h=>h.includes('<div class="gc-lbl">'+lbl+'</div>')); return i>=0 ? gcards.splice(i,1)[0] : null; };
@@ -2622,6 +2622,7 @@ function renderComps(){
       </div>`;
     }
 
+    if(c.showoff) calHtml = '';
     const isPastCard = new Date((c.end||c.start)+"T00:00:00") < now;
     return `
     <div class="comp-card ${openComps.has(i)?'open':''} ${!isAttending?'not-attending':''} ${isPastCard?'is-past':''}" id="comp-${i}">
@@ -2929,7 +2930,7 @@ function personalEventDates(p){
 function baseCalendarEvents(){
   const events = [];
   competitions.forEach(c=>{
-    if(c.attending===false) return;
+    if(c.attending===false||c.showoff) return;
     events.push({date:c.start, end:c.end, cat:'comp', title:c.name, detail:c.loc});
     if(c.bookingDate){
       const bl = c.bookingLinks && c.bookingLinks[0];
@@ -3462,7 +3463,7 @@ function ehEstimateItems(b, plan, today){
   if(!plan.trips) return out;
   const inc = plan.inc || {}, h = plan.home || {}, rate = Number(b.mileage) || 0.725;
   competitions.forEach(c=>{
-    if(c.attending===false) return;
+    if(c.attending===false||c.showoff) return;
     const end = c.end||c.start; if(end < today) return;
     const slug = slugify(c.name), st = ehState(c, plan), r = ehRest(c, st, h, rate, b);
     if(inc.travel !== false && r.travel >= 1) out.push({key:'tq:'+slug, cat:'travel', label:c.name+' — travel estimate'+(r.travelAny ? ' (balance)' : ''), amt:Math.round(r.travel), date:c.start, status:'planned', src:'estimate', comp:slug});
@@ -3474,7 +3475,7 @@ function ehEstimateItems(b, plan, today){
   }
   return out;
 }
-function ehAttendingSlugs(){ return competitions.filter(c=>c.attending!==false).map(c=>slugify(c.name)); }
+function ehAttendingSlugs(){ return competitions.filter(c=>c.attending!==false&&!c.showoff).map(c=>slugify(c.name)); }
 function ehScheduleChanged(){
   const p = loadBudget().plan || {};
   if(!p.savedAt || !p.comps) return false;
@@ -3525,7 +3526,7 @@ function plAvg(types, mins){
 function lastDayOfMonth(ym){ const p = ym.split('-').map(Number); return isoFromDate(new Date(p[0], p[1], 0)); }
 function plSeasonEnd(){
   const t = isoFromDate(new Date());
-  return competitions.length ? competitions.filter(c=>c.attending!==false).reduce((m,c)=> (c.end||c.start) > m ? (c.end||c.start) : m, t) : addDaysISO(t, 120);
+  return competitions.length ? competitions.filter(c=>c.attending!==false&&!c.showoff).reduce((m,c)=> (c.end||c.start) > m ? (c.end||c.start) : m, t) : addDaysISO(t, 120);
 }
 /* month-by-month: how many lessons the plan expects, minus what is already scheduled or logged */
 function plSegments(p, existing){
@@ -3561,7 +3562,7 @@ function budgetItems(){
   const b = loadBudget(), items = [], today = isoFromDate(new Date());
   const allowNow = (PLAN_DRAFT && PLAN_DRAFT.allow != null) ? Number(PLAN_DRAFT.allow) : b.allowance;
   const st = d => d <= today ? 'paid' : 'planned';
-  const seasonEnd = competitions.length ? competitions.filter(c=>c.attending!==false).reduce((m,c)=> (c.end||c.start) > m ? (c.end||c.start) : m, today) : addDaysISO(today, 365);
+  const seasonEnd = competitions.length ? competitions.filter(c=>c.attending!==false&&!c.showoff).reduce((m,c)=> (c.end||c.start) > m ? (c.end||c.start) : m, today) : addDaysISO(today, 365);
   programFees.forEach((f,fi)=> items.push({key:'g:'+f.date+':'+fi, cat:'gym', label:f.label, amt:Number(f.amount)||0, date:f.date, status:st(f.date), src:'auto'}));
   loadPersonalEvents().forEach(p=>{
     if(!p.private) return;
@@ -3571,7 +3572,7 @@ function budgetItems(){
     personalEventDates(p).filter(d=>d<=seasonEnd).forEach(d=> items.push({key:'p:'+p.id+':'+d, series:p.id, cat:'privates', label:p.private.type+' · '+p.private.mins+' min'+who, amt, date:d, status:st(d), src:'calendar'}));
   });
   competitions.forEach(c=>{
-    if(c.attending===false) return;
+    if(c.attending===false||c.showoff) return;
     const slug = slugify(c.name), end = c.end||c.start;
     if(c.entryFee){
       const loggedEntry = b.expenses.filter(e=>e.comp===slug && e.type==='entry').reduce((a,e)=>a+(Number(e.amt)||0),0);
@@ -3596,7 +3597,7 @@ function budgetItems(){
   /* flight and hotel costs typed on the Comp Schedule tab (a cost you also logged here wins, so nothing counts twice) */
   const bkAll = loadBooking();
   competitions.forEach(c=>{
-    if(c.attending === false) return;
+    if(c.attending=== false||c.showoff) return;
     const slug = slugify(c.name), bk = bkAll[slug] || {};
     [['air','flight','travel'], ['hotel','hotel','hotels']].forEach(m=>{
       const amt = Number(bk[m[0]+'Cost']) || 0;
@@ -3703,7 +3704,7 @@ function openExpenseSheet(pre){
   typeSel.value = pre.type || 'food';
   const compSel = document.getElementById('expComp');
   compSel.innerHTML = '<option value="">General (not tied to a comp)</option>' +
-    competitions.filter(c=>c.attending!==false).map(c=>'<option value="'+slugify(c.name)+'">'+bEsc(c.name)+'</option>').join('');
+    competitions.filter(c=>c.attending!==false&&!c.showoff).map(c=>'<option value="'+slugify(c.name)+'">'+bEsc(c.name)+'</option>').join('');
   compSel.value = pre.comp || '';
   document.getElementById('expDate').value = pre.date || ((pre.origin==='comp' && !pre.id && ['flight','hotel','rental'].indexOf(pre.type)>=0) ? '' : isoFromDate(new Date()));
   document.getElementById('expAmt').value = pre.amt!=null ? pre.amt : '';
@@ -3930,7 +3931,7 @@ function renderBudget(){
   html += '</div>';
 
   /* trips */
-  const comps = competitions.filter(c=>c.attending!==false).slice().sort((a,b2)=>a.start<b2.start?-1:1);
+  const comps = competitions.filter(c=>c.attending!==false&&!c.showoff).slice().sort((a,b2)=>a.start<b2.start?-1:1);
   html += '<div class="section-title">Trip by trip</div><div class="card bud-cats">';
   comps.forEach(c=>{
     const slug = slugify(c.name), key = 'trip:'+slug, its = tAll.items.filter(i=>i.comp===slug).slice().sort((x1,x2)=>x1.date<x2.date?-1:1);
@@ -4171,7 +4172,7 @@ function rcptApply(r){
   const note = document.getElementById('expNote');
   if(r.vendor && !note.value){ note.value = r.vendor.slice(0,80); got.push(r.vendor); }
   if(r.date && !document.getElementById('expComp').value){
-    const hit = competitions.filter(c=>c.attending!==false && r.date >= addDaysISO(c.travelStart||c.start, -2) && r.date <= addDaysISO(c.travelEnd||c.end||c.start, 2));
+    const hit = competitions.filter(c=>c.attending!==false&&!c.showoff && r.date >= addDaysISO(c.travelStart||c.start, -2) && r.date <= addDaysISO(c.travelEnd||c.end||c.start, 2));
     if(hit.length === 1) document.getElementById('expComp').value = slugify(hit[0].name);
   }
   if(!r.amt) rcptMsg('Could not find a total on that photo. Try a flatter, brighter shot, or type the amount.', false);
@@ -4331,7 +4332,7 @@ const ED_ORDER = ['priv','travel','hotels','other','total'];
 const ED_NEXT = {priv:'Travel', travel:'Hotels', hotels:'Everything else', other:'Total'};
 const ED_TITLE = {priv:'Private lessons plan', travel:'Travel plan', hotels:'Hotels plan', other:'Everything else', total:'Your season budget'};
 const r10up = n => Math.ceil((Number(n)||0)/10 - 0.05)*10;
-function edComps(){ return competitions.filter(c=>c.attending!==false); }
+function edComps(){ return competitions.filter(c=>c.attending!==false&&!c.showoff); }
 function edTrips(){ const t = isoFromDate(new Date()); return edComps().filter(c=>(c.end||c.start) >= t); }
 function edRate(){ return Number(loadBudget().mileage) || 0.725; }
 /* a cost the parent already entered, with a box to add one when they said they booked but left the price blank */
