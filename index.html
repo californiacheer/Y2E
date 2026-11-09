@@ -1665,9 +1665,13 @@ html.page-navy .app-disclaimer button.disc-link{color:rgba(255,255,255,.92);}
         <label style="font-size:13px; font-weight:600; display:none;" id="calFormUntilWrap">Repeat until (optional)
           <input type="date" id="calFormUntil" class="cal-input">
         </label>
+        <label style="font-size:13px; font-weight:600;">Time (optional)
+          <input type="time" id="calFormTime" class="cal-input">
+        </label>
         <label style="font-size:13px; font-weight:600;">Note (optional)
           <input type="text" id="calFormNote" placeholder="e.g. 5:00 PM at the gym" class="cal-input">
         </label>
+        <label class="cal-also"><input type="checkbox" id="calFormAlso" checked> Also add it to my phone calendar</label>
         <div style="display:flex; gap:10px;">
           <button type="button" class="pay-btn" id="calFormSave">Save</button>
           <button type="button" class="linkbtn" id="calFormCancel" style="cursor:pointer;">Cancel</button>
@@ -2253,7 +2257,7 @@ function renderUpcomingEvents(){
     const d = new Date((f.date||f.end)+"T00:00:00");
     return d>=now && d>=monday && d<=sunday;
   });
-  const upcoming = [...weekFundraisers, ...promotedFeed]
+  const upcoming = [...weekFundraisers, ...promotedFeed, ...(typeof personalComingUp==='function' ? personalComingUp(now, monday, sunday) : [])]
     .sort((a,b)=>(new Date(a.date||a.end)-new Date(b.date||b.end)) || (startMins(a)-startMins(b)));
   const card = document.getElementById('upcomingEventsCard');
   if(upcoming.length===0){
@@ -2912,7 +2916,7 @@ function isoFromDate(d){
   return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());
 }
 function loadPersonalEvents(){ try{ return JSON.parse(localStorage.getItem('y2k_personal_events')||'[]'); }catch(e){ return []; } }
-function savePersonalEvents(list){ try{ localStorage.setItem('y2k_personal_events', JSON.stringify(list)); }catch(e){} if(typeof renderBudget==='function') renderBudget(); }
+function savePersonalEvents(list){ try{ localStorage.setItem('y2k_personal_events', JSON.stringify(list)); }catch(e){} if(typeof renderBudget==='function') renderBudget(); if(typeof renderUpcomingEvents==='function') renderUpcomingEvents(); }
 
 // Pulls the first <a href="...">label</a> out of an HTML snippet so calendar
 // day-detail can show a real "take action" link instead of losing it when
@@ -3071,8 +3075,8 @@ function renderPersonalList(){
   const REPEAT_LABEL = {weekly:'Weekly', biweekly:'Every 2 weeks', monthly:'Monthly'};
   el.innerHTML = list.slice().sort((a,b)=>new Date(a.date)-new Date(b.date)).map(p=>`
     <div class="cal-personal-row">
-      <div><b>${fmtDate(p.date)}</b>${p.recurrence?` <span style="color:var(--accent); font-weight:600;">(${REPEAT_LABEL[p.recurrence.freq]})</span>`:''} — ${p.title}${(p.private && budgetOn()) ? ` <span style="color:var(--accent); font-weight:600;">(${bMoney(privateCost(p.private.type,p.private.mins))})</span>` : ''}${p.note?` <span style="color:var(--text-muted);">(${p.note})</span>`:''}</div>
-      <button type="button" class="cal-del-btn" data-id="${p.id}">Remove</button>
+      <div><b>${fmtDate(p.date)}${(p.time && typeof hsTime12==='function')?' · '+hsTime12(p.time):''}</b>${p.recurrence?` <span style="color:var(--accent); font-weight:600;">(${REPEAT_LABEL[p.recurrence.freq]})</span>`:''} — ${p.title}${(p.private && budgetOn()) ? ` <span style="color:var(--accent); font-weight:600;">(${bMoney(privateCost(p.private.type,p.private.mins))})</span>` : ''}${p.note?` <span style="color:var(--text-muted);">(${p.note})</span>`:''}</div>
+      <span><button type="button" class="cal-add-btn" data-id="${p.id}">Add to calendar</button><button type="button" class="cal-del-btn" data-id="${p.id}">Remove</button></span>
     </div>
   `).join('');
 }
@@ -3119,10 +3123,13 @@ document.getElementById('calFormSave').addEventListener('click', ()=>{
   if(!title || !date) return;
   const list = loadPersonalEvents();
   const ev = {id:'p'+Date.now(), title, date, note};
+  { const tm = document.getElementById('calFormTime').value; if(tm) ev.time = tm; }
   if(priv) ev.private = priv;
   if(repeat){ ev.recurrence = {freq:repeat}; if(until) ev.recurrence.until = until; }
   list.push(ev);
   savePersonalEvents(list);
+  { const al = document.getElementById('calFormAlso'); if(al && al.checked) setTimeout(()=>openAddToCalendar(ev.id), 60); }
+  document.getElementById('calFormTime').value = '';
   document.getElementById('calFormTitle').value = '';
   document.getElementById('calFormDate').value = '';
   document.getElementById('calFormNote').value = '';
@@ -4829,5 +4836,155 @@ initDisclaimer({"show": true, "type": "independent", "entity": "the team’s gym
 
 
 <div id="cmBack" class="cm-back" onclick="if(event.target===this)closeShowcaseDetails()"><div class="cm-sheet" role="dialog" aria-modal="true" aria-labelledby="cmTitle"><div class="cm-head"><div><div class="cm-title" id="cmTitle">Showcase details</div><div class="cm-sub" id="cmSub">Sun, Nov 15, 2026 · UC Irvine Bren Events Center</div></div><button type="button" class="cm-x" aria-label="Close" onclick="closeShowcaseDetails()">✕</button></div><div class="cm-body" id="cmBody"></div></div></div>
+<style>
+.team-bar{position:relative;}
+.set-gear{position:absolute;z-index:6;top:calc(env(safe-area-inset-top,0px) + 10px);right:12px;width:38px;height:38px;border-radius:50%;border:1px solid rgba(255,255,255,.35);background:rgba(8,12,24,.55);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);color:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;padding:0;line-height:0;}
+.set-gear svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round;}
+.set-gear:focus-visible{outline:2px solid #fff;outline-offset:2px;}
+.home-hide{display:none !important;}
+.badge.mine{background:var(--accent-soft);color:var(--accent);}
+.cm-body .set-h{font-size:12px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--text-muted);margin:20px 0 6px;}
+.cm-body .set-note{font-size:13px;color:var(--text-muted);margin:0 0 10px;line-height:1.45;}
+.set-row,.set-sec{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 0;border-top:1px solid var(--border);}
+.set-row:first-of-type,.set-list .set-sec:first-child{border-top:0;}
+.set-copy b{display:block;font-size:14.5px;}
+.set-copy small{display:block;font-size:12.5px;color:var(--text-muted);margin-top:2px;}
+.set-name{font-size:14.5px;font-weight:700;}
+.set-sec.off .set-name{color:var(--text-muted);font-weight:600;text-decoration:line-through;}
+.set-ctl{display:flex;align-items:center;gap:8px;flex:none;}
+.set-ctl button{width:34px;height:34px;border-radius:10px;border:1px solid var(--border);background:var(--surface-2);color:var(--text);font-size:16px;line-height:1;cursor:pointer;padding:0;}
+.set-ctl button:disabled{opacity:.35;cursor:default;}
+.set-reset{display:block;margin:12px 0 0;background:none;border:0;color:var(--accent);font:inherit;font-size:13.5px;font-weight:700;text-decoration:underline;cursor:pointer;padding:0;}
+.cal-add-btn{background:none;border:0;color:var(--accent);font:inherit;font-size:13px;font-weight:700;text-decoration:underline;cursor:pointer;padding:0 8px 0 0;}
+.cal-also{display:flex;align-items:center;gap:10px;font-size:13.5px;font-weight:600;}
+.cal-also input{width:18px;height:18px;}
+.cm-body .linkbtn.wide{display:flex;margin-top:10px;}
+</style>
+<script>
+/* ===== Settings, Home layout and personal events in Coming up ===== */
+var HS_KEY = CONFIG.storageKey + '_settings';
+var HS_GROUPS = [];
+function hsLoad(){ try{ return JSON.parse(localStorage.getItem(HS_KEY)||'{}') || {}; }catch(e){ return {}; } }
+function hsSave(s){ try{ localStorage.setItem(HS_KEY, JSON.stringify(s)); }catch(e){} }
+function hsOpen(title, sub, html){
+  var t=document.getElementById('cmTitle'), s=document.getElementById('cmSub'), b=document.getElementById('cmBody');
+  if(!t||!b) return;
+  t.textContent=title; if(s) s.textContent=sub||''; b.innerHTML=html;
+  document.getElementById('cmBack').classList.add('open');
+  document.documentElement.style.overflow='hidden';
+}
+function hsGroupHome(){
+  var panel=document.getElementById('panel-home'); if(!panel || panel.querySelector('.home-sec')) return;
+  var kids=Array.prototype.slice.call(panel.children), cur=null, mt='';
+  var firstNon = kids.filter(function(k){return k.classList.contains('section-title');})[1];
+  if(firstNon) mt = getComputedStyle(firstNon).marginTop;
+  function wrap(key,label,before){ var w=document.createElement('div'); w.className='home-sec'; w.dataset.sec=key; panel.insertBefore(w,before); HS_GROUPS.push({key:key,label:label,el:w}); return w; }
+  kids.forEach(function(el,i){
+    if(el.classList.contains('section-title')){
+      var label=el.textContent.trim();
+      cur=wrap('s'+i+'-'+label.toLowerCase().replace(/[^a-z0-9]+/g,'-'),label,el);
+      if(mt) cur.style.marginTop=mt; el.style.marginTop='0'; cur.appendChild(el);
+    } else if(el.id==='heroGrid'){ cur=null; wrap('hero','Next competition & payment',el).appendChild(el); }
+    else if(el.id==='wearSection'){ cur=null; wrap('wear','What to wear',el).appendChild(el); }
+    else if(cur){ cur.appendChild(el); }
+    else { wrap('misc'+i,'',el).appendChild(el); }
+  });
+  /* stable keys: strip the index so reordering code survives small layout edits */
+  HS_GROUPS.forEach(function(g){ g.key=g.key.replace(/^s\d+-/,'s-'); g.el.dataset.sec=g.key; });
+}
+function hsOrder(){
+  var s=hsLoad(), keys=HS_GROUPS.filter(function(g){return g.label;}).map(function(g){return g.key;});
+  var saved=(s.order||[]).filter(function(k){return keys.indexOf(k)>-1;});
+  keys.forEach(function(k){ if(saved.indexOf(k)<0) saved.push(k); });
+  return saved;
+}
+function hsApplyHome(){
+  var panel=document.getElementById('panel-home'); if(!panel) return;
+  var s=hsLoad(), hidden=s.hidden||[], order=hsOrder();
+  order.forEach(function(k){ var g=HS_GROUPS.filter(function(x){return x.key===k;})[0]; if(g) panel.appendChild(g.el); });
+  HS_GROUPS.filter(function(g){return !g.label;}).forEach(function(g){ panel.appendChild(g.el); });
+  HS_GROUPS.forEach(function(g){ g.el.classList.toggle('home-hide', hidden.indexOf(g.key)>-1); });
+}
+function hsRenderSettings(){
+  var s=hsLoad(), hidden=s.hidden||[], order=hsOrder(), html='';
+  html+='<div class="set-h">Features</div>';
+  if(typeof budgetOffered==='function' && budgetOffered()){
+    html+='<label class="set-row"><span class="set-copy"><b>Track my budget</b><small>Adds a private Budget tab. Saved only on this phone.</small></span><span class="bud-switch"><input type="checkbox" '+(loadBudget().enabled?'checked':'')+' onchange="hsBudget(this.checked)" aria-label="Track my budget"><span class="bud-slider"></span></span></label>';
+  }
+  html+='<div class="set-h">Home tab</div><p class="set-note">Choose what shows on Home and the order. This is just for you.</p><div class="set-list">';
+  order.forEach(function(k,i){
+    var g=HS_GROUPS.filter(function(x){return x.key===k;})[0]; if(!g) return;
+    var off=hidden.indexOf(k)>-1;
+    html+='<div class="set-sec'+(off?' off':'')+'"><span class="set-name">'+g.label+'</span><span class="set-ctl">'+
+      '<button type="button" onclick="hsMove(\''+k+'\',-1)" aria-label="Move up"'+(i===0?' disabled':'')+'>&uarr;</button>'+
+      '<button type="button" onclick="hsMove(\''+k+'\',1)" aria-label="Move down"'+(i===order.length-1?' disabled':'')+'>&darr;</button>'+
+      '<span class="bud-switch"><input type="checkbox" '+(off?'':'checked')+' onchange="hsToggle(\''+k+'\',this.checked)" aria-label="Show '+g.label+'"><span class="bud-slider"></span></span></span></div>';
+  });
+  html+='</div><button type="button" class="set-reset" onclick="hsReset()">Reset Home to default</button>';
+  html+='<div class="set-h">My events</div><p class="set-note">Your own events (a private lesson, a dentist visit) show in Coming up on Home. Only you see them, and they can also be added to your phone calendar.</p><a class="linkbtn wide" href="#" onclick="hsAddEvent();return false;">+ Add a personal event</a>';
+  var b=document.getElementById('cmBody'), y=b?b.scrollTop:0;
+  hsOpen('Settings','Saved only on this phone',html);
+  if(b) b.scrollTop=y;
+}
+function openSettings(){ var b=document.getElementById('cmBody'); if(b) b.scrollTop=0; hsRenderSettings(); }
+function hsMove(k,d){ var s=hsLoad(), o=hsOrder(), i=o.indexOf(k), j=i+d; if(i<0||j<0||j>=o.length) return; o.splice(i,1); o.splice(j,0,k); s.order=o; hsSave(s); hsApplyHome(); hsRenderSettings(); }
+function hsToggle(k,on){ var s=hsLoad(), h=(s.hidden||[]).filter(function(x){return x!==k;}); if(!on) h.push(k); s.hidden=h; hsSave(s); hsApplyHome(); hsRenderSettings(); }
+function hsReset(){ var s=hsLoad(); delete s.order; delete s.hidden; hsSave(s); hsApplyHome(); hsRenderSettings(); }
+function hsBudget(on){ closeShowcaseDetails(); setBudgetEnabled(on); }
+function hsAddEvent(){ closeShowcaseDetails(); goTab('calendar'); setTimeout(function(){ var b=document.getElementById('calAddBtn'); if(b) b.click(); },120); }
+
+/* ---- personal events: Coming up + "add to my calendar" ---- */
+function hsTime12(t){ var m=/^(\d{1,2}):(\d{2})/.exec(t||''); if(!m) return ''; var h=+m[1], ap=h>=12?'PM':'AM'; h=h%12||12; return h+':'+m[2]+' '+ap; }
+function personalComingUp(now, monday, sunday){
+  var out=[];
+  loadPersonalEvents().forEach(function(p){
+    personalEventDates(p).forEach(function(d){
+      var dt=new Date(d+'T00:00:00');
+      if(dt>=now && dt>=monday && dt<=sunday) out.push({emoji:'📌',title:p.title,date:d,end:d,when:hsTime12(p.time),meta:p.note||'',badgeType:'mine',badgeLabel:'Mine'});
+    });
+  });
+  return out;
+}
+function hsP(n){ return String(n).padStart(2,'0'); }
+function hsLocal(d){ return d.getFullYear()+hsP(d.getMonth()+1)+hsP(d.getDate())+'T'+hsP(d.getHours())+hsP(d.getMinutes())+'00'; }
+function hsEventCal(p){
+  var title=p.title, details=(p.note||''), timed=!!p.time, start, end, rr='';
+  if(timed){ var s=new Date(p.date+'T'+p.time+':00'), e=new Date(s.getTime()+3600000); start=hsLocal(s); end=hsLocal(e); }
+  else { start=p.date.replace(/-/g,''); end=addDaysISO(p.date,1).replace(/-/g,''); }
+  if(p.recurrence){
+    var f={weekly:'FREQ=WEEKLY',biweekly:'FREQ=WEEKLY;INTERVAL=2',monthly:'FREQ=MONTHLY'}[p.recurrence.freq]||'';
+    if(f){ rr=f; if(p.recurrence.until){ var u=p.recurrence.until.replace(/-/g,''); rr+=';UNTIL='+(timed?u+'T235959':u); } }
+  }
+  var esc=function(s){ return String(s||'').replace(/\\/g,'\\\\').replace(/;/g,'\;').replace(/,/g,'\\,').replace(/\n/g,'\\n'); };
+  var L=['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//Team Hub//EN','BEGIN:VEVENT','UID:'+p.id+'@teamhub','DTSTAMP:'+hsLocal(new Date())+'Z',
+    timed?('DTSTART:'+start):('DTSTART;VALUE=DATE:'+start), timed?('DTEND:'+end):('DTEND;VALUE=DATE:'+end)];
+  if(rr) L.push('RRULE:'+rr);
+  L.push('SUMMARY:'+esc(title)); if(details) L.push('DESCRIPTION:'+esc(details)); L.push('END:VEVENT','END:VCALENDAR');
+  var g='https://calendar.google.com/calendar/render?action=TEMPLATE&text='+encodeURIComponent(title)+'&dates='+start+'/'+end+(details?'&details='+encodeURIComponent(details):'')+(rr?'&recur='+encodeURIComponent('RRULE:'+(rr.replace(/UNTIL=(\d{8})T235959/,'UNTIL=$1T235959Z'))):'');
+  return {google:g, ics:'data:text/calendar;charset=utf-8,'+encodeURIComponent(L.join('\r\n'))};
+}
+function openAddToCalendar(id){
+  var p=loadPersonalEvents().filter(function(x){return x.id===id;})[0]; if(!p) return;
+  var c=hsEventCal(p), when=fmtDate(p.date)+(p.time?' · '+hsTime12(p.time):'');
+  hsOpen('Add to your calendar', p.title+' · '+when,
+    '<a class="linkbtn wide" href="'+c.google+'" target="_blank" rel="noopener"><span class="ico">📅</span> Google Calendar</a>'+
+    '<a class="linkbtn wide" href="'+c.ics+'" download="event.ics"><span class="ico">🍎</span> Apple Calendar / Outlook</a>'+
+    '<p class="set-note" style="margin-top:14px">Opens your calendar app so you can tap Save. Nothing is sent to the team.</p>');
+}
+document.addEventListener('click', function(e){ var b=e.target.closest && e.target.closest('.cal-add-btn'); if(b){ e.preventDefault(); openAddToCalendar(b.dataset.id); } });
+
+/* ---- gear + init ---- */
+(function(){
+  var bar=document.querySelector('.team-bar');
+  if(bar){
+    var g=document.createElement('button'); g.type='button'; g.className='set-gear'; g.setAttribute('aria-label','Settings');
+    g.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3.2"/><path d="M19.4 14.5a1.6 1.6 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.6 1.6 0 0 0-1.8-.3 1.6 1.6 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.6 1.6 0 0 0-1-1.5 1.6 1.6 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.6 1.6 0 0 0 .3-1.8 1.6 1.6 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.6 1.6 0 0 0 1.5-1 1.6 1.6 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.6 1.6 0 0 0 1.8.3h0a1.6 1.6 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.6 1.6 0 0 0 1 1.5 1.6 1.6 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.6 1.6 0 0 0-.3 1.8v0a1.6 1.6 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.6 1.6 0 0 0-1.5 1z"/></svg>';
+    g.addEventListener('click', openSettings); bar.appendChild(g);
+  }
+  hsGroupHome(); hsApplyHome();
+  try{ renderUpcomingEvents(); renderPersonalList(); }catch(e){}
+})();
+</script>
+
 </body>
 </html>
