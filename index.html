@@ -1981,6 +1981,7 @@ function startMins(f){
 }
 
 const feed = [
+  {date:"2026-11-15", dateLabel:"Nov 15", postedDate:"2026-11-09", expires:"2026-11-15", tag:"event", hideFromComingUp:true, title:"Showcase · Y2K meet time is now 1:15 PM", body:'Parking permits are required for every vehicle. <a href="#" onclick="openShowcaseDetails();return false">See the Day plan →</a>'},
   {date:"2026-11-18", dateLabel:"Nov 4–19", postedDate:"2026-11-04", expires:"2026-11-19", tag:"info", title:"Practices closed to viewers", body:"Viewing room closed Nov 4 until Nov 18–19. Minis, Tinys and private lessons are the exception."},
   {date:"2026-11-20", dateLabel:"Nov 20", postedDate:"2026-11-04", expires:"2026-11-20", tag:"event", title:"Y2K Friendsgiving 🦃", body:"Starts at 6:00 PM · Chick-fil-A meal."},
   {date:"2026-11-16", dateLabel:"Due Nov 16", postedDate:"2026-11-04", expires:"2026-11-16", tag:"deadline", title:"Team blankets (optional)", body:'Plush blanket · due midnight · arrives in 3–4 weeks. <a href="https://caliproshop.com/products/cali-blanket" target="_blank">Order blanket →</a>'},
@@ -2323,7 +2324,7 @@ const ICON_INFO="<svg width=\"14\" height=\"14\" viewBox=\"0 0 24 24\" fill=\"no
 function openShowcaseDetails(){
   document.getElementById('cmTitle').textContent = 'Showcase day plan';
   document.getElementById('cmSub').textContent = 'Sun, Nov 15, 2026 · UC Irvine Bren Events Center';
-  document.getElementById('cmBody').innerHTML = "<div class=\"tt-label\">What to wear</div><span class=\"sk\"><span class=\"sk-r\"><span class=\"sk-i\">🎀</span><span class=\"sk-t\">Silver/blue bow · full uniform · rhinestone socks · Posh · full glam</span></span></span><div class=\"tt-label\">Y2K’s day</div><div class=\"tt-grid\"><span><span>Flyers meet for stretching</span><span>12:45 PM</span></span><span><span>Team meet time</span><span>1:00 PM</span></span><span class=\"\"><span>Photos</span><span>2:36 PM</span></span><span class=\"\"><span>Check-in</span><span>2:43 PM</span></span><span class=\"\"><span>First mat</span><span>2:57 PM</span></span><span class=\"\"><span>Floor 1</span><span>3:03 PM</span></span><span class=\"\"><span>Floor 2</span><span>3:10 PM</span></span><span class=\"me\"><span>Showtime</span><span>3:19 PM</span></span></div><div class=\"tt-label\">At the venue</div><span class=\"sk\"><span class=\"sk-r\"><span class=\"sk-i\">🚪</span><span class=\"sk-t\"><b>Doors open 10:45 AM</b> · welcome message 10:55 AM</span></span><span class=\"sk-r\"><span class=\"sk-i\">🎟️</span><span class=\"sk-t\"><b>$26 online, $35 same day</b> · athletes don’t need a ticket · <a href=\"https://ucirvinetickets.evenue.net/events/SPEC\" target=\"_blank\" rel=\"noopener\">Buy tickets →</a></span></span><span class=\"sk-r\"><span class=\"sk-i\">📋</span><span class=\"sk-t\"><a href=\"https://docs.google.com/spreadsheets/d/1_MpWAbs6NeyRTwq9JyjikT3i5iQB1LpuvhHiUT9jFYM/edit?gid=498534653#gid=498534653\" target=\"_blank\" rel=\"noopener\">Full showcase schedule →</a></span></span></span><div class=\"tt-label\">Every team’s performance time</div><div class=\"tt-grid\"><span class=\"\"><span>Tiny Divas</span><span>11:07 AM</span></span><span class=\"\"><span>Mini Mints</span><span>11:21 AM</span></span><span class=\"\"><span>Bliss</span><span>11:42 AM</span></span><span class=\"\"><span>Junior Gold</span><span>12:31 PM</span></span><span class=\"\"><span>Surge</span><span>12:52 PM</span></span><span class=\"tt-break\">Break</span><span class=\"\"><span>Blush</span><span>1:41 PM</span></span><span class=\"\"><span>Shazam</span><span>1:55 PM</span></span><span class=\"\"><span>White Gold</span><span>2:23 PM</span></span><span class=\"me\"><span>Y2K</span><span>3:19 PM</span></span><span class=\"\"><span>Sugar</span><span>3:40 PM</span></span><span class=\"\"><span>Reign</span><span>3:47 PM</span></span><span class=\"tt-break\">Break</span><span class=\"\"><span>Rapture</span><span>4:08 PM</span></span><span class=\"\"><span>Spice</span><span>4:15 PM</span></span><span class=\"\"><span>J3</span><span>4:57 PM</span></span><span class=\"\"><span>C3</span><span>5:32 PM</span></span><span class=\"\"><span>Jslay</span><span>6:21 PM</span></span><span class=\"\"><span>Onyx</span><span>6:42 PM</span></span><span class=\"\"><span>Glow</span><span>7:24 PM</span></span><span class=\"\"><span>Rangers</span><span>7:31 PM</span></span><span class=\"\"><span>Lady Bullets</span><span>7:38 PM</span></span><span class=\"\"><span>Coed</span><span>7:45 PM</span></span></div><div class=\"tt-note\">Teams are listed in running order.</div>";
+  document.getElementById('cmBody').innerHTML = "<div class=\"tt-label\">What to wear</div><span class=\"sk\"><span class=\"sk-r\"><span class=\"sk-i\">🎀</span><span class=\"sk-t\">Silver/blue bow · full uniform · rhinestone socks · Posh · full glam</span></span></span><div class=\"tt-label\">Y2K’s day</div><div class=\"tt-grid\"><span><span>Flyers meet for stretching</span><span>12:45 PM</span></span><span><span>Team meet time</span><span>1:15 PM</span></span><span class=\"\"><span>Photos</span><span>2:36 PM</span></span><span class=\"\"><span>Check-in</span><span>2:43 PM</span></span><span class=\"\"><span>First mat</span><span>2:57 PM</span></span><span class=\"\"><span>Floor 1</span><span>3:03 PM</span></span><span class=\"\"><span>Floor 2</span><span>3:10 PM</span></span><span class=\"me\"><span>Showtime</span><span>3:19 PM</span></span></div><div class=\"tt-label\">Athletes</div><span class=\"sk\"><span class=\"sk-r\"><span class=\"sk-i\">🚪</span><span class=\"sk-t\"><b>Lower entrance only</b> · by the stairs near the lower parking lot, in uniform or gear. No ticket needed. Meet your coach or team rep near the front.</span></span><span class=\"sk-r\"><span class=\"sk-i\">💄</span><span class=\"sk-t\"><b>Hair and makeup done</b> when you meet · program uniform · team shirt over it whenever you’re off stage</span></span></span><div class=\"tt-label\">At the venue</div><span class=\"sk\"><span class=\"sk-r\"><span class=\"sk-i\">🚪</span><span class=\"sk-t\"><b>Doors open 10:45 AM</b> · welcome message 10:55 AM</span></span><span class=\"sk-r\"><span class=\"sk-i\">🎟️</span><span class=\"sk-t\"><b>$26 online, $35 same day</b> · lines are long, so buy ahead · good all day · athletes don’t need one · <a href=\"https://ucirvinetickets.evenue.net/events/SPEC\" target=\"_blank\" rel=\"noopener\">Buy tickets →</a></span></span><span class=\"sk-r\"><span class=\"sk-i\">🅿️</span><span class=\"sk-t\"><b>Parking permit required</b> for every vehicle · <a href=\"https://apps.parking.uci.edu/parkbyplate/s/purchase.cfm\" target=\"_blank\" rel=\"noopener\">Buy a permit →</a> · code BREN@UCI, card only. If the Mesa structure fills you may be sent to another lot. Expect delays on University Dr and Mesa Rd.</span></span><span class=\"sk-r\"><span class=\"sk-i\">👜</span><span class=\"sk-t\"><b>Clear bag policy</b> for guests · no backpacks or large purses (small purse up to 5.5″ × 8.5″, medical and diaper bags are OK) · guests use the East Entrance (upstairs)</span></span><span class=\"sk-r\"><span class=\"sk-i\">📋</span><span class=\"sk-t\"><a href=\"https://docs.google.com/spreadsheets/d/1_MpWAbs6NeyRTwq9JyjikT3i5iQB1LpuvhHiUT9jFYM/edit?gid=498534653#gid=498534653\" target=\"_blank\" rel=\"noopener\">Full showcase schedule →</a></span></span></span><div class=\"tt-label\">Every team’s performance time</div><div class=\"tt-grid\"><span class=\"\"><span>Tiny Divas</span><span>11:07 AM</span></span><span class=\"\"><span>Mini Mints</span><span>11:21 AM</span></span><span class=\"\"><span>Bliss</span><span>11:42 AM</span></span><span class=\"\"><span>Junior Gold</span><span>12:31 PM</span></span><span class=\"\"><span>Surge</span><span>12:52 PM</span></span><span class=\"tt-break\">Break</span><span class=\"\"><span>Blush</span><span>1:41 PM</span></span><span class=\"\"><span>Shazam</span><span>1:55 PM</span></span><span class=\"\"><span>White Gold</span><span>2:23 PM</span></span><span class=\"me\"><span>Y2K</span><span>3:19 PM</span></span><span class=\"\"><span>Sugar</span><span>3:40 PM</span></span><span class=\"\"><span>Reign</span><span>3:54 PM</span></span><span class=\"tt-break\">Break</span><span class=\"\"><span>Rapture</span><span>4:22 PM</span></span><span class=\"\"><span>Spice</span><span>4:29 PM</span></span><span class=\"\"><span>J3</span><span>5:11 PM</span></span><span class=\"\"><span>C3</span><span>5:46 PM</span></span><span class=\"\"><span>Onyx</span><span>6:28 PM</span></span><span class=\"\"><span>Jslay</span><span>6:49 PM</span></span><span class=\"\"><span>Coed</span><span>7:17 PM</span></span><span class=\"\"><span>Glow</span><span>7:31 PM</span></span><span class=\"\"><span>Rangers</span><span>7:38 PM</span></span><span class=\"\"><span>Lady Bullets</span><span>7:45 PM</span></span></div><div class=\"tt-note\">Teams are listed in running order.</div>";
   document.getElementById('cmBack').classList.add('open');
   document.documentElement.style.overflow = 'hidden';
   const b = document.getElementById('cmBody'); if(b) b.scrollTop = 0;
@@ -5100,63 +5101,172 @@ function calDeleteAll(id){
 }
 </script>
 <style>
-.dh-lede{margin:0 0 18px;font-size:13.5px;color:var(--text-muted);}
-.dh-list{padding:4px 18px;}
-.dh-row{display:grid;grid-template-columns:50px 1fr auto;gap:12px;align-items:center;padding:13px 0;border-top:1px solid var(--border);}
+/* Die Hards tab - one consistent grid, every row built the same way */
+#panel-rivals .dh-lede{margin:0 0 6px;font-size:14px;line-height:1.45;color:var(--text-muted);}
+#panel-rivals .section-title{margin:28px 0 12px;}
+#panel-rivals .dh-card{padding:6px 18px;overflow:hidden;}
+.dh-row{display:grid;grid-template-columns:48px minmax(0,1fr) auto;column-gap:14px;align-items:center;padding:14px 0;border-top:1px solid var(--border);}
 .dh-row:first-child{border-top:0;}
-.dh-date{font-size:12px;font-weight:700;color:var(--text-muted);line-height:1.15;text-align:left;}
-.dh-date b{display:block;font-size:19px;color:var(--text);}
-.dh-main b{display:block;font-size:14.5px;overflow-wrap:anywhere;}
-.dh-main small{display:block;font-size:12.5px;color:var(--text-muted);margin-top:1px;overflow-wrap:anywhere;}
-.dh-main a,.dh-right a{color:var(--accent);font-weight:700;font-size:12.5px;text-decoration:underline;}
-.dh-right{text-align:right;font-size:13px;color:var(--text-muted);font-weight:600;white-space:nowrap;}
-.dh-right b{display:block;font-size:17px;color:var(--text);}
-.dh-group{font-size:12px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted);padding:14px 0 2px;border-top:1px solid var(--border);}
-.dh-group:first-child{border-top:0;padding-top:10px;}
-.dh-rival{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;padding:10px 0;}
-.dh-rival .dh-vids{display:flex;flex-direction:column;gap:4px;align-items:flex-end;text-align:right;}
-.dh-note{font-size:12px;color:var(--text-muted);margin:10px 2px 0;}
-.dh-empty{margin:0;padding:14px 0;font-size:13.5px;color:var(--text-muted);}
+.dh-date{font-size:11px;font-weight:800;letter-spacing:.08em;color:var(--text-muted);line-height:1.1;text-align:center;}
+.dh-date b{display:block;font-size:21px;letter-spacing:0;color:var(--text);margin-top:2px;}
+.dh-main{min-width:0;}
+.dh-main b{display:block;font-size:15px;line-height:1.25;overflow-wrap:anywhere;}
+.dh-main small{display:block;font-size:12.5px;line-height:1.4;color:var(--text-muted);margin-top:2px;overflow-wrap:anywhere;}
+.dh-pill{display:inline-block;white-space:nowrap;font-size:12px;font-weight:700;line-height:1;padding:7px 11px;border-radius:999px;background:var(--accent-soft);color:var(--accent-ink);}
+.dh-pill.quiet{background:var(--surface-2);color:var(--text-muted);}
+.dh-res{text-align:right;white-space:nowrap;font-size:12px;color:var(--text-muted);font-weight:600;}
+.dh-res b{display:block;font-size:18px;color:var(--text);line-height:1.1;}
+.dh-team{padding:15px 0;border-top:1px solid var(--border);}
+.dh-team:first-child{border-top:0;}
+.dh-team-top{display:grid;grid-template-columns:minmax(0,1fr) auto;column-gap:14px;align-items:start;}
+.dh-score{text-align:right;white-space:nowrap;font-size:11.5px;color:var(--text-muted);font-weight:600;font-variant-numeric:tabular-nums;}
+.dh-score b{display:block;font-size:19px;line-height:1.1;color:var(--text);}
+.dh-links{display:flex;flex-wrap:wrap;gap:6px 18px;margin-top:9px;}
+.dh-links a,.dh-ig{font-size:13px;font-weight:700;color:var(--accent);text-decoration:underline;text-underline-offset:2px;white-space:nowrap;}
+.dh-tag{display:inline-block;font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--text-muted);margin-bottom:3px;}
+.dh-chart-h{padding:14px 0 0;}
+.dh-chart-h b{display:block;font-size:15px;}
+.dh-chart-h small{display:block;font-size:12.5px;color:var(--text-muted);margin-top:2px;line-height:1.4;}
+.dh-plot{padding:10px 0 8px;}
+.dh-pr,.dh-pax{display:grid;grid-template-columns:112px minmax(0,1fr) 46px;column-gap:10px;align-items:center;}
+.dh-pr{min-height:34px;}
+.dh-pn{font-size:13px;font-weight:600;line-height:1.2;overflow-wrap:anywhere;}
+.dh-pn.us{color:var(--accent);font-weight:800;}
+.dh-pt{position:relative;height:34px;}
+.dh-pt::before{content:"";position:absolute;left:0;right:0;top:50%;border-top:1px solid var(--border);}
+.dh-gl{position:absolute;top:4px;bottom:4px;border-left:1px dashed var(--border);opacity:.7;}
+.dh-dot{position:absolute;top:50%;width:13px;height:13px;border-radius:50%;background:var(--text-muted);border:2px solid var(--surface);box-sizing:content-box;transform:translate(-50%,-50%);}
+.dh-dot.us{background:var(--accent);}
+.dh-pv{font-size:13px;font-weight:700;text-align:right;font-variant-numeric:tabular-nums;}
+.dh-pv.pend{font-weight:600;color:var(--text-muted);}
+.dh-pend{position:absolute;left:0;right:0;top:50%;transform:translateY(-50%);font-size:12px;color:var(--text-muted);text-align:center;background:var(--surface);width:max-content;margin:0 auto;padding:0 8px;}
+.dh-pax{height:22px;}
+.dh-pax .dh-axis{position:relative;height:100%;grid-column:2;}
+.dh-pax span{position:absolute;top:2px;transform:translateX(-50%);font-size:11.5px;color:var(--text-muted);font-variant-numeric:tabular-nums;}
+.dh-key{display:flex;flex-wrap:wrap;gap:4px 16px;padding:2px 0 14px;font-size:12px;color:var(--text-muted);}
+.dh-key i{display:inline-block;width:10px;height:10px;border-radius:50%;vertical-align:-1px;margin-right:6px;background:var(--text-muted);}
+.dh-key i.us{background:var(--accent);}
+.dh-more{margin:12px 0 0;padding:0;overflow:hidden;}
+.dh-more>summary{list-style:none;cursor:pointer;padding:16px 18px;font-weight:700;font-size:14.5px;color:var(--text);display:grid;grid-template-columns:minmax(0,1fr) auto;column-gap:12px;align-items:center;}
+.dh-more>summary small{display:block;font-weight:500;font-size:12.5px;color:var(--text-muted);margin-top:2px;}
+.dh-more>summary::-webkit-details-marker{display:none;}
+.dh-more>summary::after{content:"+";grid-column:2;grid-row:1;font-size:22px;line-height:1;color:var(--accent);font-weight:600;}
+.dh-more[open]>summary::after{content:"\2212";}
+.dh-more .dh-body{padding:0 18px 6px;border-top:1px solid var(--border);}
+.dh-cmp{display:grid;grid-template-columns:minmax(0,1fr) auto;column-gap:14px;align-items:center;padding:12px 0;border-top:1px solid var(--border);}
+.dh-cmp:first-child{border-top:0;}
+.dh-note{font-size:12.5px;line-height:1.5;color:var(--text-muted);margin:14px 2px 0;}
+.dh-empty{margin:0;padding:16px 0;font-size:14px;color:var(--text-muted);}
+@media (max-width:340px){ .dh-pr,.dh-pax{grid-template-columns:92px minmax(0,1fr) 42px;column-gap:8px;} .dh-row{grid-template-columns:42px minmax(0,1fr) auto;column-gap:10px;} }
 </style>
 <script>
-/* ===== Die Hards tab: season results + competitors to watch (optional, turned on in Settings) ===== */
-/* To add a result:   DH_RESULTS['TSN'] = {place:'2nd', of:6, score:'86.4', scoresLink:'https://…', videoLink:'https://…'}
-   To add a competitor: push {comp:'TSN', name:'Team name', gym:'Gym name', videos:[{label:'Comp, year', url:'https://…'}]} */
-var DH_DIVISIONS = {'TSN':'Youth Flex Level 2'};
+/* ===== Die Hards tab: season results + competitors (optional, turned on in Settings) ===== */
+/* To add a result:   DH_RESULTS['TSN'] = {place:'2nd', of:6, score:'86.4', scoresLink:'https://...', videoLink:'https://...'}
+   To add a team confirmed at a comp: push {comp:'TSN', name:'Team', gym:'Gym', note:'', videos:[{label:'Comp, year', url:'https://...'}]} to DH_RIVALS */
+var DH_DIVISIONS = {'TSN':'Youth Flex Level 2 Small'};
 var DH_NOSCORE = {'Showcase':true};
 var DH_RESULTS = {};
+/* Confirmed at a specific comp */
 var DH_RIVALS = [
-  {comp:'TSN', name:'The Knockouts', gym:'Intensity Athletics', videos:[{label:'LA Marquee 2025', url:'https://www.youtube.com/watch?v=TDWUcmThDLk'}]}
+  {comp:'TSN', name:'The Knockouts', gym:'Intensity Athletics', note:'On at 4:00 PM, just before us (family schedule, not yet reconfirmed).', videos:[{label:'LA Marquee 2025', url:'https://www.youtube.com/watch?v=TDWUcmThDLk'},{label:'Cali Finale 2026 (Junior Flex)', url:'https://www.youtube.com/watch?v=Z9CYXfipppk'}]}
 ];
+/* Season watch list, from a parent-compiled tracker. Last season's scores are reference only. */
+var DH_KNOW = [{"name":"Gold Rush Girls","prog":"Florida top dogs Lakewood","ig":"https://www.instagram.com/fltopdog","note":"Competed as Aces last season. Won Summit (Small).","last":"98.60 Youth Summit · 98.73 Cheersport","summit":98.6,"best":{"v":98.73,"ev":"Cheersport"},"videos":[{"label":"Summit 2026","url":"https://tv.varsity.com/video/15818341-florida-top-dog-all-stars-aces-lakewood-ranch-2026-l2-youth-flex-small-day-2-2026-the-youth-summit"},{"label":"Cheersport 2026","url":"https://tv.varsity.com/video/15443937-florida-top-dog-all-stars-aces-2026-l2-youth-flex-small-day-2-2026-cheersport-national-all-star-cheerleading-championship"}]},{"name":"Diamonds","prog":"Star athletics ATL","ig":"https://www.instagram.com/star_y2diamonds","note":"Won Summit last season (then Medium, now Small)."},{"name":"Bullseye","prog":"Tech Cheer – Cedar Park","note":"Staying in division.","last":"96.08 Youth Summit · 97.47 NCA","summit":96.08,"best":{"v":97.47,"ev":"NCA"},"videos":[{"label":"Summit 2026","url":"https://tv.varsity.com/video/15818304-tech-cheer-cedar-park-bullseye-2026-l2-youth-flex-small-day-2-2026-the-youth-summit"},{"label":"NCA 2026","url":"https://tv.varsity.com/video/15548079-tech-cheer-bullseye-2026-l2-youth-flex-small-day-2-2026-nca-all-star-national-championship"}]},{"name":"Pink Pearls","prog":"Infinity Allstars","ig":"https://www.instagram.com/ias_pinkpearls","note":"Size TBD (Small last season).","last":"95.94 Cheersport","best":{"v":95.94,"ev":"Cheersport"}},{"name":"Lava Girls","prog":"Rock Cheer Company","ig":"https://www.instagram.com/rockcheercompany","last":"95.93 Youth Summit","summit":95.93,"best":{"v":95.93,"ev":"Youth Summit"},"videos":[{"label":"Summit 2026","url":"https://tv.varsity.com/video/15818166-rock-cheer-company-lava-girls-2026-l2-youth-flex-small-wc-day-2-2026-the-youth-summit"}]},{"name":"Gold","prog":"ATA","ig":"https://www.instagram.com/ata.golddd","last":"95.60 Youth Summit · 95.20 Cheersport","summit":95.6,"best":{"v":95.6,"ev":"Youth Summit"},"videos":[{"label":"Summit 2026","url":"https://tv.varsity.com/video/15817888-ata-gold-2026-l2-youth-flex-small-day-2-2026-the-youth-summit"},{"label":"Cheersport 2026","url":"https://tv.varsity.com/video/15443886-ata-gold-2026-l2-youth-flex-small-day-2-2026-cheersport-national-all-star-cheerleading-championship"}]}];
+var DH_REST = [{"name":"Young Gunz","prog":"Top Gun - Queen Creek, AZ","ig":"https://www.instagram.com/tg.younggunz"},{"name":"Reef Sharks","prog":"Premier Athletics - Knoxville West"},{"name":"Vaders","prog":"CheerVille - Rocket City"},{"name":"Reign","prog":"Wylie Elite","ig":"https://www.instagram.com/wylieelite"},{"name":"Cosmic","prog":"Charlotte Allstar","note":"Competed as Cosmic Purple last year. No Varsity events."},{"name":"Rapture","prog":"Top gun All-Star","ig":"https://www.instagram.com/topgunrapture"},{"name":"Youth blaque","prog":"Fame Allstars Midlow","ig":"https://www.instagram.com/fame_youthblaque"},{"name":"Radiant Rays","prog":"Stingray Allstars - Wisconsin","ig":"https://www.instagram.com/stingrays_radiant","note":"Didn't advance past the WC round at Summit last season."},{"name":"Sweet TGs","prog":"Top Gun AllStar - Savannah","ig":"https://www.instagram.com/topgunjags912","note":"Didn't advance past prelims at Summit last season."},{"name":"RoyalCats","prog":"Kentucky Pride All Stars","ig":"https://www.instagram.com/kyprideallstars","note":"Size TBD."},{"name":"Youth Blue","prog":"American Cheer"},{"name":"Vikings","prog":"Cheer extreme Kernersville"},{"name":"Cobraz","prog":"CheerForce - Semi Valley"},{"name":"Megamind","prog":"CheerVille - Henderson"},{"name":"Pop Rocks","prog":"Steel Athletics"},{"name":"Hydro","prog":"Steel Athletics"},{"name":"Iron Girls","prog":"Steel Athletics"},{"name":"Vortex","prog":"World Cup - Ohio"},{"name":"Spellbound","prog":"Stingray Allstars - Columbus"},{"name":"Bombshell","prog":"CheerVille - OH"},{"name":"Slate","prog":"Kansas City Athletic Center"},{"name":"Gladiators","prog":"Sonic Elite Olympia"},{"name":"Dusk","prog":"Prodigy Allstars"}];
+/* THIS season's scores. Add one line per team per comp; the chart and the score on each team switch to this season automatically.
+   Y2K's own scores come from DH_RESULTS above. Example: DH_SCORES.push({team:'Gold Rush Girls', prog:'Florida', event:'TSN', score:97.1}); */
+var DH_SCORES = [];
+/* Y2K's score last season (verified from the Youth Summit 2026 finals results) */
+var DH_Y2K_LAST = {score:97.4, event:'Youth Summit', note:'L2 Youth Small'};
+var DH_BID = '';   /* e.g. 'Youth Summit bid: Full paid' - shows in Our season when filled in */
 function dhEsc(s){ return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 function dhDateBlock(iso){ var d=new Date(iso+'T00:00:00'); return '<div class="dh-date">'+d.toLocaleDateString('en-US',{month:'short'}).toUpperCase()+'<b>'+d.getDate()+'</b></div>'; }
+function dhLink(x){ if(/varsity\.com/.test(x.url)) window.__dhVarsity=true; return '<a href="'+dhEsc(x.url)+'" target="_blank" rel="noopener">▶ '+dhEsc(x.label)+'</a>'; }
+function dhNum(x){ var n=parseFloat(x); return isNaN(n)?null:n; }
+function dhScoresFor(t){ return DH_SCORES.filter(function(x){ return x.team===t.name && (!x.prog || (t.prog||'').toLowerCase().indexOf(String(x.prog).toLowerCase())>-1); }); }
+function dhBest(t){
+  var cur=dhScoresFor(t).filter(function(x){return dhNum(x.score)!==null;}).sort(function(a,b){return dhNum(b.score)-dhNum(a.score);})[0];
+  if(cur) return {v:dhNum(cur.score), ev:cur.event, now:true};
+  if(t.best) return {v:t.best.v, ev:t.best.ev, now:false};
+  return null;
+}
+function dhTeam(t){
+  var links=(t.videos||[]).map(dhLink); if(t.ig) links.push('<a href="'+dhEsc(t.ig)+'" target="_blank" rel="noopener">Instagram</a>');
+  var b=dhBest(t);
+  var score=b?'<div class="dh-score"><b>'+b.v.toFixed(2)+'</b>'+dhEsc(b.ev)+(b.now?' \u00B7 this season':' \u00B7 last season')+'</div>':'';
+  var sub=(t.prog||t.gym?'<small>'+dhEsc(t.prog||t.gym)+'</small>':'')+(t.note?'<small>'+dhEsc(t.note)+'</small>':'');
+  return '<div class="dh-team"><div class="dh-team-top"><div class="dh-main"><b>'+dhEsc(t.name)+'</b>'+sub+'</div>'+score+'</div>'+(links.length?'<div class="dh-links">'+links.join('')+'</div>':'')+'</div>';
+}
+function dhCompact(t){
+  var sub=[t.prog||'']; if(t.note) sub.push(t.note);
+  return '<div class="dh-cmp"><div class="dh-main"><b>'+dhEsc(t.name)+'</b><small>'+dhEsc(sub.filter(Boolean).join(' · '))+'</small></div>'+(t.ig?'<a class="dh-ig" href="'+dhEsc(t.ig)+'" target="_blank" rel="noopener">Instagram</a>':'')+'</div>';
+}
+function dhChart(){
+  /* Y2K's best score this season (from results) */
+  var y2k=null; Object.keys(DH_RESULTS).forEach(function(k){ var n=dhNum(DH_RESULTS[k].score); if(n!==null && (y2k===null||n>y2k)) y2k=n; });
+  DH_SCORES.forEach(function(x){ if(x.team==='Y2K'){ var n=dhNum(x.score); if(n!==null && (y2k===null||n>y2k)) y2k=n; } });
+  /* every other team's best score this season */
+  var cur={}; DH_SCORES.forEach(function(x){ var n=dhNum(x.score); if(x.team==='Y2K'||n===null) return; if(cur[x.team]===undefined||n>cur[x.team]) cur[x.team]=n; });
+  var thisSeason=Object.keys(cur).length>0 || y2k!==null;
+  var pts, title, sub, usV;
+  if(thisSeason){
+    pts=Object.keys(cur).map(function(k){return {n:k,v:cur[k]};});
+    usV=y2k; title='This season\u2019s scores'; sub='Y2K and the top four teams, best score so far. Youth Flex Level 2 Small.';
+  } else {
+    pts=DH_KNOW.filter(function(t){return t.summit;}).map(function(t){return {n:t.name,v:t.summit};});
+    usV=DH_Y2K_LAST?dhNum(DH_Y2K_LAST.score):null; title='Youth Summit 2026 finals'; sub='Final scores. Y2K was in '+(DH_Y2K_LAST&&DH_Y2K_LAST.note?DH_Y2K_LAST.note:'a different division')+'; the others in L2 Youth Flex Small. Last season only \u2014 not this year\u2019s results.';
+  }
+  pts=pts.sort(function(a,b){return b.v-a.v;}).slice(0,4);
+  if(!pts.length && usV===null) return '';
+  var vals=pts.map(function(p){return p.v;}); if(usV!==null) vals.push(usV);
+  var lo=Math.floor(Math.min.apply(null,vals))-1, hi=Math.ceil(Math.max.apply(null,vals))+1; if(lo%2) lo--; if(hi%2) hi++;
+  function pos(v){ return ((v-lo)/(hi-lo)*100).toFixed(2); }
+  var ticks=[]; for(var k=lo;k<=hi;k+=2) ticks.push(k);
+  var grid=ticks.map(function(k){return '<i class="dh-gl" style="left:'+pos(k)+'%"></i>';}).join('');
+  function row(name,v,isUs,tip){
+    return '<div class="dh-pr" title="'+dhEsc(tip)+'"><div class="dh-pn'+(isUs?' us':'')+'">'+dhEsc(name)+'</div><div class="dh-pt">'+grid+
+      (v===null?'<span class="dh-pend">Result to come</span>':'<i class="dh-dot'+(isUs?' us':'')+'" style="left:'+pos(v)+'%"></i>')+
+      '</div><div class="dh-pv'+(v===null?' pend':'')+'">'+(v===null?'\u2014':v.toFixed(2))+'</div></div>';
+  }
+  var all=pts.map(function(p){return {n:p.n,v:p.v,us:false};});
+  if(usV!==null || thisSeason) all.push({n:'Y2K',v:usV,us:true});
+  all.sort(function(a,b){ return (b.v===null?-1:b.v)-(a.v===null?-1:a.v); });
+  var rowsHtml=all.map(function(p){return row(p.n,p.v,p.us,p.v===null?p.n+': result to come':p.n+': '+p.v.toFixed(2));}).join('');
+  var axis='<div class="dh-pax"><div class="dh-axis">'+ticks.map(function(k){return '<span style="left:'+pos(k)+'%">'+k+'</span>';}).join('')+'</div></div>';
+  return '<div class="section-title">'+title+'</div><div class="card dh-card"><div class="dh-chart-h"><small>'+sub+'</small></div><div class="dh-plot">'+rowsHtml+axis+'</div>'+
+    '<div class="dh-key">'+(all.some(function(p){return p.us;})?'<span><i class="us"></i>Y2K</span>':'')+'<span><i></i>'+(all.some(function(p){return p.us;})?'Other teams':'Teams on our radar')+'</span></div></div>';
+}
 function renderDieHards(){
   var el=document.getElementById('dhBody'); if(!el) return;
+  window.__dhVarsity=false;
   var today=todayISO();
   var comps=competitions.filter(function(c){return c.attending!==false && !c.showoff;}).sort(function(a,b){return a.start<b.start?-1:1;});
   var past=comps.filter(function(c){return (c.end||c.start)<today;}), upcoming=comps.filter(function(c){return (c.end||c.start)>=today;}).slice(0,3);
   var rows=past.concat(upcoming).map(function(c){
     var r=DH_RESULTS[c.name], div=DH_DIVISIONS[c.name]||'', isPast=(c.end||c.start)<today, right='', sub=div;
     if(r){
-      right='<b>'+dhEsc(r.place||'')+'</b>'+(r.score?dhEsc(r.score):'');
+      right='<div class="dh-res"><b>'+dhEsc(r.place||'')+'</b>'+(r.score?dhEsc(r.score):'')+'</div>';
       var lk=[]; if(r.scoresLink) lk.push('<a href="'+dhEsc(r.scoresLink)+'" target="_blank" rel="noopener">Scores</a>'); if(r.videoLink) lk.push('<a href="'+dhEsc(r.videoLink)+'" target="_blank" rel="noopener">Video</a>');
-      if(r.of) sub=(div?div+' · ':'')+'of '+r.of+' teams'; if(lk.length) sub+=(sub?' · ':'')+lk.join(' · ');
-    } else if(DH_NOSCORE[c.name]){ right='Performance only'; }
-    else if(isPast){ right='Result to come'; }
-    else { var n=daysUntil(c.start); right=n===0?'Today':(n===1?'Tomorrow':'in '+n+' days'); }
-    return '<div class="dh-row">'+dhDateBlock(c.start)+'<div class="dh-main"><b>'+dhEsc(c.name)+'</b>'+(sub?'<small>'+sub+'</small>':'')+'</div><div class="dh-right">'+right+'</div></div>';
+      if(r.of) sub=(div?div+' · ':'')+'of '+r.of+' teams';
+      if(lk.length) sub+=(sub?' · ':'')+lk.join(' · ');
+    } else if(DH_NOSCORE[c.name]){ right='<span class="dh-pill quiet">Performance only</span>'; }
+    else if(isPast){ right='<span class="dh-pill quiet">Result to come</span>'; }
+    else { var n=daysUntil(c.start); right='<span class="dh-pill">'+(n===0?'Today':(n===1?'Tomorrow':'In '+n+' days'))+'</span>'; }
+    return '<div class="dh-row">'+dhDateBlock(c.start)+'<div class="dh-main"><b>'+dhEsc(c.name)+'</b>'+(sub?'<small>'+sub+'</small>':'')+'</div>'+right+'</div>';
   }).join('');
-  var html='<div class="section-title">Our season</div><div class="card dh-list">'+(rows||'<p class="dh-empty">Results will show here after each comp.</p>')+'</div>';
+  if(DH_BID) rows+='<div class="dh-row"><div></div><div class="dh-main"><b>'+dhEsc(DH_BID)+'</b></div><div></div></div>';
+  var html='<div class="section-title">Our season</div><div class="card dh-card">'+(rows||'<p class="dh-empty">Results will show here after each comp.</p>')+'</div>';
+  /* confirmed opponents, one block per comp */
   var groups=[], seen={}; DH_RIVALS.forEach(function(v){ if(!seen[v.comp]){ seen[v.comp]=1; groups.push(v.comp); } });
-  var varsity=false, rh=groups.map(function(g){
+  groups.forEach(function(g){
     var c=competitions.filter(function(x){return x.name===g;})[0], div=DH_DIVISIONS[g]||'';
-    var list=DH_RIVALS.filter(function(v){return v.comp===g;}).map(function(v){
-      var vids=(v.videos||[]).map(function(x){ if(/varsity\.com/.test(x.url)) varsity=true; return '<a href="'+dhEsc(x.url)+'" target="_blank" rel="noopener">▶ Watch'+(x.label?' · '+dhEsc(x.label):'')+'</a>'; }).join('');
-      return '<div class="dh-rival"><div class="dh-main"><b>'+dhEsc(v.name)+'</b>'+(v.gym?'<small>'+dhEsc(v.gym)+'</small>':'')+'</div><div class="dh-vids">'+vids+'</div></div>';
-    }).join('');
-    return '<div class="dh-group">'+dhEsc(g)+(div?' · '+dhEsc(div):'')+(c?' · '+fmtDate(c.start).replace(/, \d{4}$/,''):'')+'</div>'+list;
-  }).join('');
-  html+='<div class="section-title">Competitors to watch</div><div class="card dh-list">'+(rh||'<p class="dh-empty">Teams in our division will show here as they are added.</p>')+'</div>'+(varsity?'<p class="dh-note">Varsity TV videos may ask you to sign in.</p>':'');
+    html+='<div class="section-title">'+dhEsc(g)+' competitors</div><div class="card dh-card">'+DH_RIVALS.filter(function(v){return v.comp===g;}).map(function(v){return dhTeam({name:v.name,prog:v.gym,note:v.note,videos:v.videos});}).join('')+'</div>';
+  });
+  var chart=dhChart();
+  if(chart) html+=chart;
+  if(DH_KNOW.length) html+='<div class="section-title">Teams to know</div><div class="card dh-card">'+DH_KNOW.map(dhTeam).join('')+'</div>';
+  if(DH_REST.length) html+='<details class="card dh-more"><summary><span>Everyone else on our radar<small>'+DH_REST.length+' more teams</small></span></summary><div class="dh-body">'+DH_REST.map(dhCompact).join('')+'</div></details>';
+  html+='<p class="dh-note">Compiled by a team parent. Teams can change divisions, so we’ll confirm who’s at each comp as lineups post.'+(window.__dhVarsity?' Varsity TV videos may ask you to sign in.':'')+'</p>';
   el.innerHTML=html;
 }
 function hsRivalsOn(){ return !!hsLoad().rivals; }
@@ -5170,5 +5280,9 @@ function hsSyncRivals(){
 function hsRivals(on){ var s=hsLoad(); s.rivals=!!on; hsSave(s); hsSyncRivals(); if(on){ closeShowcaseDetails(); goTab('rivals'); } else hsRenderSettings(); }
 (function(){ hsSyncRivals(); })();
 </script>
+
+
+
+
 </body>
 </html>

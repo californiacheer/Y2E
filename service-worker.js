@@ -1,4 +1,4 @@
-const CACHE_NAME = 'the-app-hub-v49';
+const CACHE_NAME = 'the-app-hub-v54';
 const CORE_ASSETS = ['./','./index.html','./manifest.json','./icons/icon-192.png','./icons/icon-512.png','./apps/y2k.html','./apps/shazam.html','./apps/whitegold.html','./apps/sugar.html'];
 self.addEventListener('install', (event) => {
   self.skipWaiting();
