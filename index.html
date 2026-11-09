@@ -1538,7 +1538,6 @@ html.page-navy .app-disclaimer button.disc-link{color:rgba(255,255,255,.92);}
   <section class="panel active" id="panel-home">
     <div class="hero-grid" id="heroGrid"></div>
 
-    <div id="wearSection"></div>
 
     <div class="section-title">Coming up</div>
     <div id="upcomingEventsCard"></div>
@@ -3075,7 +3074,7 @@ function renderPersonalList(){
   const REPEAT_LABEL = {weekly:'Weekly', biweekly:'Every 2 weeks', monthly:'Monthly'};
   el.innerHTML = list.slice().sort((a,b)=>new Date(a.date)-new Date(b.date)).map(p=>`
     <div class="cal-personal-row">
-      <div><b>${fmtDate(p.date)}${(p.time && typeof hsTime12==='function')?' · '+hsTime12(p.time):''}</b>${p.recurrence?` <span style="color:var(--accent); font-weight:600;">(${REPEAT_LABEL[p.recurrence.freq]})</span>`:''} — ${p.title}${(p.private && budgetOn()) ? ` <span style="color:var(--accent); font-weight:600;">(${bMoney(privateCost(p.private.type,p.private.mins))})</span>` : ''}${p.note?` <span style="color:var(--text-muted);">(${p.note})</span>`:''}</div>
+      <div><b>${fmtDate(p.date)}${(p.time && typeof hsTime12==='function')?' · '+hsTime12(p.time):''}</b>${p.recurrence?` <span style="color:var(--accent); font-weight:600;">(${REPEAT_LABEL[p.recurrence.freq]})</span>`:''}<span class="pe-t">${p.title}</span>${(p.private && budgetOn()) ? ` <span style="color:var(--accent); font-weight:600;">(${bMoney(privateCost(p.private.type,p.private.mins))})</span>` : ''}${p.note?` <span style="color:var(--text-muted);">(${p.note})</span>`:''}</div>
       <span><button type="button" class="cal-add-btn" data-id="${p.id}">Add to calendar</button><button type="button" class="cal-del-btn" data-id="${p.id}">Remove</button></span>
     </div>
   `).join('');
@@ -4859,6 +4858,12 @@ initDisclaimer({"show": true, "type": "independent", "entity": "the team’s gym
 .cal-also{display:flex;align-items:center;gap:10px;font-size:13.5px;font-weight:600;}
 .cal-also input{width:18px;height:18px;}
 .cm-body .linkbtn.wide{display:flex;margin-top:10px;}
+.cal-personal-row{flex-direction:column; align-items:stretch; gap:6px; padding:12px 0;}
+.cal-personal-row>div{min-width:0; overflow-wrap:anywhere; line-height:1.35;}
+.cal-personal-row .pe-t{display:block; font-weight:600; font-size:14.5px; margin-top:2px;}
+.cal-personal-row>span{display:flex; align-items:center; gap:18px;}
+.cal-personal-row .cal-add-btn,.cal-personal-row .cal-del-btn{font-size:13px; padding:4px 0; margin:0; line-height:1.2;}
+.cal-personal-row .cal-add-btn{color:var(--accent); font-weight:700;}
 </style>
 <script>
 /* ===== Settings, Home layout and personal events in Coming up ===== */
@@ -4940,7 +4945,7 @@ function personalComingUp(now, monday, sunday){
   loadPersonalEvents().forEach(function(p){
     personalEventDates(p).forEach(function(d){
       var dt=new Date(d+'T00:00:00');
-      if(dt>=now && dt>=monday && dt<=sunday) out.push({emoji:'📌',title:p.title,date:d,end:d,when:hsTime12(p.time),meta:p.note||'',badgeType:'mine',badgeLabel:'Mine'});
+      if(dt.getTime()===now.getTime()) out.push({emoji:'📌',title:p.title,date:d,end:d,when:hsTime12(p.time),meta:p.note||'',badgeType:'mine',badgeLabel:'Mine'});
     });
   });
   return out;
