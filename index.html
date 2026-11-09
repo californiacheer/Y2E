@@ -1519,6 +1519,7 @@ html.page-navy .app-disclaimer button.disc-link{color:rgba(255,255,255,.92);}
   <nav class="tabs" id="tabs">
     <button data-tab="home" class="active"><svg viewBox="0 0 24 24"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h5v-6h4v6h5V10"/></svg>Home</button>
     <button data-tab="schedule"><svg viewBox="0 0 24 24"><circle cx="12" cy="8.5" r="5"/><path d="M9 12.8L7 21l5-3 5 3-2-8.2"/></svg>Comp Schedule</button>
+    <button data-tab="rivals" hidden><svg viewBox="0 0 24 24"><path d="M8 4h8v5a4 4 0 0 1-8 0z"/><path d="M8 6H5a3 3 0 0 0 3 4"/><path d="M16 6h3a3 3 0 0 1-3 4"/><path d="M12 13v4"/><path d="M8.5 20h7"/></svg>Die Hards</button>
     <button data-tab="practice"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>Practice</button>
     <button data-tab="fundraisers"><svg viewBox="0 0 24 24"><path d="M12 3l2.6 5.9 6.4.6-4.8 4.3 1.4 6.3L12 16.9 6.4 20.1l1.4-6.3-4.8-4.3 6.4-.6z"/></svg>Events</button>
     <button data-tab="calendar"><svg viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="15" rx="2.5"/><path d="M3.5 9.5h17"/><path d="M8 3v4"/><path d="M16 3v4"/></svg>Calendar</button>
@@ -1577,6 +1578,11 @@ html.page-navy .app-disclaimer button.disc-link{color:rgba(255,255,255,.92);}
   </section>
 
   <!-- PRACTICE -->
+  <section class="panel" id="panel-rivals">
+    <p class="dh-lede">Who we're up against and how the season is going.</p>
+    <div id="dhBody"></div>
+  </section>
+
   <section class="panel" id="panel-practice">
     <div id="practiceBanner"></div>
     <div class="section-title">Weekly Practice Schedule</div>
@@ -1633,6 +1639,12 @@ html.page-navy .app-disclaimer button.disc-link{color:rgba(255,255,255,.92);}
     <button type="button" class="pay-btn" id="calAddBtn" style="margin-top:12px;">+ Add a personal event</button>
     <div class="card" id="calAddForm" style="display:none; margin-top:12px;">
       <div style="display:flex; flex-direction:column; gap:12px;">
+        <div id="calFormHead" style="display:none; font-size:16px; font-weight:800;"></div>
+        <div id="calEditScope" style="display:none; flex-direction:column; gap:8px; padding:12px 14px; border:1px solid var(--border); border-radius:12px; background:var(--surface-2);">
+          <div style="font-size:13px; font-weight:700;">This repeats. Change…</div>
+          <label class="cal-also"><input type="radio" name="calEditScope" value="all" checked> All of them, including past ones</label>
+          <label class="cal-also"><input type="radio" name="calEditScope" value="from"> From a date on (earlier ones stay as they are)</label>
+        </div>
         <label style="font-size:13px; font-weight:600; display:none;" id="calFormKindWrap">What are you adding?
           <select id="calFormKind" class="cal-input">
             <option value="">A personal event</option>
@@ -1651,7 +1663,7 @@ html.page-navy .app-disclaimer button.disc-link{color:rgba(255,255,255,.92);}
         <label style="font-size:13px; font-weight:600;">Title
           <input type="text" id="calFormTitle" placeholder="e.g. Private lesson with Coach J" class="cal-input">
         </label>
-        <label style="font-size:13px; font-weight:600;">Date (first occurrence)
+        <label style="font-size:13px; font-weight:600;"><span id="calDateLbl">Date (first occurrence)</span>
           <input type="date" id="calFormDate" class="cal-input">
         </label>
         <label style="font-size:13px; font-weight:600;">Repeats
@@ -3073,7 +3085,7 @@ function renderPersonalList(){
   el.innerHTML = list.slice().sort((a,b)=>new Date(a.date)-new Date(b.date)).map(p=>`
     <div class="cal-personal-row">
       <div><b>${fmtDate(p.date)}${(p.time && typeof hsTime12==='function')?' · '+hsTime12(p.time):''}</b>${p.recurrence?` <span style="color:var(--accent); font-weight:600;">(${REPEAT_LABEL[p.recurrence.freq]})</span>`:''}<span class="pe-t">${p.title}</span>${(p.private && budgetOn()) ? ` <span style="color:var(--accent); font-weight:600;">(${bMoney(privateCost(p.private.type,p.private.mins))})</span>` : ''}${p.note?` <span style="color:var(--text-muted);">(${p.note})</span>`:''}</div>
-      <span><button type="button" class="cal-add-btn" data-id="${p.id}">Add to calendar</button><button type="button" class="cal-del-btn" data-id="${p.id}">Remove</button></span>
+      <span><button type="button" class="cal-add-btn" data-id="${p.id}">Add to calendar</button><button type="button" class="cal-edit-btn" data-id="${p.id}">Edit</button><button type="button" class="cal-del-btn" data-id="${p.id}">Remove</button></span>
     </div>
   `).join('');
 }
@@ -3110,6 +3122,7 @@ document.getElementById('calFormRepeat').addEventListener('change', (e)=>{
   document.getElementById('calFormUntilWrap').style.display = e.target.value ? 'block' : 'none';
 });
 document.getElementById('calFormSave').addEventListener('click', ()=>{
+  if(window.calEditId){ calSaveEdit(); return; }
   let title = document.getElementById('calFormTitle').value.trim();
   const date = document.getElementById('calFormDate').value;
   const priv = (typeof calPrivateSelection === 'function') ? calPrivateSelection() : null;
@@ -3142,6 +3155,9 @@ document.getElementById('calFormSave').addEventListener('click', ()=>{
 document.getElementById('calPersonalList').addEventListener('click', (e)=>{
   const btn = e.target.closest('.cal-del-btn');
   if(!btn) return;
+  { const tg = loadPersonalEvents().filter(p=>p.id===btn.dataset.id)[0];
+    if(tg && tg.recurrence && personalEventDates(tg).some(d=>d<=todayISO()) && (tg.private || personalEventDates(tg).some(d=>d<todayISO()))){ calRemoveSheet(tg); return; }
+    if(tg && (tg.recurrence||tg.private) && !confirm('Remove "'+tg.title+'"'+(tg.recurrence?' and every repeat of it':'')+'?'+(tg.private?' Past lessons will also come out of your budget totals.':'')+'\n\nTo change the day or time instead, tap Edit and choose "From a date on".')) return; }
   const list = loadPersonalEvents().filter(p=>p.id!==btn.dataset.id);
   savePersonalEvents(list);
   renderPersonalList();
@@ -4862,6 +4878,7 @@ initDisclaimer({"show": true, "type": "independent", "entity": "the team’s gym
 .cal-personal-row>span{display:flex; align-items:center; gap:18px;}
 .cal-personal-row .cal-add-btn,.cal-personal-row .cal-del-btn{font-size:13px; padding:4px 0; margin:0; line-height:1.2;}
 .cal-personal-row .cal-add-btn{color:var(--accent); font-weight:700;}
+.cal-edit-btn{background:none;border:0;color:var(--accent);font:inherit;font-size:13px;font-weight:700;text-decoration:underline;cursor:pointer;padding:4px 0;margin:0;line-height:1.2;}
 .pay-card #feeToggleBtn{background:none !important; border:0 !important; box-shadow:none !important; border-radius:0 !important; color:var(--text) !important; font-size:13.5px !important; font-weight:700 !important; padding:2px 0 !important; line-height:1.3 !important; height:auto !important; min-height:0 !important; width:auto !important; text-decoration:underline; text-underline-offset:3px; cursor:pointer;}
 .pay-card #feeToggleBtn:hover{background:none !important; color:var(--accent) !important; filter:none !important;}
 </style>
@@ -4916,6 +4933,7 @@ function hsRenderSettings(){
   if(typeof budgetOffered==='function' && budgetOffered()){
     html+='<label class="set-row"><span class="set-copy"><b>Track my budget</b><small>Adds a private Budget tab. Saved only on this phone.</small></span><span class="bud-switch"><input type="checkbox" '+(loadBudget().enabled?'checked':'')+' onchange="hsBudget(this.checked)" aria-label="Track my budget"><span class="bud-slider"></span></span></label>';
   }
+  if(document.getElementById('panel-rivals')){ html+='<label class="set-row"><span class="set-copy"><b>Die Hards tab</b><small>Season results and the teams we compete against. Saved only on this phone.</small></span><span class="bud-switch"><input type="checkbox" '+(hsRivalsOn()?'checked':'')+' onchange="hsRivals(this.checked)" aria-label="Die Hards tab"><span class="bud-slider"></span></span></label>'; }
   html+='<div class="set-h">Home tab</div><p class="set-note">Choose what shows on Home and the order. This is just for you.</p><div class="set-list">';
   order.forEach(function(k,i){
     var g=HS_GROUPS.filter(function(x){return x.key===k;})[0]; if(!g) return;
@@ -4991,5 +5009,166 @@ document.addEventListener('click', function(e){ var b=e.target.closest && e.targ
 })();
 </script>
 
+<script>
+/* ===== Edit a personal event (and change a repeating one from a date on) ===== */
+window.calEditId = null;
+function calEl(id){ return document.getElementById(id); }
+function calResetForm(){
+  window.calEditId = null;
+  ['calFormTitle','calFormDate','calFormTime','calFormNote','calFormUntil'].forEach(function(id){ var e=calEl(id); if(e) e.value=''; });
+  calEl('calFormRepeat').value=''; calEl('calFormUntilWrap').style.display='none';
+  if(typeof resetCalKind==='function') resetCalKind();
+  calEl('calEditScope').style.display='none'; calEl('calFormHead').style.display='none';
+  calEl('calDateLbl').textContent='Date (first occurrence)'; calEl('calFormSave').textContent='Save';
+  var al=calEl('calFormAlso'); if(al) al.checked=true;
+  var r=document.querySelector('input[name="calEditScope"][value="all"]'); if(r) r.checked=true;
+}
+function calStartEdit(id){
+  var p=loadPersonalEvents().filter(function(x){return x.id===id;})[0]; if(!p) return;
+  calResetForm(); window.calEditId=id;
+  calEl('calAddForm').style.display='block';
+  calEl('calFormHead').style.display='block'; calEl('calFormHead').textContent='Edit event';
+  calEl('calFormTitle').value = (p.private && /^Private lesson —/.test(p.title)) ? '' : p.title;
+  calEl('calFormDate').value=p.date; calEl('calFormTime').value=p.time||''; calEl('calFormNote').value=p.note||'';
+  calEl('calFormRepeat').value = p.recurrence ? p.recurrence.freq : '';
+  calEl('calFormUntilWrap').style.display = p.recurrence ? 'block' : 'none';
+  calEl('calFormUntil').value = (p.recurrence && p.recurrence.until) || '';
+  if(p.private && typeof calPrivateSelection==='function'){
+    var k=calEl('calFormKind'); k.value='private'; k.dispatchEvent(new Event('change'));
+    var t=calEl('calPrivType'); t.value=p.private.type; t.dispatchEvent(new Event('change'));
+    var m=calEl('calPrivMins'); m.value=String(p.private.mins); m.dispatchEvent(new Event('change'));
+  }
+  if(p.recurrence) calEl('calEditScope').style.display='flex';
+  calEl('calFormSave').textContent='Save changes';
+  var al=calEl('calFormAlso'); if(al) al.checked=false;
+  requestAnimationFrame(function(){ calEl('calAddForm').scrollIntoView({behavior:'smooth',block:'center'}); });
+}
+function calNextOccurrence(p){ var t=todayISO(), d=personalEventDates(p).filter(function(x){return x>=t;})[0]; return d || p.date; }
+document.addEventListener('change', function(e){
+  if(!e.target || e.target.name!=='calEditScope' || !window.calEditId) return;
+  var p=loadPersonalEvents().filter(function(x){return x.id===window.calEditId;})[0]; if(!p) return;
+  if(e.target.value==='from'){ calEl('calDateLbl').textContent='First lesson with the new schedule'; calEl('calFormDate').value=calNextOccurrence(p); }
+  else { calEl('calDateLbl').textContent='Date (first occurrence)'; calEl('calFormDate').value=p.date; }
+});
+function calSaveEdit(){
+  var list=loadPersonalEvents(), i=-1; list.forEach(function(x,n){ if(x.id===window.calEditId) i=n; });
+  if(i<0){ calResetForm(); return; }
+  var old=list[i];
+  var title=calEl('calFormTitle').value.trim(), date=calEl('calFormDate').value, note=calEl('calFormNote').value.trim(),
+      time=calEl('calFormTime').value, repeat=calEl('calFormRepeat').value, until=calEl('calFormUntil').value;
+  var priv=(typeof calPrivateSelection==='function') ? calPrivateSelection() : (old.private||null);
+  if(priv && !title) title='Private lesson — '+priv.type+' ('+priv.mins+' min)';
+  if(!title || !date) return;
+  var sc=document.querySelector('input[name="calEditScope"]:checked'), scope=(old.recurrence && sc) ? sc.value : 'all';
+  function build(id){ var ev={id:id,title:title,date:date,note:note}; if(time) ev.time=time; if(priv) ev.private=priv; if(repeat){ ev.recurrence={freq:repeat}; if(until) ev.recurrence.until=until; } return ev; }
+  var saved;
+  if(scope==='from' && date>old.date){
+    var last=addDaysISO(date,-1), ou=old.recurrence.until;
+    old.recurrence=Object.assign({},old.recurrence,{until:(ou && ou<last)?ou:last});
+    saved=build('p'+Date.now()); list.push(saved);
+  } else { saved=build(old.id); list[i]=saved; }
+  savePersonalEvents(list);
+  var also=calEl('calFormAlso') && calEl('calFormAlso').checked;
+  calResetForm(); calEl('calAddForm').style.display='none';
+  renderPersonalList(); renderCalendarGrid(); scrollCalendarTop();
+  if(also) setTimeout(function(){ openAddToCalendar(saved.id); },60);
+}
+document.addEventListener('click', function(e){
+  var b=e.target.closest && e.target.closest('.cal-edit-btn'); if(b){ e.preventDefault(); calStartEdit(b.dataset.id); }
+});
+calEl('calFormCancel').addEventListener('click', calResetForm);
+calEl('calAddBtn').addEventListener('click', function(){ if(window.calEditId) calResetForm(); });
+</script>
+
+<script>
+/* ===== Removing a repeating event keeps past (paid) occurrences by default ===== */
+function calRemoveSheet(p){
+  var past=personalEventDates(p).filter(function(d){return d<=todayISO();}).length;
+  var html='<p class="set-note">'+past+' of these '+(p.private?'lessons are':'are')+' already in the past'+(p.private?' and counted as paid in your budget':'')+'. Keep them?</p>'+
+    '<a class="linkbtn wide" href="#" onclick="calStopSeries(\''+p.id+'\');return false;"><span class="ico">✅</span> Stop it after today &middot; keep past ones</a>'+
+    '<a class="linkbtn wide" href="#" onclick="calDeleteAll(\''+p.id+'\');return false;"><span class="ico">🗑️</span> Delete everything, including past ones</a>'+
+    (p.private?'<p class="set-note" style="margin-top:14px">Deleting everything also removes the past lessons from your budget totals.</p>':'');
+  hsOpen('Remove “'+p.title.replace(/</g,'&lt;')+'”','Repeats '+({weekly:'weekly',biweekly:'every 2 weeks',monthly:'monthly'}[p.recurrence.freq]||''),html);
+}
+function calStopSeries(id){
+  var list=loadPersonalEvents(), t=todayISO();
+  list.forEach(function(p){ if(p.id===id){ var u=p.recurrence.until; p.recurrence=Object.assign({},p.recurrence,{until:(u && u<t)?u:t}); } });
+  savePersonalEvents(list); closeShowcaseDetails(); renderPersonalList(); renderCalendarGrid();
+}
+function calDeleteAll(id){
+  savePersonalEvents(loadPersonalEvents().filter(function(p){return p.id!==id;})); closeShowcaseDetails(); renderPersonalList(); renderCalendarGrid();
+}
+</script>
+<style>
+.dh-lede{margin:0 0 18px;font-size:13.5px;color:var(--text-muted);}
+.dh-list{padding:4px 18px;}
+.dh-row{display:grid;grid-template-columns:50px 1fr auto;gap:12px;align-items:center;padding:13px 0;border-top:1px solid var(--border);}
+.dh-row:first-child{border-top:0;}
+.dh-date{font-size:12px;font-weight:700;color:var(--text-muted);line-height:1.15;text-align:left;}
+.dh-date b{display:block;font-size:19px;color:var(--text);}
+.dh-main b{display:block;font-size:14.5px;overflow-wrap:anywhere;}
+.dh-main small{display:block;font-size:12.5px;color:var(--text-muted);margin-top:1px;overflow-wrap:anywhere;}
+.dh-main a,.dh-right a{color:var(--accent);font-weight:700;font-size:12.5px;text-decoration:underline;}
+.dh-right{text-align:right;font-size:13px;color:var(--text-muted);font-weight:600;white-space:nowrap;}
+.dh-right b{display:block;font-size:17px;color:var(--text);}
+.dh-group{font-size:12px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted);padding:14px 0 2px;border-top:1px solid var(--border);}
+.dh-group:first-child{border-top:0;padding-top:10px;}
+.dh-rival{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;padding:10px 0;}
+.dh-rival .dh-vids{display:flex;flex-direction:column;gap:4px;align-items:flex-end;text-align:right;}
+.dh-note{font-size:12px;color:var(--text-muted);margin:10px 2px 0;}
+.dh-empty{margin:0;padding:14px 0;font-size:13.5px;color:var(--text-muted);}
+</style>
+<script>
+/* ===== Die Hards tab: season results + competitors to watch (optional, turned on in Settings) ===== */
+/* To add a result:   DH_RESULTS['TSN'] = {place:'2nd', of:6, score:'86.4', scoresLink:'https://…', videoLink:'https://…'}
+   To add a competitor: push {comp:'TSN', name:'Team name', gym:'Gym name', videos:[{label:'Comp, year', url:'https://…'}]} */
+var DH_DIVISIONS = {'TSN':'Youth Flex Level 2'};
+var DH_NOSCORE = {'Showcase':true};
+var DH_RESULTS = {};
+var DH_RIVALS = [
+  {comp:'TSN', name:'The Knockouts', gym:'Intensity Athletics', videos:[{label:'LA Marquee 2025', url:'https://www.youtube.com/watch?v=TDWUcmThDLk'}]}
+];
+function dhEsc(s){ return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function dhDateBlock(iso){ var d=new Date(iso+'T00:00:00'); return '<div class="dh-date">'+d.toLocaleDateString('en-US',{month:'short'}).toUpperCase()+'<b>'+d.getDate()+'</b></div>'; }
+function renderDieHards(){
+  var el=document.getElementById('dhBody'); if(!el) return;
+  var today=todayISO();
+  var comps=competitions.filter(function(c){return c.attending!==false && !c.showoff;}).sort(function(a,b){return a.start<b.start?-1:1;});
+  var past=comps.filter(function(c){return (c.end||c.start)<today;}), upcoming=comps.filter(function(c){return (c.end||c.start)>=today;}).slice(0,3);
+  var rows=past.concat(upcoming).map(function(c){
+    var r=DH_RESULTS[c.name], div=DH_DIVISIONS[c.name]||'', isPast=(c.end||c.start)<today, right='', sub=div;
+    if(r){
+      right='<b>'+dhEsc(r.place||'')+'</b>'+(r.score?dhEsc(r.score):'');
+      var lk=[]; if(r.scoresLink) lk.push('<a href="'+dhEsc(r.scoresLink)+'" target="_blank" rel="noopener">Scores</a>'); if(r.videoLink) lk.push('<a href="'+dhEsc(r.videoLink)+'" target="_blank" rel="noopener">Video</a>');
+      if(r.of) sub=(div?div+' · ':'')+'of '+r.of+' teams'; if(lk.length) sub+=(sub?' · ':'')+lk.join(' · ');
+    } else if(DH_NOSCORE[c.name]){ right='Performance only'; }
+    else if(isPast){ right='Result to come'; }
+    else { var n=daysUntil(c.start); right=n===0?'Today':(n===1?'Tomorrow':'in '+n+' days'); }
+    return '<div class="dh-row">'+dhDateBlock(c.start)+'<div class="dh-main"><b>'+dhEsc(c.name)+'</b>'+(sub?'<small>'+sub+'</small>':'')+'</div><div class="dh-right">'+right+'</div></div>';
+  }).join('');
+  var html='<div class="section-title">Our season</div><div class="card dh-list">'+(rows||'<p class="dh-empty">Results will show here after each comp.</p>')+'</div>';
+  var groups=[], seen={}; DH_RIVALS.forEach(function(v){ if(!seen[v.comp]){ seen[v.comp]=1; groups.push(v.comp); } });
+  var varsity=false, rh=groups.map(function(g){
+    var c=competitions.filter(function(x){return x.name===g;})[0], div=DH_DIVISIONS[g]||'';
+    var list=DH_RIVALS.filter(function(v){return v.comp===g;}).map(function(v){
+      var vids=(v.videos||[]).map(function(x){ if(/varsity\.com/.test(x.url)) varsity=true; return '<a href="'+dhEsc(x.url)+'" target="_blank" rel="noopener">▶ Watch'+(x.label?' · '+dhEsc(x.label):'')+'</a>'; }).join('');
+      return '<div class="dh-rival"><div class="dh-main"><b>'+dhEsc(v.name)+'</b>'+(v.gym?'<small>'+dhEsc(v.gym)+'</small>':'')+'</div><div class="dh-vids">'+vids+'</div></div>';
+    }).join('');
+    return '<div class="dh-group">'+dhEsc(g)+(div?' · '+dhEsc(div):'')+(c?' · '+fmtDate(c.start).replace(/, \d{4}$/,''):'')+'</div>'+list;
+  }).join('');
+  html+='<div class="section-title">Competitors to watch</div><div class="card dh-list">'+(rh||'<p class="dh-empty">Teams in our division will show here as they are added.</p>')+'</div>'+(varsity?'<p class="dh-note">Varsity TV videos may ask you to sign in.</p>':'');
+  el.innerHTML=html;
+}
+function hsRivalsOn(){ return !!hsLoad().rivals; }
+function hsSyncRivals(){
+  var btn=document.querySelector('#tabs button[data-tab="rivals"]'), on=hsRivalsOn(); if(!btn) return;
+  btn.hidden=!on;
+  if(on) renderDieHards();
+  var panel=document.getElementById('panel-rivals');
+  if(!on && panel && panel.classList.contains('active')) goTab('home');
+}
+function hsRivals(on){ var s=hsLoad(); s.rivals=!!on; hsSave(s); hsSyncRivals(); if(on){ closeShowcaseDetails(); goTab('rivals'); } else hsRenderSettings(); }
+(function(){ hsSyncRivals(); })();
+</script>
 </body>
 </html>
