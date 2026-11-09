@@ -1,14 +1,13 @@
-// Network-first service worker for a single team app. Upload it next to index.html (same folder).
-const PREFIX = 'teamapp-' + self.registration.scope;
-const CACHE_NAME = PREFIX + '-v45';
+const CACHE_NAME = 'the-app-hub-v45';
+const CORE_ASSETS = ['./','./index.html','./manifest.json','./icons/icon-192.png','./icons/icon-512.png','./apps/y2k.html','./apps/shazam.html','./apps/whitegold.html','./apps/sugar.html'];
 self.addEventListener('install', (event) => {
   self.skipWaiting();
-  event.waitUntil(caches.open(CACHE_NAME).then((c) => c.add(new Request('./', {cache:'reload'})).catch(() => {})));
+  event.waitUntil(caches.open(CACHE_NAME).then((cache) => Promise.all(CORE_ASSETS.map((u) => cache.add(new Request(u, {cache:'reload'})).catch(() => {})))));
 });
 self.addEventListener('activate', (event) => {
-  event.waitUntil(caches.keys().then((keys) => Promise.all(keys.filter((k) => k.startsWith(PREFIX) && k !== CACHE_NAME).map((k) => caches.delete(k)))).then(() => self.clients.claim()));
+  event.waitUntil(caches.keys().then((keys) => Promise.all(keys.filter((k) => k !== CACHE_NAME).map((k) => caches.delete(k)))).then(() => self.clients.claim()));
 });
-// Online: always fetch the newest copy. Offline: fall back to the saved copy.
+// Network first: when online you always get the newest version; the saved copy is only the offline fallback.
 self.addEventListener('fetch', (event) => {
   const req = event.request;
   if (req.method !== 'GET' || new URL(req.url).origin !== self.location.origin) return;
