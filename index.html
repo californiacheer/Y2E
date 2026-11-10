@@ -1,12 +1,12 @@
 <!doctype html>
 <html lang="en">
 <head>
-<script>/* family-hub storage namespace: each child gets their own saved data */(function(){try{var ns=new URLSearchParams(location.search).get('ns');if(!ns)return;var P=Storage.prototype,g=P.getItem,s=P.setItem,r=P.removeItem;P.getItem=function(k){return g.call(this,ns+':'+k)};P.setItem=function(k,v){return s.call(this,ns+':'+k,v)};P.removeItem=function(k){return r.call(this,ns+':'+k)};}catch(e){}})();</script>
-
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex, nofollow, noarchive">
+<link rel="manifest" href="./manifest.json">
 <meta name="theme-color" content="#1688f5">
+<link rel="apple-touch-icon" href="./icons/apple-touch-icon.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Y2K Hub">
@@ -25,7 +25,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="manifest" href="./manifest.json">
 <meta name="theme-color" content="#1688f5">
+<link rel="apple-touch-icon" href="./icons/apple-touch-icon.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Y2K Hub">
@@ -1880,9 +1882,9 @@ const competitions = [
     housing:"optional", rosterLink:"https://apps.ideal-logic.com/embed_preview?id=il_93a91551fea394b9&url=https%3A%2F%2Fapps.ideal-logic.com", rosterLabel:"Event schedule",
     heroLinks:[{label:"Event schedule ›", url:"https://apps.ideal-logic.com/embed_preview?id=il_93a91551fea394b9&url=https%3A%2F%2Fapps.ideal-logic.com"}, {label:"Day plan ›", js:"openTsnDetails()"}], details:true, detailsFn:"openTsnDetails()", detailsLabel:"Day plan",
     dateChanged:true, note:"Date changed — moved from Sun 11/22 to Sat 11/21. <a href=\"https://www.thespiritnetwork.net/sd-tsc\" target=\"_blank\" rel=\"noopener\">Event page →</a>"},
-  {name:"ASCS Champs Grand Nationals", loc:"Aurora, CO · Gaylord Rockies Resort &amp; Convention Center", address:"Gaylord Rockies Resort & Convention Center, Aurora, CO", start:"2026-12-19", end:"2026-12-20", travel:"required",
-    detail:"Team showoffs Wed 12/16. Fly in Thursday 12/17, fly out Monday 12/21. Recommended: stay on-site at the Gaylord Rockies Resort.", housing:"required", bookingDate:"2026-09-10", travelStart:"2026-12-17", travelEnd:"2026-12-21",
-    bookingLinks:[{label:"ASCS housing block (book here)", url:"https://presto.eventpipe.com/event/1525a7d2-eb0c-4823-8240-3e4895689ee5"}, {label:"Group block booking info (PDF)", url:"https://6q39gws4.r.us-east-1.awstrack.me/L0/https:%2F%2Ffiles.iclasspro.com%2F32838%2Fstudents%2F1789007956.California_All_Stars_ATHLETES_-_Champs_-_Group_Block_Preview-compressed.pdf/1/010001a0893458f4-ce3ddfa0-60d9-49fd-982b-bd23d340dc62-000000/k0NB4BkE02Kl9kEYYv5ArnHOvho=473"}],
+  {name:"ASCS Champs Grand Nationals", extraModules:[{icon:"❄️", label:"Team bonding", sub:"Codes &amp; tickets →", js:"openIceCodes()"}], loc:"Aurora, CO · Gaylord Rockies Resort &amp; Convention Center", address:"Gaylord Rockies Resort & Convention Center, Aurora, CO", start:"2026-12-19", end:"2026-12-20", travel:"required",
+    housing:"required", bookingDate:"2026-09-10", travelStart:"2026-12-17", travelEnd:"2026-12-21",
+    bookingLinks:[{label:"ASCS housing block (book here)", url:"https://presto.eventpipe.com/event/1525a7d2-eb0c-4823-8240-3e4895689ee5"}],
     flightSearch:"Flights to Denver from San Diego, departing 2026-12-17, returning 2026-12-21",
     rosterLink:"https://www.varsity.com/download-event-app/", rosterLabel:"Team roster via Varsity Spirit Event App"},
   {name:"The Majors", loc:"Indianapolis, IN · Indiana Convention Center", address:"Indiana Convention Center, Indianapolis, IN", start:"2027-01-15", end:"2027-01-15", dateLabel:"January 2027", attending:false, teams:"Lady Bullets"},
@@ -1981,7 +1983,7 @@ function startMins(f){
 }
 
 const feed = [
-  {date:"2026-12-17", dateLabel:"Dec 17", postedDate:"2026-11-10", expires:"2026-11-16", tag:"event", hideFromComingUp:true, title:"ICE! Nightmare Before Christmas", body:'Optional team outing at the resort, 7:00 PM MT. Book your own tickets by Mon, Nov 16 for the best discount. <a href="#" onclick="openIceCodes();return false">Discount codes →</a> · <a href="https://tickets.gaylordrockies.com/eventperformances.asp?evt=105" target="_blank" rel="noopener">Buy tickets →</a>'},
+  {date:"2026-12-17", dateLabel:"Dec 17", postedDate:"2026-11-10", expires:"2026-11-16", tag:"event", hideFromComingUp:true, title:"Optional team bonding", body:'ICE! Nightmare Before Christmas at Gaylord Rockies, during ASCS Champs Grand Nationals. 7:00 PM MT. Book your own tickets by Mon, Nov 16 for the best discount. <a href="#" onclick="openIceCodes();return false">Discount codes →</a> · <a href="https://tickets.gaylordrockies.com/eventperformances.asp?evt=105" target="_blank" rel="noopener">Buy tickets →</a>'},
   {date:"2026-11-15", dateLabel:"Nov 15", postedDate:"2026-11-09", expires:"2026-11-15", tag:"event", hideFromComingUp:true, title:"Showcase · Y2K meet time is now 1:15 PM", body:'Parking permits are required for every vehicle. <a href="#" onclick="openShowcaseDetails();return false">See the Day plan →</a>'},
   {date:"2026-11-18", dateLabel:"Nov 4–19", postedDate:"2026-11-04", expires:"2026-11-19", tag:"info", title:"Practices closed to viewers", body:"Viewing room closed Nov 4 until Nov 18–19. Minis, Tinys and private lessons are the exception."},
   {date:"2026-11-20", dateLabel:"Nov 20", postedDate:"2026-11-04", expires:"2026-11-20", tag:"event", title:"Y2K Friendsgiving 🦃", body:"Starts at 6:00 PM · Chick-fil-A meal."},
@@ -2004,13 +2006,11 @@ const feed = [
   {date:"2026-10-10", postedDate:"2026-09-20", tag:"event", title:"Added Practice", body:"2:00–4:00 PM · Extra practice added this week, on top of the regular weekly schedule — see the Practice tab for details."},
   {date:"2026-11-21", postedDate:"2026-09-21", tag:"event", title:"TSN date change", body:"TSN was moved from Sunday, 11/22 — updated on the Comp Schedule tab."},
   {date:"2026-09-25", postedDate:"2026-09-21", tag:"event", title:"College Gameday", body:"Wear your favorite college team's shirt or colors! The gym's Game Day theme was 9/26–9/27, but since Y2K doesn't practice those days, we're doing it instead."},
-  {date:"2026-09-21", postedDate:"2026-09-21", tag:"event", title:"Support Coach Marlon", body:"Longtime coach/choreographer Marlon Biete is in the ICU after a medical emergency in England. His gym and Unity All Stars are asking the cheer community to help cover medical, travel, and recovery costs. <a href=\"https://u888spyab.cc.rs6.net/tn.jsp?f=001IMIA87EXLHJQ7WT2m8oX0EJ-029YRypBtQolAXW5NGNz7HIob9VUtn0Izv3vzpk8V83ybPvZpoes-6T-pMb9_aDDz3tdZ7XcEZ4nWAixyMkBwd0o7pnbgNyeOw67ch2D3OhyxAbMx9glSllrSprvw2KyteE4oe9C&c=ZhSapUrGW5M09_103-zFGMNeJxZWWJFRLOpMRaDdthw-aeEQ9rxYYQ==&ch=bPwDEj4y0b5qmsYFLv65mxgznZ5KGRHdWok29GGDKDaqIfDk8yniZA==\" target=\"_blank\">Donate on GoFundMe →</a>"}
 ];
 
 const fundraisers = [
-  {emoji:"❄️", title:"ICE! Nightmare Before Christmas", date:"2026-12-17", end:"2026-12-17", meta:"Thu, Dec 17, 2026 · 7:00 PM MT · Mistletoe Village, Gaylord Rockies · for those who arrive in time", extra:'Optional team bonding for athletes and families. Each family books their own tickets, and the best discount ends Mon, Nov 16. <a href="#" onclick="openIceCodes();return false">Discount codes →</a> · <a href="https://tickets.gaylordrockies.com/eventperformances.asp?evt=105" target="_blank" rel="noopener">Buy tickets →</a>'},
+  {emoji:"❄️", title:"Optional team bonding", date:"2026-12-17", end:"2026-12-17", meta:"Thu, Dec 17, 2026 · 7:00 PM MT · ICE! Nightmare Before Christmas · Mistletoe Village, Gaylord Rockies", extra:'During ASCS Champs Grand Nationals, for athletes and families who have arrived by then. Each family books their own tickets, and the best discount ends Mon, Nov 16. <a href="#" onclick="openIceCodes();return false">Discount codes →</a> · <a href="https://tickets.gaylordrockies.com/eventperformances.asp?evt=105" target="_blank" rel="noopener">Buy tickets →</a>'},
   {emoji:"🦃", title:"Y2K Friendsgiving", date:"2026-11-20", end:"2026-11-20", meta:"Fri, Nov 20, 2026 · Starts 6:00 PM", when:"Starts 6:00 PM", extra:"We’ll do a Chick-fil-A meal."},
-  {emoji:"💙", title:"Support Coach Marlon", last:true, date:"2026-09-21", logo:true, badgeType:"fundraiser", badgeLabel:"Fundraiser", meta:'Longtime coach/choreographer Marlon Biete is in the ICU after a medical emergency in England. His gym and Unity All Stars are asking the cheer community to help cover medical, travel, and recovery costs. <a href="https://u888spyab.cc.rs6.net/tn.jsp?f=001IMIA87EXLHJQ7WT2m8oX0EJ-029YRypBtQolAXW5NGNz7HIob9VUtn0Izv3vzpk8V83ybPvZpoes-6T-pMb9_aDDz3tdZ7XcEZ4nWAixyMkBwd0o7pnbgNyeOw67ch2D3OhyxAbMx9glSllrSprvw2KyteE4oe9C&c=ZhSapUrGW5M09_103-zFGMNeJxZWWJFRLOpMRaDdthw-aeEQ9rxYYQ==&ch=bPwDEj4y0b5qmsYFLv65mxgznZ5KGRHdWok29GGDKDaqIfDk8yniZA==" target="_blank">Donate on GoFundMe →</a>'},
   {emoji:"🤸‍♀️", title:"Friday practices starting", date:"2026-09-11", end:"2026-09-11", meta:"Fridays effective 9/11/26 — Y2K 6:30–8:30 PM."},
   {emoji:"🎬", title:"Sparkle Movie Night", date:"2026-09-12", end:"2026-09-12", meta:"Sat, Sep 12, 2026 · doors 7:00p, movie 7:45p, pickup 9:30p · $10/person (incl. popcorn), concessions $1–2 · Gym parking lot", extra:"Showing: Bring It On",
     pay:["Cash at the door","Zelle: 562-240-3450 (Karin)","Venmo: search \"Karin\" — confirm exact @handle in team chat"]},
@@ -2218,6 +2218,15 @@ function isEventInCurrentWeek(f, monday, sunday){
   return d>=monday && d<=sunday;
 }
 
+function lkRows(h){
+  h=String(h==null?'':h);
+  if(h.indexOf('class="sk')>-1) return h;
+  var links=[];
+  var t=h.replace(/<a\b[^>]*>[^<]*(?:\u2192|&rarr;)\s*<\/a>/g,function(m){ links.push(m); return '\u0001'; });
+  if(!links.length) return h;
+  t=t.replace(/(?:\s*[\u00B7\u2022]\s*)?\u0001/g,'').replace(/[\s\u00B7\u2022\u2014-]+$/,'').trim();
+  return t+'<span class="lk-row">'+links.join('')+'</span>';
+}
 function renderFeed(){
   const now = new Date(); now.setHours(0,0,0,0);
   const {monday, sunday} = currentWeekRange();
@@ -2251,7 +2260,7 @@ function renderFeed(){
       <div class="feed-date">${dateLabel}</div>
       <div class="feed-body">
         <b>${isNew?'<span class="badge new">New</span>':''}${f.title}</b>
-        <p>${f.body}</p>
+        <p>${lkRows(f.body)}</p>
       </div>
     </div>
   `;
@@ -2293,8 +2302,8 @@ function renderUpcomingEvents(){
           <div class="coming-row-top"><span class="badge ${isToday?'today':(f.badgeType||(f.isDeadline?'deadline':'event'))}">${isToday?'Today':(f.badgeLabel||(f.isDeadline?'Deadline':'Event'))}</span><span class="coming-row-icon">${(f.icon && customIcons[f.icon]) ? '<img class="coming-icon-img" src="'+customIcons[f.icon]+'" alt="">' : (f.emoji||'🎪')}</span></div>
           <div class="coming-row-title">${f.title}</div>
           <div class="coming-row-meta">${meta}</div>
-          ${f.meta && !timeBit ? `<div class="coming-row-desc">${f.meta}</div>` : ''}
-          ${f.extra ? `<div class="coming-row-desc" style="margin-top:4px;">${f.extra}</div>` : ''}
+          ${f.meta && !timeBit ? `<div class="coming-row-desc">${lkRows(f.meta)}</div>` : ''}
+          ${f.extra ? `<div class="coming-row-desc" style="margin-top:4px;">${lkRows(f.extra)}</div>` : ''}
         </div>
       </div>`;
   }).join('') + `</div>`;
@@ -2583,32 +2592,14 @@ function renderComps(){
         </div>`;
       }
 
+      let hotelModule = null;
       if(c.bookingDate || (c.bookingLinks && c.bookingLinks.length)){
         const primary = c.bookingLinks && c.bookingLinks[0];
         const opensDate = c.bookingDate ? new Date(c.bookingDate+"T00:00:00") : null;
         const isOpen = !opensDate || now >= opensDate;
-        let row;
-        if(isOpen){
-          if(primary && primary.url){
-            row = `<div class="compx-row">
-              <div class="compx-row-main"><div class="compx-row-title">Book your team block hotel</div></div>
-              <a class="compx-row-cta" href="${primary.url}" target="_blank">Book Hotel</a>
-            </div>`;
-          } else {
-            row = `<div class="compx-row">
-              <div class="compx-row-main"><div class="compx-row-title">Booking link coming soon</div></div>
-            </div>`;
-          }
-        } else {
-          row = `<div class="compx-row">
-            <div class="compx-row-main">
-              <div class="compx-row-title">Opens ${fmtDate(c.bookingDate)}</div>
-              ${primary ? `<div class="compx-row-sub">${primary.label}</div>` : ''}
-            </div>
-            ${primary && primary.url ? `<a class="compx-row-cta soon" href="${primary.url}" target="_blank">View info</a>` : ''}
-          </div>`;
-        }
-        sectionsHtml += `<div class="compx-section"><div class="compx-section-label"><span class="cxl-ic">${ICON_BED}</span>Hotel Booking</div>${row}</div>`;
+        const hUrl = primary && primary.url;
+        if(isOpen) hotelModule = hUrl ? gcard(ICON_BED,'Book your hotel','Book now \u2192', hUrl) : gcard(ICON_BED,'Book your hotel','Link coming soon', null, true);
+        else hotelModule = hUrl ? gcard(ICON_BED,'Book your hotel','Opens '+fmtDate(c.bookingDate)+' \u2192', hUrl) : gcard(ICON_BED,'Book your hotel','Opens '+fmtDate(c.bookingDate), null, true);
       }
 
       const gcards = [];
@@ -2626,9 +2617,11 @@ function renderComps(){
         ? gcard(ICON_CAL,'Event schedule','All teams →', c.rosterLink)
         : gcard(ICON_CAL,'Event schedule','Link coming soon', null, true));
       if(c.ticketLink) gcards.push(gcard(ICON_LINK,'Showcase tickets','Buy →', c.ticketLink));
+      if(hotelModule) gcards.push(hotelModule);
       if(c.bookingLinks) c.bookingLinks.slice(1).forEach(bl=>{
         gcards.push(bl.url ? gcard(ICON_LINK, bl.label, 'View →', bl.url) : gcard(ICON_LINK, bl.label, 'Link coming soon', null, true));
       });
+      (c.extraModules||[]).forEach(m=>{ gcards.push('<div class="compx-gcard gc-btn" role="button" tabindex="0" onclick="'+m.js+'" onkeydown="if(event.key===\'Enter\')'+m.js+'"><div class="gc-ic gc-emoji">'+m.icon+'</div><div class="gc-lbl">'+m.label+'</div><div class="gc-sub">'+m.sub+'</div></div>'); });
       if(c.showoff){ gcards.splice(0, gcards.length, gcard(ICON_CAMERA,'Photos','View photos →', c.photosLink)); }
       if(c.details){
         const dFn = c.detailsFn||'openShowcaseDetails()', dLbl = c.detailsLabel||'Day plan';
@@ -2781,8 +2774,8 @@ function renderFundraisers(){
       <div class="fund-emoji">${(f.icon && customIcons[f.icon]) ? '<img class="fund-icon-img" src="'+customIcons[f.icon]+'" alt="">' : f.emoji}</div>
       <div>
         <div class="fund-title">${f.title}</div>
-        <div class="fund-meta">${f.meta}</div>
-        ${f.extra?`<div class="fund-meta" style="margin-top:6px;">${f.extra}</div>`:''}
+        <div class="fund-meta">${lkRows(f.meta)}</div>
+        ${f.extra?`<div class="fund-meta" style="margin-top:6px;">${lkRows(f.extra)}</div>`:''}
         ${f.pay?`<div class="fund-meta" style="margin-top:6px;"><b style="color:var(--text);">Ways to pay:</b> ${f.pay.join(' · ')}</div>`:''}
       </div>
     </div>
@@ -4728,6 +4721,13 @@ renderBudget();
 })();
 </script>
 
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./service-worker.js').catch(()=>{});
+  });
+}
+</script>
 
 <script>
 /* Suggest-an-Update form: auto-fit height to the Jotform form (no inner scrolling),
@@ -4761,6 +4761,13 @@ renderBudget();
 </body>
 </html>
 
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./service-worker.js').catch(()=>{});
+  });
+}
+</script>
 
 <script>
 /* =====================================================================
@@ -5294,7 +5301,11 @@ function hsRivals(on){ var s=hsLoad(); s.rivals=!!on; hsSave(s); hsSyncRivals();
 .ice-row small{display:block;font-size:12.5px;color:var(--text-muted);margin-top:1px;line-height:1.35;}
 .ice-code{font:inherit;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13px;font-weight:700;letter-spacing:.02em;color:var(--accent-ink);background:var(--accent-soft);border:0;border-radius:9px;padding:8px 11px;min-width:104px;text-align:center;cursor:pointer;}
 .ice-val{font-size:13.5px;font-weight:700;text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums;}
-.ice-link{display:inline-block;margin-top:14px;font-size:14px;font-weight:700;color:var(--accent);text-decoration:underline;text-underline-offset:2px;}
+.ice-link{display:block;margin-top:18px;padding:15px 18px;border-radius:14px;background:var(--accent);color:#fff !important;font-size:15px;font-weight:800;text-align:center;text-decoration:none !important;}
+.lk-row{display:flex;flex-wrap:wrap;gap:6px 20px;margin-top:9px;}
+.lk-row a{white-space:nowrap;font-weight:700;}
+.fund-meta .lk-row,.coming-row-desc .lk-row{margin-top:8px;}
+.gc-ic.gc-emoji{font-size:22px;line-height:1;}
 </style>
 <script>
 /* ICE! at the resort (optional team outing): discount-codes sheet */
@@ -5311,13 +5322,15 @@ function openIceCodes(){
   var rows=codes.map(function(c){ return '<div class="ice-row"><div><b>'+c[0]+'</b><small>'+c[1]+'</small></div><button type="button" class="ice-code" data-code="'+c[2]+'" onclick="iceCopy(this)">'+c[2]+'</button></div>'; }).join('');
   rows+='<div class="ice-row"><div><b>Overnight hotel guests</b><small>Up to 20% off. Your guest code is in your booking confirmation email. Or ask the front desk, or call ahead.</small></div></div>';
   var prices=[['Adults (12+)','~$31–$34+'],['Kids (4–11)','~$21–$24+'],['3 and under','Free']].map(function(p){ return '<div class="ice-row"><div><b>'+p[0]+'</b></div><div class="ice-val">'+p[1]+'</div></div>'; }).join('');
-  var html='<span class="sk"><span class="sk-r"><span class="sk-i">🎟️</span><span class="sk-t"><b>Each family books their own tickets.</b> These promos beat the group rate. Enter your code above the calendar, <b>before</b> you pick Dec 17.</span></span>'
-   +'<span class="sk-r"><span class="sk-i">⏰</span><span class="sk-t">Prices rise as spots fill. Book soon and grab the <b>7 PM entry</b> on Dec 17.</span></span></span>'
-   +'<div class="tt-label">Discount codes · tap to copy</div><div class="ice-list">'+rows+'</div>'
+  var html='<span class="sk"><span class="sk-r"><span class="sk-i">\u2744\uFE0F</span><span class="sk-t"><b>ICE! Nightmare Before Christmas</b> at Gaylord Rockies, during ASCS Champs Grand Nationals. Optional, for athletes and families who have arrived by then.</span></span>'
+   +'<span class="sk-r"><span class="sk-i">\uD83C\uDF9F\uFE0F</span><span class="sk-t"><b>Each family books their own tickets.</b> These promos beat the group rate. Enter your code above the calendar, <b>before</b> you pick Dec 17.</span></span>'
+   +'<span class="sk-r"><span class="sk-i">\u23F0</span><span class="sk-t">Prices rise as spots fill. Book soon and grab the <b>7 PM entry</b> on Dec 17.</span></span></span>'
+   +'<div class="tt-label">Discount codes \u00B7 tap to copy</div><div class="ice-list">'+rows+'</div>'
    +'<div class="tt-label">Base prices (change daily)</div><div class="ice-list">'+prices+'</div>'
-   +'<a class="ice-link" href="https://tickets.gaylordrockies.com/eventperformances.asp?evt=105" target="_blank" rel="noopener">Buy tickets →</a>';
-  hsOpen('ICE! discount codes','Thu, Dec 17 · 7 PM MT · best discount ends Mon, Nov 16',html);
+   +'<a class="ice-link" href="https://tickets.gaylordrockies.com/eventperformances.asp?evt=105" target="_blank" rel="noopener">Buy tickets</a>';
+  hsOpen('Optional team bonding','ICE! discount codes · Thu, Dec 17 · 7 PM MT',html);
 }
 </script>
+
 </body>
 </html>
