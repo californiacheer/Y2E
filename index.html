@@ -377,7 +377,7 @@ main{max-width:980px; margin:0 auto; padding:20px 20px 60px;}
   80%{ transform:rotate(4deg) scale(1.02); }
 }
 .coming-row.today .coming-date-block{
-  background:var(--danger); border-color:var(--danger);
+  background:#1e3a8a; border-color:#1e3a8a;
   animation:todayWiggle 1.6s ease-in-out infinite;
 }
 .coming-row.today .coming-date-block span,
@@ -1873,8 +1873,8 @@ function outlookLink(c, bk){
 }
 
 const competitions = [
-  {name:"In-House Show-Offs", loc:"San Marcos, CA", address:"San Marcos, CA", start:"2026-10-24", end:"2026-10-24", hideTravelTag:true, showoff:true, photosLink:"https://gallery.instant.evoto.ai/public/504TEzcSbsV"},
-  {name:"Showcase", loc:"Irvine, CA · Bren Event Center", address:"Bren Events Center, Irvine, CA", start:"2026-11-15", end:"2026-11-15", travel:"local",
+  {name:"In-House Show-Offs", videoLink:"https://drive.google.com/file/d/1fNoSrCq7l1jb500mCKd8NvJ0-b0G-yfq/view?usp=sharing", loc:"San Marcos, CA", address:"San Marcos, CA", start:"2026-10-24", end:"2026-10-24", hideTravelTag:true, showoff:true, photosLink:"https://gallery.instant.evoto.ai/public/504TEzcSbsV"},
+  {name:"Showcase", videoLink:"https://drive.google.com/file/d/1SFdjHZV6uPjbiAlGXWrSRx8RI7QcEO-z/view?usp=sharing", photosLink:"https://proactionphotography.zenfoliosite.com/team-oficial-photos", loc:"Irvine, CA · Bren Event Center", address:"Bren Events Center, Irvine, CA", start:"2026-11-15", end:"2026-11-15", travel:"local",
     housing:"optional", rosterLink:"https://docs.google.com/spreadsheets/d/1_MpWAbs6NeyRTwq9JyjikT3i5iQB1LpuvhHiUT9jFYM/edit?gid=498534653#gid=498534653", rosterLabel:"Event schedule", ticketLink:"https://ucirvinetickets.evenue.net/events/SPEC", heroLinks:[{label:"Event schedule ›", url:"https://docs.google.com/spreadsheets/d/1_MpWAbs6NeyRTwq9JyjikT3i5iQB1LpuvhHiUT9jFYM/edit?gid=498534653#gid=498534653"}, {label:"Buy tickets ›", url:"https://ucirvinetickets.evenue.net/events/SPEC"}, {label:"Day plan ›", js:"openShowcaseDetails()"}], details:true},
   {name:"TSN", loc:"San Diego, CA", address:"San Diego, CA", start:"2026-11-21", end:"2026-11-21", travel:"local",
     housing:"optional", rosterLink:"https://apps.ideal-logic.com/embed_preview?id=il_93a91551fea394b9&url=https%3A%2F%2Fapps.ideal-logic.com", rosterLabel:"Event schedule",
@@ -1982,6 +1982,7 @@ function startMins(f){
 }
 
 const feed = [
+  {date:"2026-11-15", dateLabel:"Nov 15", postedDate:"2026-11-16", tag:"info", title:"Showcase photos are up", body:'<a href="https://proactionphotography.zenfoliosite.com/team-oficial-photos" target="_blank" rel="noopener">View the team photos →</a>'},
   {date:"2026-12-17", dateLabel:"Dec 17", postedDate:"2026-11-10", expires:"2026-11-16", tag:"event", hideFromComingUp:true, title:"Optional team bonding", body:'ICE! Nightmare Before Christmas at Gaylord Rockies, during ASCS Champs Grand Nationals. 7:00 PM MT. Book your own tickets by Mon, Nov 16 for the best discount. <a href="#" onclick="openIceCodes();return false">Discount codes →</a> · <a href="https://tickets.gaylordrockies.com/eventperformances.asp?evt=105" target="_blank" rel="noopener">Buy tickets →</a>'},
   {date:"2026-11-15", dateLabel:"Nov 15", postedDate:"2026-11-09", expires:"2026-11-15", tag:"event", hideFromComingUp:true, title:"Showcase · Y2K meet time is now 1:15 PM", body:'Parking permits are required for every vehicle. <a href="#" onclick="openShowcaseDetails();return false">See the Day plan →</a>'},
   {date:"2026-11-18", dateLabel:"Nov 4–19", postedDate:"2026-11-04", expires:"2026-11-19", tag:"info", title:"Practices closed to viewers", body:"Viewing room closed Nov 4 until Nov 18–19. Minis, Tinys and private lessons are the exception."},
@@ -2667,6 +2668,10 @@ function renderComps(){
       sectionsHtml = `<div class="compx-section">
         <div class="compx-section-label"><span class="cxl-ic">${ICON_CAMERA}</span>Comp photos</div>
         <div class="compx-row"><div class="compx-row-main">${photoRow}</div></div>
+      </div>`;
+      if(c.videoLink) sectionsHtml += `<div class="compx-section">
+        <div class="compx-section-label"><span class="cxl-ic">${ICON_CAMERA}</span>Performance video</div>
+        <div class="compx-row"><div class="compx-row-main"><div class="compx-row-title"><a href="${c.videoLink}" target="_blank" rel="noopener">Watch video →</a></div></div></div>
       </div>`;
       const scored = !c.showoff && c.name!=='Showcase';
       let resBody;
