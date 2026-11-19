@@ -1876,7 +1876,7 @@ function outlookLink(c, bk){
 
 const competitions = [
   {name:"In-House Show-Offs", videoLink:"https://drive.google.com/file/d/1fNoSrCq7l1jb500mCKd8NvJ0-b0G-yfq/view?usp=sharing", loc:"San Marcos, CA", address:"San Marcos, CA", start:"2026-10-24", end:"2026-10-24", hideTravelTag:true, showoff:true, photosLink:"https://gallery.instant.evoto.ai/public/504TEzcSbsV"},
-  {name:"Showcase", videoLink:"https://drive.google.com/file/d/1SFdjHZV6uPjbiAlGXWrSRx8RI7QcEO-z/view?usp=sharing", photosLink:"https://proactionphotography.zenfoliosite.com/team-oficial-photos", loc:"Irvine, CA · Bren Event Center", address:"Bren Events Center, Irvine, CA", start:"2026-11-15", end:"2026-11-15", travel:"local",
+  {name:"Showcase", highlights:[{t:"8th overall",d:"Out of 70 teams"},{t:"Top youth score",d:"Out of 11 youth teams"},{t:"2nd highest Level 2 score",d:"Out of 12 Level 2 teams"}], videoLink:"https://drive.google.com/file/d/1SFdjHZV6uPjbiAlGXWrSRx8RI7QcEO-z/view?usp=sharing", photosLink:"https://proactionphotography.zenfoliosite.com/team-official-photos", loc:"Irvine, CA · Bren Event Center", address:"Bren Events Center, Irvine, CA", start:"2026-11-15", end:"2026-11-15", travel:"local",
     housing:"optional", rosterLink:"https://docs.google.com/spreadsheets/d/1_MpWAbs6NeyRTwq9JyjikT3i5iQB1LpuvhHiUT9jFYM/edit?gid=498534653#gid=498534653", rosterLabel:"Event schedule", ticketLink:"https://ucirvinetickets.evenue.net/events/SPEC", heroLinks:[{label:"Event schedule ›", url:"https://docs.google.com/spreadsheets/d/1_MpWAbs6NeyRTwq9JyjikT3i5iQB1LpuvhHiUT9jFYM/edit?gid=498534653#gid=498534653"}, {label:"Buy tickets ›", url:"https://ucirvinetickets.evenue.net/events/SPEC"}, {label:"Day plan ›", js:"openShowcaseDetails()"}], details:true},
   {name:"TSN", loc:"San Diego, CA", address:"San Diego, CA", start:"2026-11-21", end:"2026-11-21", travel:"local",
     housing:"optional", rosterLink:"https://apps.ideal-logic.com/embed_preview?id=il_93a91551fea394b9&url=https%3A%2F%2Fapps.ideal-logic.com", rosterLabel:"Event schedule",
@@ -1984,7 +1984,7 @@ function startMins(f){
 }
 
 const feed = [
-  {date:"2026-11-15", dateLabel:"Nov 15", postedDate:"2026-11-16", tag:"info", title:"Showcase photos are up", body:'<a href="https://proactionphotography.zenfoliosite.com/team-oficial-photos" target="_blank" rel="noopener">View the team photos →</a>'},
+  {date:"2026-11-15", dateLabel:"Nov 15", postedDate:"2026-11-16", tag:"info", title:"Showcase photos are up", body:'<a href="https://proactionphotography.zenfoliosite.com/team-official-photos" target="_blank" rel="noopener">View the team photos →</a>'},
   {date:"2026-12-17", dateLabel:"Dec 17", postedDate:"2026-11-10", expires:"2026-11-16", tag:"event", hideFromComingUp:true, title:"Optional team bonding", body:'ICE! Nightmare Before Christmas at Gaylord Rockies, during ASCS Champs Grand Nationals. 7:00 PM MT. Book your own tickets by Mon, Nov 16 for the best discount. <a href="#" onclick="openIceCodes();return false">Discount codes →</a> · <a href="https://tickets.gaylordrockies.com/eventperformances.asp?evt=105" target="_blank" rel="noopener">Buy tickets →</a>'},
   {date:"2026-11-15", dateLabel:"Nov 15", postedDate:"2026-11-09", expires:"2026-11-15", tag:"event", hideFromComingUp:true, title:"Showcase · Y2K meet time is now 1:15 PM", body:'Parking permits are required for every vehicle. <a href="#" onclick="openShowcaseDetails();return false">See the Day plan →</a>'},
   {date:"2026-11-18", dateLabel:"Nov 4–19", postedDate:"2026-11-04", expires:"2026-11-19", tag:"info", title:"Practices closed to viewers", body:"Viewing room closed Nov 4 until Nov 18–19. Minis, Tinys and private lessons are the exception."},
@@ -2685,6 +2685,12 @@ function renderComps(){
         <div class="compx-row"><div class="compx-row-main"><div class="compx-row-title"><a href="${c.videoLink}" target="_blank" rel="noopener">Watch video →</a></div></div></div>
       </div>`;
       const scored = !c.showoff && c.name!=='Showcase';
+      if(Array.isArray(c.highlights) && c.highlights.length){
+        sectionsHtml += `<div class="compx-section">
+        <div class="compx-section-label"><span class="cxl-ic">${ICON_CHECK}</span>Results</div>
+        ${c.highlights.map(h=>`<div class="compx-row"><div class="compx-row-main"><div class="compx-row-title">${h.t}</div><div style="font-size:12.5px;color:var(--text-muted)">${h.d}</div></div></div>`).join('')}
+      </div>`;
+      }
       let resBody;
       if(R && (R.place || R.score)){
         const m = (R.place && typeof dhMedal==='function') ? dhMedal(R.place) : '';
@@ -5231,7 +5237,7 @@ function calDeleteAll(id){
    To add a team confirmed at a comp: push {comp:'TSN', name:'Team', gym:'Gym', note:'', videos:[{label:'Comp, year', url:'https://...'}]} to DH_RIVALS */
 var DH_DIVISIONS = {'TSN':'Youth Flex Level 2 Small'};
 var DH_NOSCORE = {};
-var DH_RESULTS = {};
+var DH_RESULTS = {'Showcase':{place:'1st', of:11, label:'Top youth score'}};
 /* Confirmed at a specific comp */
 var DH_RIVALS = [
   {comp:'TSN', name:'The Knockouts', gym:'Intensity Athletics', note:'On at 4:05 PM, right before us. Already performed this season; no scores posted.', videos:[{label:'Latest routine', url:'https://youtu.be/Zb2ryabExnU'}]}
@@ -5254,7 +5260,7 @@ var DH_BIDP = {
 /* After a comp: fill in to show a "Results and bids" dropdown under it. Example:
    DH_DETAIL['TSN'] = {top:[{team:'Y2K',prog:'California All Stars',score:'97.45',us:1},{team:'Team B',prog:'Gym',score:'96.90'},{team:'Team C',prog:'Gym',score:'95.20'}],
                        bids:[{team:'Team A',div:'D1',type:'partial'}]};  (Y2K's own place and score come from DH_RESULTS) */
-var DH_DETAIL = {};
+var DH_DETAIL = {'Showcase':{more:[{t:'8th overall',d:'Out of 70 teams'},{t:'2nd highest Level 2 score',d:'Out of 12 Level 2 teams'}]}};
 /* Y2K's results: DH_RESULTS['TSN']={place:'1st',score:'97.45',of:9,bids:[['partial','D1']]} (bids: full, partial, wild, atlarge; leave out if none). Shows on Die Hards and in the past comp dropdowns. */
 var DH_BID = '';   /* e.g. 'Youth Summit bid: Full paid' - shows in Our season when filled in */
 function dhEsc(s){ return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
@@ -5322,14 +5328,14 @@ function renderDieHards(){
   var el=document.getElementById('dhBody'); if(!el) return;
   window.__dhVarsity=false;
   var today=todayISO();
-  var comps=competitions.filter(function(c){return c.attending!==false && !c.showoff && c.name!=='Showcase';}).sort(function(a,b){return a.start<b.start?-1:1;});
+  var comps=competitions.filter(function(c){return c.attending!==false && !c.showoff;}).sort(function(a,b){return a.start<b.start?-1:1;});
   var past=comps.filter(function(c){return (c.end||c.start)<today;}), upcoming=comps.filter(function(c){return (c.end||c.start)>=today;}).slice(0,3);
   var rows=past.concat(upcoming).map(function(c){
     var r=DH_RESULTS[c.name], isPast=(c.end||c.start)<today, right='', sub='';
     if(r){
       right='<div class="dh-res">'+dhMedal(r.place)+(r.score?'<span class="dh-sc">'+dhEsc(r.score)+'</span>':'')+'</div>';
       var lk=[]; if(r.scoresLink) lk.push('<a href="'+dhEsc(r.scoresLink)+'" target="_blank" rel="noopener">Scores</a>'); if(r.videoLink) lk.push('<a href="'+dhEsc(r.videoLink)+'" target="_blank" rel="noopener">Video</a>');
-      if(r.of) sub='of '+r.of+' teams';
+      if(r.label) sub=dhEsc(r.label); if(r.of) sub+=(sub?' · ':'')+'of '+r.of+' teams';
       if(lk.length) sub+=(sub?' · ':'')+lk.join(' · ');
     } else if(DH_NOSCORE[c.name]){ right='<span class="dh-pill quiet">Performance only</span>'; }
     else if(isPast){ right='<span class="dh-pill quiet">Result to come</span>'; }
@@ -5339,6 +5345,8 @@ function renderDieHards(){
     if(D){
       var top=(D.top||[]).map(function(t,i){return '<div class="dh-pl'+(t.us?' us':'')+'"><div>'+dhMedal(String(i+1),24)+'</div><div><b>'+dhEsc(t.team)+'</b>'+(t.prog?'<small>'+dhEsc(t.prog)+'</small>':'')+'</div><span class="n">'+dhEsc(t.score)+'</span></div>';}).join('');
       var bd=(D.bids||[]).map(function(b){return '<div class="dh-bd"><div>'+dhEsc(b.team)+(b.div?' <small style="color:var(--text-muted)">'+dhEsc(b.div)+'</small>':'')+'</div>'+dhPill(b.type)+'</div>';}).join('');
+      var mo=(D.more||[]).map(function(m){return '<div class="dh-bd"><div><b>'+dhEsc(m.t)+'</b><br><small style="color:var(--text-muted)">'+dhEsc(m.d)+'</small></div></div>';}).join('');
+      if(mo) det='<details class="dh-det"><summary>More results</summary><div class="dh-det-b">'+mo+'</div></details>';
       if(top||bd) det='<details class="dh-det"><summary>Results and bids</summary><div class="dh-det-b">'+(top?'<div><div class="dh-det-h">Top 3</div>'+top+'</div>':'')+(bd?'<div><div class="dh-det-h">Bids awarded</div>'+bd+'</div>':'')+'</div></details>';
     }
     return '<div class="dh-row">'+dhDateBlock(c.start)+'<div class="dh-main"><b>'+dhEsc(c.name)+'</b>'+(sub?'<small>'+sub+'</small>':'')+bid+'</div>'+right+'</div>'+det;
