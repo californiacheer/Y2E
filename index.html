@@ -1878,7 +1878,7 @@ const competitions = [
   {name:"In-House Show-Offs", videoLink:"https://drive.google.com/file/d/1fNoSrCq7l1jb500mCKd8NvJ0-b0G-yfq/view?usp=sharing", loc:"San Marcos, CA", address:"San Marcos, CA", start:"2026-10-24", end:"2026-10-24", hideTravelTag:true, showoff:true, photosLink:"https://gallery.instant.evoto.ai/public/504TEzcSbsV"},
   {name:"Showcase", highlights:[{t:"8th overall",d:"Out of 70 teams"},{t:"Top youth score",d:"Out of 11 youth teams"},{t:"2nd highest Level 2 score",d:"Out of 12 Level 2 teams"}], videoLink:"https://drive.google.com/file/d/1SFdjHZV6uPjbiAlGXWrSRx8RI7QcEO-z/view?usp=sharing", photosLink:"https://proactionphotography.zenfoliosite.com/y2k-1", loc:"Irvine, CA · Bren Event Center", address:"Bren Events Center, Irvine, CA", start:"2026-11-15", end:"2026-11-15", travel:"local",
     housing:"optional", rosterLink:"https://docs.google.com/spreadsheets/d/1_MpWAbs6NeyRTwq9JyjikT3i5iQB1LpuvhHiUT9jFYM/edit?gid=498534653#gid=498534653", rosterLabel:"Event schedule", ticketLink:"https://ucirvinetickets.evenue.net/events/SPEC", heroLinks:[{label:"Event schedule ›", url:"https://docs.google.com/spreadsheets/d/1_MpWAbs6NeyRTwq9JyjikT3i5iQB1LpuvhHiUT9jFYM/edit?gid=498534653#gid=498534653"}, {label:"Buy tickets ›", url:"https://ucirvinetickets.evenue.net/events/SPEC"}, {label:"Day plan ›", js:"openShowcaseDetails()"}], details:true},
-  {name:"TSN", videoLink:"https://drive.google.com/file/d/1zgjAubi5X4_Cio1moRh8nAm3NfoKkjZ-/view?usp=drivesdk", highlights:[{t:"Division champions",d:"1st place in Youth Flex Level 2 Small · 97.8"}], loc:"San Diego, CA", address:"San Diego, CA", start:"2026-11-21", end:"2026-11-21", travel:"local",
+  {name:"TSN", noPhotos:true, videoLink:"https://drive.google.com/file/d/1zgjAubi5X4_Cio1moRh8nAm3NfoKkjZ-/view?usp=drivesdk", highlights:[{t:"Division champions",d:"1st place in Youth Flex Level 2 Small · 97.8"}], loc:"San Diego, CA", address:"San Diego, CA", start:"2026-11-21", end:"2026-11-21", travel:"local",
     housing:"optional", rosterLink:"https://apps.ideal-logic.com/embed_preview?id=il_93a91551fea394b9&url=https%3A%2F%2Fapps.ideal-logic.com", rosterLabel:"Event schedule",
     heroLinks:[{label:"Event schedule ›", url:"https://apps.ideal-logic.com/embed_preview?id=il_93a91551fea394b9&url=https%3A%2F%2Fapps.ideal-logic.com"}, {label:"Day plan ›", js:"openTsnDetails()"}], details:true, detailsFn:"openTsnDetails()", detailsLabel:"Day plan",
     dateChanged:true, note:"Date changed — moved from Sun 11/22 to Sat 11/21. <a href=\"https://www.thespiritnetwork.net/sd-tsc\" target=\"_blank\" rel=\"noopener\">Event page →</a>"},
@@ -1985,6 +1985,7 @@ function startMins(f){
 }
 
 const feed = [
+  {date:"2026-11-21", dateLabel:"Nov 21", postedDate:"2026-11-22", tag:"info", title:"TSN division champions! 🏆", body:'Y2K took 1st place in Youth Flex Level 2 Small with a 97.8. <a href="https://drive.google.com/file/d/1zgjAubi5X4_Cio1moRh8nAm3NfoKkjZ-/view?usp=drivesdk" target="_blank" rel="noopener">Watch the performance →</a>'},
   {date:"2026-11-27", dateLabel:"Nov 27", postedDate:"2026-11-20", expires:"2026-11-27", tag:"info", title:"Holiday clinic moved to Fri, Nov 27", body:"Black Friday, 9 AM–1 PM. Enrolled families were moved automatically."},
   {date:"2026-11-22", dateLabel:"Nov 22", postedDate:"2026-11-20", expires:"2026-11-22", tag:"info", title:"NCA hotel blocks are open", body:'Housing is required. The CALI block closes Sunday at 9 PM. <a href="https://presto.eventpipe.com/event/27a4c0b3-2577-462d-9822-7c687749b1df/groups/c36431a0-1315-47d3-95eb-c345da6b0b66?inventory=public" target="_blank" rel="noopener">Book the CALI block →</a>'},
   {date:"2026-11-15", dateLabel:"Nov 15", postedDate:"2026-11-16", tag:"info", title:"Showcase photos are up", body:'<a href="https://proactionphotography.zenfoliosite.com/y2k-1" target="_blank" rel="noopener">View the team photos →</a>'},
@@ -2629,7 +2630,7 @@ function renderComps(){
         gcards.push(gcard(ICON_BED,'Directions to hotel', bookedHotel.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')+' →', hotelDirLink(bookedHotel+', '+c.loc.split('·')[0].trim())));
       } else if(c.travel==='local') gcards.push(gcard(ICON_BED,'Hotels nearby','View hotel list →', hotelsLink(c.address)));
       if(c.flightSearch) gcards.push(gcard(ICON_PLANE,'Search flights','Find flights →', flightsLink(c.flightSearch)));
-      gcards.push(c.photosLink
+      if(!c.noPhotos) gcards.push(c.photosLink
         ? gcard(ICON_CAMERA,'Comp photos','View photos →', c.photosLink)
         : gcard(ICON_CAMERA,'Comp photos','Link coming soon', null, true));
       gcards.push(c.rosterLink
@@ -2679,7 +2680,7 @@ function renderComps(){
       const photoRow = c.photosLink ? `<div class="compx-row-title"><a href="${c.photosLink}" target="_blank" rel="noopener">View photos →</a></div>` : `<div class="compx-row-title" style="font-weight:600;color:var(--text-muted)">Link coming soon</div>`;
       extra = '';
       calHtml = '';
-      sectionsHtml = `<div class="compx-section">
+      sectionsHtml = c.noPhotos ? '' : `<div class="compx-section">
         <div class="compx-section-label"><span class="cxl-ic">${ICON_CAMERA}</span>Comp photos</div>
         <div class="compx-row"><div class="compx-row-main">${photoRow}</div></div>
       </div>`;
