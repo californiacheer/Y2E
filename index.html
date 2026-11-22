@@ -5177,8 +5177,8 @@ function calDeleteAll(id){
 .dh-team-top{display:grid;grid-template-columns:minmax(0,1fr) auto;column-gap:14px;align-items:start;}
 .dh-score{text-align:right;white-space:nowrap;font-size:11.5px;color:var(--text-muted);font-weight:600;font-variant-numeric:tabular-nums;}
 .dh-score b{display:block;font-size:19px;line-height:1.1;color:var(--text);}
-.dh-res{display:grid;grid-template-columns:34px 4.6ch;align-items:center;column-gap:10px;justify-content:end;}
-.dh-res .dh-sc{text-align:left;}
+.dh-res{display:grid;grid-template-columns:4.6ch 34px;align-items:center;column-gap:10px;justify-content:end;}
+.dh-res .dh-sc{text-align:right;}
 .dh-res .dh-sc{font-size:18px;font-weight:800;color:var(--text);font-variant-numeric:tabular-nums;}
 .dh-det{margin:-4px 0 12px 62px;}
 .dh-det summary{list-style:none;cursor:pointer;font-size:13px;font-weight:700;color:var(--accent);display:inline-flex;align-items:center;gap:5px;}
@@ -5336,7 +5336,7 @@ function renderDieHards(){
   var rows=past.concat(upcoming).map(function(c){
     var r=DH_RESULTS[c.name], isPast=(c.end||c.start)<today, right='', sub='';
     if(r){
-      right='<div class="dh-res">'+dhMedal(r.place)+'<span class="dh-sc">'+(r.score?dhEsc(r.score):'')+'</span></div>';
+      right='<div class="dh-res"><span class="dh-sc">'+(r.score?dhEsc(r.score):'')+'</span>'+dhMedal(r.place)+'</div>';
       var lk=[]; if(r.scoresLink) lk.push('<a href="'+dhEsc(r.scoresLink)+'" target="_blank" rel="noopener">Scores</a>'); if(r.videoLink) lk.push('<a href="'+dhEsc(r.videoLink)+'" target="_blank" rel="noopener">Video</a>');
       if(r.label) sub=dhEsc(r.label); if(r.of) sub+=(sub?' · ':'')+'of '+r.of+' teams';
       if(lk.length) sub+=(sub?' · ':'')+lk.join(' · ');
