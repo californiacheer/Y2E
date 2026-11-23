@@ -5384,6 +5384,8 @@ function dhRow(t){
   }).join('');
   return '<details class="dh-tm"><summary class="dh-tm-h">'+head+'</summary><div class="dh-rt"><div class="h">Competition</div><div class="h">Date</div><div class="h">Place</div><div class="h n">Score</div>'+rows+'</div></details>';
 }
+/* highest shown score first (the score on the right of each row); teams without a score go last */
+function dhByScore(a,b){ var x=dhShown(a), y=dhShown(b), u=x?dhNum(x.r.score):null, v=y?dhNum(y.r.score):null; if(u===null&&v===null) return dhByName(a,b); if(u===null) return 1; if(v===null) return -1; return v-u||dhByName(a,b); }
 function dhByName(a,b){ var x=(a.gym+' '+a.name).toLowerCase(), y=(b.gym+' '+b.name).toLowerCase(); return x<y?-1:x>y?1:0; }
 function dhGroups(list,tierLabel){
   var order=['X-Small','Small','Medium','Large','X-Large'], g={};
@@ -5391,7 +5393,7 @@ function dhGroups(list,tierLabel){
   var keys=Object.keys(g).sort(function(a,b){ var i=a==='Size unconfirmed'?99:order.indexOf(a.split(' ')[0]), j=b==='Size unconfirmed'?99:order.indexOf(b.split(' ')[0]); return (i<0?50:i)-(j<0?50:j); });
   return keys.map(function(k){
     var sub=k==='Size unconfirmed'?tierLabel+' · size not posted yet':tierLabel+' · '+DH_TEAM.division.age+' Level '+DH_TEAM.division.level+(k.indexOf('non-Flex')<0?' Flex':'');
-    return '<details class="card dh-more"><summary><span>'+dhEsc(k)+' ('+g[k].length+')<small>'+dhEsc(sub)+'</small></span></summary><div class="dh-body">'+g[k].sort(dhByName).map(dhRow).join('')+'</div></details>';
+    return '<details class="card dh-more"><summary><span>'+dhEsc(k)+' ('+g[k].length+')<small>'+dhEsc(sub)+'</small></span></summary><div class="dh-body">'+g[k].sort(dhByScore).map(dhRow).join('')+'</div></details>';
   }).join('');
 }
 /* Y2K's own results this season, from the comp list */
@@ -5465,10 +5467,10 @@ function renderDieHards(){
   var html=dhOurSeason();
   html+=dhStandings(S.div);
   html+='<div class="section-title">Our Division</div><p class="dh-sub">Latest results from our confirmed division competitors ('+dhEsc(divName)+').</p>';
-  html+='<div class="card dh-card">'+(S.div.length?S.div.sort(dhByName).map(dhRow).join(''):'<p class="dh-empty">No confirmed competitors yet.</p>')+(S.maybe.length?'<div class="dh-h">Possibly in our division</div><p class="dh-mb">Same size, but D1/D2 isn\u2019t verified yet. Not counted in the standings.</p>'+S.maybe.sort(dhByName).map(dhRow).join(''):'')+'</div>';
+  html+='<div class="card dh-card">'+(S.div.length?S.div.sort(dhByScore).map(dhRow).join(''):'<p class="dh-empty">No confirmed competitors yet.</p>')+(S.maybe.length?'<div class="dh-h">Possibly in our division</div><p class="dh-mb">Same size, but D1/D2 isn\u2019t verified yet. Not counted in the standings.</p>'+S.maybe.sort(dhByScore).map(dhRow).join(''):'')+'</div>';
   var L=DH_TEAM.lastSeason.division;
   html+='<div class="section-title">Teams to Watch</div><p class="dh-sub">Last season’s competitors ('+dhEsc(L.age+' Level '+L.level+(L.flex?' Flex':'')+' · '+L.size)+') whose division is still unconfirmed.</p>';
-  html+='<div class="card dh-card">'+(S.watch.length?S.watch.sort(function(a,b){ var x=dhShown(a), y=dhShown(b); return (dhNum(y&&y.r.score)||0)-(dhNum(x&&x.r.score)||0)||dhByName(a,b); }).map(dhRow).join(''):'<p class="dh-empty">Every team from last season has been confirmed.</p>')+'</div>';
+  html+='<div class="card dh-card">'+(S.watch.length?S.watch.sort(dhByScore).map(dhRow).join(''):'<p class="dh-empty">Every team from last season has been confirmed.</p>')+'</div>';
   html+='<div class="section-title">D1 Teams by Size</div><p class="dh-sub">Youth Level 2 teams competing in other D1 sizes.</p>';
   html+=S.d1.length?dhGroups(S.d1,'D1'):'<div class="card dh-card"><p class="dh-empty">No other D1 teams confirmed yet.</p></div>';
   html+='<div class="section-title">D2 Teams</div><p class="dh-sub">Youth Level 2 teams competing in D2.</p>';
