@@ -5286,7 +5286,7 @@ details[open]>summary .dh-tg::after{content:' \25B4';}
    To add another team's result: find it in DH_TEAMS by id and add to seasons['2026-27'].results (and set .division once confirmed). */
 var DH_DIVISIONS = {'TSN':'Youth Flex Level 2'};
 var DH_NOSCORE = {};
-var DH_RESULTS = {'Showcase':{place:'1st', of:11, label:'Top youth score'}, 'TSN':{place:'1st', score:'97.8', label:'Division champions'}};
+var DH_RESULTS = {'Showcase':{place:'1st', of:11, label:'Top youth score'}, 'TSN':{place:'1st', score:'97.8', label:'Division champions', source:'Score reported by Y2K’s coaches'}};
 /* Y2K’s team settings. Change the division, size or season here and the whole Die Hards tab follows.
    lastSeason.division is the division used for Teams to Watch (last season’s L2 Youth Flex Medium field). */
 var DH_TEAM = {"id":"y2k","name":"Y2K","gym":"The California All Stars - San Marcos","athletes":28,"season":"2026-27","division":{"tier":"D1","age":"Youth","level":2,"flex":true,"size":"Medium"},"lastSeason":{"season":"2025-26","division":{"tier":"D1","age":"Youth","level":2,"flex":true,"size":"Medium"}}};
@@ -5399,7 +5399,7 @@ function dhGroups(list,tierLabel){
 }
 /* Y2K's own results this season, from the comp list */
 function dhY2KResults(){
-  return competitions.filter(function(c){ var r=DH_RESULTS[c.name]; return r&&dhNum(r.score)!==null; }).map(function(c){ var r=DH_RESULTS[c.name]; return {comp:c.name,start:c.start,end:c.end,place:r.place,of:r.of,score:dhNum(r.score),scale:100}; });
+  return competitions.filter(function(c){ var r=DH_RESULTS[c.name]; return r&&dhNum(r.score)!==null; }).map(function(c){ var r=DH_RESULTS[c.name]; return {comp:c.name,start:c.start,end:c.end,place:r.place,of:r.of,score:dhNum(r.score),scale:100,source:r.source}; });
 }
 function dhDayPlan(c){
   var h=(c.heroLinks||[]).filter(function(x){return /day plan/i.test(x.label||'')&&x.js;})[0];
@@ -5449,7 +5449,7 @@ function dhStandings(divTeams){
   return head+'<div class="card dh-card">'+rows.map(function(x){
     var v=dhNum(x.r.score), rank=1+sc.filter(function(s){return s>v;}).length, tie=sc.filter(function(s){return s===v;}).length>1;
     var w=Math.max(4,(v-lo)/(100-lo)*100).toFixed(1);
-    return '<details class="dh-st'+(x.us?' us':'')+'"><summary><span class="rk">'+(tie?'T':'')+rank+'</span><span class="nm"><b>'+dhEsc(x.name)+'</b><small>'+dhEsc(x.gym)+'</small></span><span class="sc">'+dhSc(v)+'</span><span class="bar"><i style="width:'+w+'%"></i></span></summary><div class="ev">'+dhEsc(x.r.comp)+' · '+dhWhen(x.r)+(x.r.place?' · '+dhEsc(dhPlace(x.r)):'')+'</div></details>';
+    return '<details class="dh-st'+(x.us?' us':'')+'"><summary><span class="rk">'+(tie?'T':'')+rank+'</span><span class="nm"><b>'+dhEsc(x.name)+'</b><small>'+dhEsc(x.gym)+'</small></span><span class="sc">'+dhSc(v)+'</span><span class="bar"><i style="width:'+w+'%"></i></span></summary><div class="ev">'+dhEsc(x.r.comp)+' · '+dhWhen(x.r)+(x.r.place?' · '+dhEsc(dhPlace(x.r)):'')+(x.r.source?'<br>'+dhEsc(x.r.source):'')+'</div></details>';
   }).join('')+'</div>';
 }
 function renderDieHards(){
