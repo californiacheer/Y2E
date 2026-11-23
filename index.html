@@ -5288,6 +5288,11 @@ details[open]>summary .dh-tg::after{content:' \25B4';}
 .dh-c .lk a{font-weight:600;color:var(--accent);}
 .dh-c .lk .cp{color:var(--text-muted);}
 .dh-c .dh-tg{grid-column:1/-1;}
+.dh-filters{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:26px 0 4px;}
+.dh-fl{flex-basis:100%;font-size:11.5px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--text-muted);}
+.dh-chip{font:inherit;font-size:13.5px;font-weight:600;padding:8px 14px;border-radius:999px;border:1px solid var(--border);background:var(--card,#fff);color:var(--text);cursor:pointer;}
+.dh-chip.on{background:var(--accent);border-color:var(--accent);color:#fff;}
+.dh-fc{flex-basis:100%;font-size:12.5px;color:var(--text-muted);}
 .dh-sp{display:inline-flex;align-items:center;white-space:nowrap;font-size:12px;font-weight:700;line-height:1;padding:6px 10px;border-radius:999px;background:var(--border);color:var(--text-muted);}
 .dh-sp.now{background:color-mix(in srgb,var(--accent) 14%,transparent);color:var(--accent);}
 .dh-ls.now{background:var(--accent);color:#fff;}
@@ -5411,7 +5416,7 @@ function dhGroups(list,tierLabel){
   var keys=Object.keys(g).sort(function(a,b){ var i=a==='Size unconfirmed'?99:order.indexOf(a.split(' ')[0]), j=b==='Size unconfirmed'?99:order.indexOf(b.split(' ')[0]); return (i<0?50:i)-(j<0?50:j); });
   return keys.map(function(k){
     var sub=k==='Size unconfirmed'?tierLabel+' · size not posted yet':tierLabel+' · '+DH_TEAM.division.age+' Level '+DH_TEAM.division.level+(k.indexOf('non-Flex')<0?' Flex':'');
-    return '<details class="card dh-more"><summary><span>'+dhEsc(k)+' ('+g[k].length+')<small>'+dhEsc(sub)+'</small></span></summary><div class="dh-body">'+g[k].sort(dhByScore).map(dhRow).join('')+'</div></details>';
+    return '<details class="card dh-more"'+(dhFiltering()?' open':'')+'><summary><span>'+dhEsc(k)+' ('+g[k].length+')<small>'+dhEsc(sub)+'</small></span></summary><div class="dh-body">'+g[k].sort(dhByScore).map(dhRow).join('')+'</div></details>';
   }).join('');
 }
 /* Y2K's own results this season, from the comp list */
@@ -5476,23 +5481,37 @@ function dhStandings(divTeams){
     return '<details class="dh-st'+(x.us?' us':'')+'"><summary><span class="rk">'+(tie?'T':'')+rank+'</span><span class="nm"><b>'+dhEsc(x.name)+'</b><small>'+dhEsc(x.gym)+'</small></span><span class="sc">'+dhSc(v)+'</span><span class="bar"><i style="width:'+w+'%"></i></span></summary><div class="ev">'+dhEsc(x.r.comp)+' · '+dhWhen(x.r)+(x.r.place?' · '+dhEsc(dhPlace(x.r)):'')+(x.r.source?'<br>'+dhEsc(x.r.source):'')+'</div></details>';
   }).join('')+'</div>';
 }
+/* simple filters for the team lists (not Our Season or Season Standings) */
+var DH_F={bid:false,now:false};
+function dhHasYSBid(t){ var c=dhSeason(t,DH_TEAM.season); return ((c&&c.bids)||[]).some(function(b){return b.to==='The Youth Summit';}); }
+function dhFiltering(){ return DH_F.bid||DH_F.now; }
+function dhPass(t){ return (!DH_F.bid||dhHasYSBid(t))&&(!DH_F.now||dhResults(t).length>0); }
+function dhToggle(k){ DH_F[k]=!DH_F[k]; renderDieHards(); }
+function dhEmpty(msg){ return '<p class="dh-empty">'+(dhFiltering()?'No teams here match the filters.':msg)+'</p>'; }
+function dhFilterBar(n,total){
+  function chip(k,label){ return '<button type="button" class="dh-chip'+(DH_F[k]?' on':'')+'" aria-pressed="'+DH_F[k]+'" onclick="dhToggle(\''+k+'\')">'+(DH_F[k]?'✓ ':'')+label+'</button>'; }
+  return '<div class="dh-filters"><span class="dh-fl">Show only</span>'+chip('bid','Youth Summit bid')+chip('now','Competed this season')+'<span class="dh-fc">'+(dhFiltering()?'Showing '+n+' of '+total+' teams':total+' teams')+'</span></div>';
+}
 function renderDieHards(){
   var el=document.getElementById('dhBody'); if(!el) return;
   window.__dhVarsity=false;
   var S={div:[],maybe:[],d1:[],d2:[],watch:[]};
   DH_TEAMS.forEach(function(t){ var k=dhSection(t); if(k) S[k].push(t); });
+  var standingsTeams=S.div.slice(), total=0, shown=0;
+  Object.keys(S).forEach(function(k){ total+=S[k].length; S[k]=S[k].filter(dhPass); shown+=S[k].length; });
   var Y=DH_TEAM.division, divName=Y.tier+' · '+Y.age+' Level '+Y.level+(Y.flex?' Flex':'')+' · '+Y.size;
   var html=dhOurSeason();
-  html+=dhStandings(S.div);
+  html+=dhStandings(standingsTeams);
+  html+=dhFilterBar(shown,total);
   html+='<div class="section-title">Our Division</div><p class="dh-sub">Latest results from our confirmed division competitors ('+dhEsc(divName)+').</p>';
-  html+='<div class="card dh-card">'+(S.div.length?S.div.sort(dhByScore).map(dhRow).join(''):'<p class="dh-empty">No confirmed competitors yet.</p>')+(S.maybe.length?'<div class="dh-h">Possibly in our division</div><p class="dh-mb">Same size, but D1/D2 isn\u2019t verified yet. Not counted in the standings.</p>'+S.maybe.sort(dhByScore).map(dhRow).join(''):'')+'</div>';
+  html+='<div class="card dh-card">'+(S.div.length?S.div.sort(dhByScore).map(dhRow).join(''):dhEmpty('No confirmed competitors yet.'))+(S.maybe.length?'<div class="dh-h">Possibly in our division</div><p class="dh-mb">Same size, but D1/D2 isn\u2019t verified yet. Not counted in the standings.</p>'+S.maybe.sort(dhByScore).map(dhRow).join(''):'')+'</div>';
   var L=DH_TEAM.lastSeason.division;
   html+='<div class="section-title">Teams to Watch</div><p class="dh-sub">Last season’s competitors ('+dhEsc(L.age+' Level '+L.level+(L.flex?' Flex':'')+' · '+L.size)+') whose division is still unconfirmed.</p>';
-  html+='<div class="card dh-card">'+(S.watch.length?S.watch.sort(dhByScore).map(dhRow).join(''):'<p class="dh-empty">Every team from last season has been confirmed.</p>')+'</div>';
+  html+='<div class="card dh-card">'+(S.watch.length?S.watch.sort(dhByScore).map(dhRow).join(''):dhEmpty('Every team from last season has been confirmed.'))+'</div>';
   html+='<div class="section-title">D1 Teams by Size</div><p class="dh-sub">Youth Level 2 teams competing in other D1 sizes.</p>';
-  html+=S.d1.length?dhGroups(S.d1,'D1'):'<div class="card dh-card"><p class="dh-empty">No other D1 teams confirmed yet.</p></div>';
+  html+=S.d1.length?dhGroups(S.d1,'D1'):'<div class="card dh-card">'+dhEmpty('No other D1 teams confirmed yet.')+'</div>';
   html+='<div class="section-title">D2 Teams</div><p class="dh-sub">Youth Level 2 teams competing in D2.</p>';
-  html+=S.d2.length?dhGroups(S.d2,'D2'):'<div class="card dh-card"><p class="dh-empty">No D2 teams confirmed yet.</p></div>';
+  html+=S.d2.length?dhGroups(S.d2,'D2'):'<div class="card dh-card">'+dhEmpty('No D2 teams confirmed yet.')+'</div>';
   html+='<p class="dh-note">Compiled by a team parent from official results. Teams are only listed in a division once it’s confirmed for this season.'+(window.__dhVarsity?' Varsity TV videos may ask you to sign in.':'')+'</p>';
   el.innerHTML=html;
 }
