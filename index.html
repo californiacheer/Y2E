@@ -5545,7 +5545,8 @@ function dhCard(t){
     +'<span class="c">'+comp+'</span>'+(r&&!L.now?'<span class="ls">Last season · '+dhSeasonName(L.season)+'</span>':'')+'</div>'
     +'<div class="r"><b>'+(sc!==null?dhSc(sc):'')+'</b><span>'+dhEsc(place)+'</span></div></div>';
 }
-function dhByLatest(a,b){ var x=dhLatest(a), y=dhLatest(b), u=x?dhNum(x.r.score):null, v=y?dhNum(y.r.score):null; if(u===null&&v===null) return dhByName(a,b); if(u===null) return 1; if(v===null) return -1; return v-u||dhByName(a,b); }
+/* teams that competed this season first, then last-season-only, then no result; highest score first within each */
+function dhByLatest(a,b){ var x=dhLatest(a), y=dhLatest(b), ga=x?(x.now?0:1):2, gb=y?(y.now?0:1):2; if(ga!==gb) return ga-gb; var u=x?dhNum(x.r.score):null, v=y?dhNum(y.r.score):null; if(u===null&&v===null) return dhByName(a,b); if(u===null) return 1; if(v===null) return -1; return v-u||dhByName(a,b); }
 
 /* Teams directory: which section and group a team sits in */
 var DH_SIZES=['X-Small','Small','Medium','Large','X-Large'];
@@ -5708,16 +5709,16 @@ function dhLineupTeams(c){
 /* this season's score first (highest), then teams with no score this season */
 function dhByNow(a,b){ var x=dhResults(a)[0], y=dhResults(b)[0], u=x?dhNum(x.score):null, v=y?dhNum(y.score):null; if(u===null&&v===null) return dhByName(a,b); if(u===null) return 1; if(v===null) return -1; return v-u||dhByName(a,b); }
 /* competitor row: this season's latest result (video link, score, placement) */
-function dhOppNow(t){
+function dhOppNow(t,note){
   var r=dhResults(t)[0], sc=r?dhNum(r.score):null;
   var comp=r?(r.video&&r.video.url?dhLink({label:r.comp,url:r.video.url}):'<span>'+dhEsc(r.comp)+'</span>'):'<span class="none">No results yet this season</span>';
-  return '<div class="dh-k"><div class="l"><b>'+dhEsc(t.name)+'</b><span class="g">'+dhGymLine(t)+'</span><span class="c">'+comp+'</span></div><div class="r"><b>'+(sc!==null?dhSc(sc):'')+'</b><span>'+dhEsc(r?dhPlace(r):'')+'</span></div></div>';
+  return '<div class="dh-k'+(r?'':' old')+'"><div class="l"><b>'+dhEsc(t.name)+'</b><span class="g">'+dhGymLine(t)+'</span>'+(note?'<span class="ls">'+dhEsc(note)+'</span>':'')+'<span class="c">'+comp+'</span></div><div class="r"><b>'+(sc!==null?dhSc(sc):'')+'</b><span>'+dhEsc(r?dhPlace(r):'')+'</span></div></div>';
 }
 function dhCompetitors(c){
   var L=DH_LINEUPS[c.name]; if(!L) return '';
   var x=dhLineupTeams(c); if(!x.teams.length&&!x.pending.length) return '';
-  return '<details class="dh-lw dh-oc"><summary>Our competitors ('+x.teams.length+(x.pending.length?' + '+x.pending.length:'')+')</summary><p class="dh-lw-h">'+dhEsc(L.division)+'</p><div class="dh-lw-b">'+x.teams.map(dhOppNow).join('')+'</div>'
-    +(x.pending.length?'<div class="dh-gl">Size not posted yet <span>('+x.pending.length+') · registered '+DH_TEAM.division.tier+' Flex, could be Small</span></div><div class="dh-lw-b">'+x.pending.map(dhOppNow).join('')+'</div>':'')+'</details>';
+  var all=x.teams.concat(x.pending).sort(dhByNow), note='Size not posted yet \u00B7 registered '+DH_TEAM.division.tier+' Flex';
+  return '<details class="dh-lw dh-oc"><summary>Our competitors ('+all.length+')</summary><p class="dh-lw-h">'+dhEsc(L.division)+'</p><div class="dh-lw-b">'+all.map(function(t){ return dhOppNow(t, x.pending.indexOf(t)>-1?note:''); }).join('')+'</div></details>';
 }
 /* Views */
 function dhOverview(){
@@ -5758,9 +5759,7 @@ function dhTeamsView(){
   return '<div class="dh-tools"><input id="dhQ" class="dh-search" type="search" placeholder="Search team or gym" aria-label="Search team or gym" value="'+dhEsc(DH_V.q)+'" oninput="dhSearch(this.value)"><button type="button" id="dhFiltBtn" class="dh-chip" onclick="dhOpenSheet()">Filters</button></div><div id="dhDir"></div>';
 }
 function dhGo(v,anchor){
-  DH_V.view=v; renderDieHards();
-  var el=anchor?document.getElementById(anchor):document.getElementById('dhBody');
-  if(el) el.scrollIntoView({block:'start'});
+  DH_V.view=v; renderDieHards();  /* keep the page where it is: no scrolling when switching views */
 }
 function renderDieHards(){
   var el=document.getElementById('dhBody'); if(!el) return;
