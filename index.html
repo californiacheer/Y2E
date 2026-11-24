@@ -1900,7 +1900,7 @@ const competitions = [
   {name:"UCA Allstar Nationals", loc:"Orlando, FL · ESPN Wide World of Sports", address:"ESPN Wide World of Sports, Orlando, FL", start:"2027-03-13", end:"2027-03-14", attending:false, teams:"C3, Blush, Shazam, Sugar"},
   {name:"NCA All-Star Nationals", loc:"Houston, TX · George R. Brown Convention Center", address:"George R. Brown Convention Center, Houston, TX", start:"2027-03-19", end:"2027-03-21", travel:"required",
     detail:"Fly in Thursday 3/18, fly out Monday 3/22.", housing:"required", bookingDate:"2026-11-20", travelStart:"2027-03-18", travelEnd:"2027-03-22",
-    bookingLinks:[{label:"CALI hotel block (book here)", url:"https://presto.eventpipe.com/event/27a4c0b3-2577-462d-9822-7c687749b1df/groups/c36431a0-1315-47d3-95eb-c345da6b0b66?inventory=public"}, {label:"General hotel block", url:"https://presto.eventpipe.com/event/27a4c0b3-2577-462d-9822-7c687749b1df"}],
+    bookingLinks:[{label:"General hotel block (book here)", url:"https://presto.eventpipe.com/event/27a4c0b3-2577-462d-9822-7c687749b1df"}],
     flightSearch:"Flights to Houston from San Diego, departing 2027-03-18, returning 2027-03-22",
     rosterLink:"https://www.varsity.com/download-event-app/", rosterLabel:"Team roster via Varsity Spirit Event App"},
   {name:"One Up Grand Nationals", loc:"Nashville, TN · Gaylord Opryland Resort &amp; Convention Center", address:"Gaylord Opryland Resort & Convention Center, Nashville, TN", start:"2027-04-02", end:"2027-04-04", attending:false, teams:"Rapture, Lady Bullets, WhiteGold"},
@@ -1924,6 +1924,7 @@ const practice = [
 ];
 
 const practiceAnnouncements = [
+  {until:"2026-11-24", html:"<b>Tue, Nov 24:</b> practice is 2:00–4:00 PM instead of 4:30–6:30 PM."},
   {until:"2026-11-20", html:"<b>Fri, Nov 20:</b> practice is 6:00–8:00 PM instead of 6:30–8:30 PM (Friendsgiving)."},
   {until:"2026-10-10", html:"<b>Added practice:</b> Sat, Oct 10, 2:00–4:00 PM — on top of the regular weekly schedule below."}
 ];
@@ -1985,6 +1986,10 @@ function startMins(f){
 }
 
 const feed = [
+  {date:"2026-11-25", dateLabel:"Nov 25–29", postedDate:"2026-11-23", expires:"2026-11-29", tag:"info", title:"Gym closed for Thanksgiving", body:"Closed Wed, Nov 25 through Sun, Nov 29. Watch for homework from your coaches starting Wednesday. Happy Thanksgiving!"},
+  {date:"2026-11-30", dateLabel:"Due Nov 30", postedDate:"2026-11-24", expires:"2026-11-30", tag:"deadline", title:"Winter Collection pre-orders", body:'Closes Mon, Nov 30 at midnight. Pajama shorts and pants, polo, hats and hoodies arrive before the holidays. The car decal and rhinestone appliqué arrive after. Pre-order only, non-refundable, so triple-check sizes. <a href="https://caliproshop.com/collections/pre-orders" target="_blank" rel="noopener">Order now →</a>'},
+  {date:"2026-11-21", dateLabel:"Nov 21", postedDate:"2026-11-23", tag:"info", title:"CALI swept TSN 🏆", body:"Overall champs! High point winners: Prep Bliss, Level 1 White Gold, Level 2 Reign, Levels 3–6 C3, and Grand Champs Reign (99.37)."},
+  {date:"2026-12-13", dateLabel:"Dec 13", postedDate:"2026-11-24", expires:"2026-12-13", tag:"event", title:"Save the date: Y2K Christmas Party 🎄", body:'Sun, Dec 13 · 1:00–3:00 PM · Laila’s house. Secret Santa blanket exchange, food, Christmas games and team bonding. A food sign-up is coming. <b>Not attending? Tell the team ASAP</b> so your athlete is removed from the blanket exchange. <a href="https://www.drawnames.com/t/hV3pBMY" target="_blank" rel="noopener">Blanket exchange draw →</a>'},
   {date:"2026-11-21", dateLabel:"Nov 21", postedDate:"2026-11-22", tag:"info", title:"TSN division champions! 🏆", body:'Y2K took 1st place in Youth Flex Level 2 with a 97.8, the 3rd highest score of the entire competition. <a href="https://drive.google.com/file/d/1zgjAubi5X4_Cio1moRh8nAm3NfoKkjZ-/view?usp=drivesdk" target="_blank" rel="noopener">Watch the performance →</a>'},
   {date:"2026-11-27", dateLabel:"Nov 27", postedDate:"2026-11-20", expires:"2026-11-27", tag:"info", title:"Holiday clinic moved to Fri, Nov 27", body:"Black Friday, 9 AM–1 PM. Enrolled families were moved automatically."},
   {date:"2026-11-22", dateLabel:"Nov 22", postedDate:"2026-11-20", expires:"2026-11-22", tag:"info", title:"NCA hotel blocks are open", body:'Housing is required. The CALI block closes Sunday at 9 PM. <a href="https://presto.eventpipe.com/event/27a4c0b3-2577-462d-9822-7c687749b1df/groups/c36431a0-1315-47d3-95eb-c345da6b0b66?inventory=public" target="_blank" rel="noopener">Book the CALI block →</a>'},
@@ -2017,6 +2022,8 @@ const feed = [
 ];
 
 const fundraisers = [
+  {emoji:"⏰", title:"Practice time change", date:"2026-11-24", end:"2026-11-24", badgeType:"practice", badgeLabel:"Practice", meta:"Tue, Nov 24, 2026 · 2:00–4:00 PM", extra:"Instead of the usual 4:30–6:30 PM."},
+  {emoji:"🎄", title:"Y2K Christmas Party", date:"2026-12-13", end:"2026-12-13", meta:"Sun, Dec 13, 2026 · 1:00–3:00 PM · Laila’s house", when:"1:00–3:00 PM", extra:'<span class="sk"><span class="sk-r"><span class="sk-i">🎁</span><span class="sk-t"><b>Secret Santa blanket exchange</b> · <a href="https://www.drawnames.com/t/hV3pBMY" target="_blank" rel="noopener">See your draw →</a></span></span><span class="sk-r"><span class="sk-i">🍪</span><span class="sk-t">Food (sign-up coming), Christmas games and team bonding</span></span><span class="sk-r"><span class="sk-i">⚠️</span><span class="sk-t">Not attending? Tell the team <b>ASAP</b> so your athlete is removed from the blanket exchange.</span></span></span>'},
   {emoji:"❄️", title:"Optional team bonding", date:"2026-12-17", end:"2026-12-17", meta:"Thu, Dec 17, 2026 · 7:00 PM MT · ICE! Nightmare Before Christmas · Mistletoe Village, Gaylord Rockies", extra:'During ASCS Champs Grand Nationals, for athletes and families who have arrived by then. Each family books their own tickets, and the best discount ends Mon, Nov 16. <a href="#" onclick="openIceCodes();return false">Discount codes →</a> · <a href="https://tickets.gaylordrockies.com/eventperformances.asp?evt=105" target="_blank" rel="noopener">Buy tickets →</a>'},
   {emoji:"🦃", title:"Y2K Friendsgiving", date:"2026-11-20", end:"2026-11-20", meta:"Fri, Nov 20, 2026 · Starts 6:00 PM", when:"Starts 6:00 PM", extra:"We’ll do a Chick-fil-A meal."},
   {emoji:"🤸‍♀️", title:"Friday practices starting", date:"2026-09-11", end:"2026-09-11", meta:"Fridays effective 9/11/26 — Y2K 6:30–8:30 PM."},
