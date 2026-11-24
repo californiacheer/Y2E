@@ -5310,6 +5310,9 @@ details[open]>summary .dh-tg::after{content:' \25B4';}
 .dh-k.old .c a{font-weight:500;}
 .dh-gl{font-size:13px;letter-spacing:0;text-transform:none;font-weight:700;color:var(--text);padding:16px 0 4px;}
 .dh-gl span{font-weight:500;color:var(--text-muted);}
+.dh-oc{margin:-4px 0 12px 60px;}
+.dh-oc .dh-k{padding:12px 0;}
+.dh-oc .dh-lw-b .dh-k:first-child{border-top:0;}
 .dh-seg{display:flex;gap:2px;padding:3px;margin:2px 0 6px;border-radius:12px;background:var(--border);}
 .dh-seg button{flex:1;font:inherit;font-size:14px;font-weight:600;padding:9px 6px;border:0;border-radius:9px;background:transparent;color:var(--text-muted);cursor:pointer;}
 .dh-seg button.on{background:var(--surface);color:var(--text);box-shadow:0 1px 3px rgba(0,0,0,.12);}
@@ -5648,9 +5651,9 @@ function dhOpp(t){
   return '<div class="dh-op"><b>'+dhEsc(t.name)+'</b><span class="g">'+dhGymLine(t)+'</span>'+(v?'<span class="c">'+dhLink({label:v.comp,url:v.video.url})+'</span>'+(lab?'<span class="ls">'+lab+'</span>':''):'')+'</div>';
 }
 function dhLineup(c){
-  var L=DH_LINEUPS[c.name], teams=L?(L.teams||[]).map(function(id){return DH_TEAMS.filter(function(t){return t.id===id;})[0];}).filter(Boolean):[];
+  var L=DH_LINEUPS[c.name], teams=dhLineupTeams(c).teams;
   if(!teams.length) return '<p class="dh-lpend">Division lineup pending</p>';
-  return (L.division?'<p class="dh-mut">'+dhEsc(L.division)+'</p>':'')+teams.map(dhOpp).join('');
+  return (L.division?'<p class="dh-mut">'+dhEsc(L.division)+'</p>':'')+teams.map(dhOppNow).join('');
 }
 function dhBidsOffered(c){ var b=DH_BIDP[c.name]||[]; return b.length?'<div class="dh-bp">'+b.map(function(x){return dhBidPill(x[0],x[1]);}).join('')+'</div>':'<p class="dh-mut">No Youth Summit bids listed</p>'; }
 function dhComps(){
@@ -5682,11 +5685,40 @@ function dhDivName(d){ return 'Youth Level 2'+(d.flex?' Flex':' (non-Flex)')+(d.
 function dhUpRows(){
   var C=dhComps();
   return C.up.map(function(c){
-    var L=DH_LINEUPS[c.name], opp=L&&L.teams&&L.teams.length?'<span class="g">vs '+L.teams.map(function(id){var t=DH_TEAMS.filter(function(x){return x.id===id;})[0];return t?dhEsc(t.name):'';}).filter(Boolean).join(', ')+'</span>':'';
-    return '<div class="dh-cr">'+dhDateBlock(c.start)+'<div class="l"><b>'+dhEsc(c.name)+'</b><span class="g">'+fmtRange(c.start,c.end||c.start)+'</span>'+(DH_BIDP[c.name]?dhBidsOffered(c):'')+opp+dhLastWinBlock(c)+'</div><div class="r"></div></div>';
+    return '<div class="dh-cr">'+dhDateBlock(c.start)+'<div class="l"><b>'+dhEsc(c.name)+'</b><span class="g">'+fmtRange(c.start,c.end||c.start)+'</span>'+(DH_BIDP[c.name]?dhBidsOffered(c):'')+dhLastWinBlock(c)+'</div><div class="r"></div></div>'+dhCompetitors(c);
   }).join('')||'<p class="dh-empty">No upcoming competitions.</p>';
 }
 function dhResRows(){ return dhComps().past.map(dhResultRow).join('')||'<p class="dh-empty">No completed competitions yet.</p>'; }
+/* Lineups can also come from an event's team list: every team registered for that event in our Flex tier (D1/D2),
+   with our size this season. Teams registered in our tier with no size posted are listed separately. */
+DH_LINEUPS['NCA All-Star Nationals'] = {fromRegistration:'NCA All-Star Nationals 2027', division:'D1 Youth Level 2 Flex Small · from the NCA team list'};
+function dhLineupTeams(c){
+  var L=DH_LINEUPS[c.name]; if(!L) return {teams:[],pending:[]};
+  if(!L.fromRegistration) return {teams:(L.teams||[]).map(function(id){return DH_TEAMS.filter(function(t){return t.id===id;})[0];}).filter(Boolean),pending:[]};
+  var Y=DH_TEAM.division, teams=[], pending=[];
+  DH_TEAMS.forEach(function(t){
+    var s=dhSeason(t,DH_TEAM.season); if(!s) return;
+    var reg=(s.registered||[]).filter(function(r){ return r.event===L.fromRegistration&&/^L2 Youth - Flex/.test(r.division)&&(/D2/.test(r.division)?'D2':'D1')===Y.tier; })[0];
+    if(!reg) return;
+    var d=s.division||{};
+    if(d.size===Y.size) teams.push(t); else if(!d.size) pending.push(t);
+  });
+  return {teams:teams.sort(dhByNow),pending:pending.sort(dhByNow)};
+}
+/* this season's score first (highest), then teams with no score this season */
+function dhByNow(a,b){ var x=dhResults(a)[0], y=dhResults(b)[0], u=x?dhNum(x.score):null, v=y?dhNum(y.score):null; if(u===null&&v===null) return dhByName(a,b); if(u===null) return 1; if(v===null) return -1; return v-u||dhByName(a,b); }
+/* competitor row: this season's latest result (video link, score, placement) */
+function dhOppNow(t){
+  var r=dhResults(t)[0], sc=r?dhNum(r.score):null;
+  var comp=r?(r.video&&r.video.url?dhLink({label:r.comp,url:r.video.url}):'<span>'+dhEsc(r.comp)+'</span>'):'<span class="none">No results yet this season</span>';
+  return '<div class="dh-k"><div class="l"><b>'+dhEsc(t.name)+'</b><span class="g">'+dhGymLine(t)+'</span><span class="c">'+comp+'</span></div><div class="r"><b>'+(sc!==null?dhSc(sc):'')+'</b><span>'+dhEsc(r?dhPlace(r):'')+'</span></div></div>';
+}
+function dhCompetitors(c){
+  var L=DH_LINEUPS[c.name]; if(!L) return '';
+  var x=dhLineupTeams(c); if(!x.teams.length&&!x.pending.length) return '';
+  return '<details class="dh-lw dh-oc"><summary>Our competitors ('+x.teams.length+(x.pending.length?' + '+x.pending.length:'')+')</summary><p class="dh-lw-h">'+dhEsc(L.division)+'</p><div class="dh-lw-b">'+x.teams.map(dhOppNow).join('')+'</div>'
+    +(x.pending.length?'<div class="dh-gl">Size not posted yet <span>('+x.pending.length+') · registered '+DH_TEAM.division.tier+' Flex, could be Small</span></div><div class="dh-lw-b">'+x.pending.map(dhOppNow).join('')+'</div>':'')+'</details>';
+}
 /* Views */
 function dhOverview(){
   var C=dhComps(), n=C.up[0], html='';
