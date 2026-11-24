@@ -5707,12 +5707,18 @@ function dhLineupTeams(c){
   return {teams:teams.sort(dhByNow),pending:pending.sort(dhByNow)};
 }
 /* this season's score first (highest), then teams with no score this season */
-function dhByNow(a,b){ var x=dhResults(a)[0], y=dhResults(b)[0], u=x?dhNum(x.score):null, v=y?dhNum(y.score):null; if(u===null&&v===null) return dhByName(a,b); if(u===null) return 1; if(v===null) return -1; return v-u||dhByName(a,b); }
+/* this season's results first, then last season's NCA result, then no score; highest score first within each */
+function dhByNow(a,b){ var x=dhResults(a)[0], y=dhResults(b)[0], ga=x?0:(dhLastNCA(a)?1:2), gb=y?0:(dhLastNCA(b)?1:2); if(ga!==gb) return ga-gb; x=x||dhLastNCA(a); y=y||dhLastNCA(b); var u=x?dhNum(x.score):null, v=y?dhNum(y.score):null; if(u===null&&v===null) return dhByName(a,b); if(u===null) return 1; if(v===null) return -1; return v-u||dhByName(a,b); }
 /* competitor row: this season's latest result (video link, score, placement) */
+/* competitor row: this season's latest result; if none yet, last season's NCA result (grayed, labeled) */
+function dhLastNCA(t){ return dhResults(t,DH_TEAM.lastSeason.season).filter(function(r){return /^NCA/.test(r.comp);})[0]||null; }
 function dhOppNow(t,note){
-  var r=dhResults(t)[0], sc=r?dhNum(r.score):null;
+  var r=dhResults(t)[0], old=false;
+  if(!r){ r=dhLastNCA(t); old=!!r; }
+  var sc=r?dhNum(r.score):null, Y=DH_TEAM.division;
   var comp=r?(r.video&&r.video.url?dhLink({label:r.comp,url:r.video.url}):'<span>'+dhEsc(r.comp)+'</span>'):'<span class="none">No results yet this season</span>';
-  return '<div class="dh-k'+(r?'':' old')+'"><div class="l"><b>'+dhEsc(t.name)+'</b><span class="g">'+dhGymLine(t)+'</span>'+(note?'<span class="ls">'+dhEsc(note)+'</span>':'')+'<span class="c">'+comp+'</span></div><div class="r"><b>'+(sc!==null?dhSc(sc):'')+'</b><span>'+dhEsc(r?dhPlace(r):'')+'</span></div></div>';
+  var lab=old?'<span class="ls">Last season · '+dhSeasonName(DH_TEAM.lastSeason.season)+(r.divLabel&&r.divLabel!==dhDivName(Y).replace(' · D1','').replace('Youth Level 2','L2 Youth')?' · '+dhEsc(r.divLabel):'')+'</span>':'';
+  return '<div class="dh-k'+(old||!r?' old':'')+'"><div class="l"><b>'+dhEsc(t.name)+'</b><span class="g">'+dhGymLine(t)+'</span>'+(note?'<span class="ls">'+dhEsc(note)+'</span>':'')+'<span class="c">'+comp+'</span>'+lab+'</div><div class="r"><b>'+(sc!==null?dhSc(sc):'')+'</b><span>'+dhEsc(r?dhPlace(r):'')+'</span></div></div>';
 }
 function dhCompetitors(c){
   var L=DH_LINEUPS[c.name]; if(!L) return '';
