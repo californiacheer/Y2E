@@ -5693,7 +5693,7 @@ function dhOverview(){
   html+='<div class="section-title">Next competition</div><div class="card dh-card dh-next2">';
   if(n){
     html+='<b class="dh-nm">'+dhEsc(n.name)+'</b><span class="dh-dt">'+fmtRange(n.start,n.end||n.start)+'</span>'
-      +'<div class="dh-brow"><span class="dh-bl">Bids available</span>'+(DH_BIDP[n.name]&&DH_BIDP[n.name].length?DH_BIDP[n.name].map(function(x){return dhBidPill(x[0],x[1]);}).join(''):'<span class="dh-mut">None listed</span>')+'</div><div class="dh-h">Our competitors</div>'+dhLineup(n);
+      +'<div class="dh-h">Bids available</div>'+dhBidsOffered(n)+'<div class="dh-h">Our competitors</div>'+dhLineup(n);
   } else html+='<p class="dh-empty">No upcoming competitions on the schedule.</p>';
   html+='</div><details class="dh-dd"><summary>All competitions</summary><div class="dh-h2">Upcoming</div><div class="card dh-card">'+dhUpRows()+'</div><div class="dh-h2">Results</div><div class="card dh-card">'+dhResRows()+'</div></details>';
   var last=C.past.filter(function(c){ var r=DH_RESULTS[c.name]; return r&&(r.place||r.score); })[0];
