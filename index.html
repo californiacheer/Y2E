@@ -5877,18 +5877,13 @@ var DH_BIDPOOL = {"asOf":"2026-11-25","ranked":[{"team":"Inferno","gym":"Champio
 DH_BIDPOOL.source = 'NCA 2027 team list (Nov 23) and published event results';
 var DH_BIDRACE = {
   'ASCS Champs Grand Nationals':{bid:'Partial Paid', count:'1 for D1', field:'season',
-    how:['The highest-scoring eligible D1 Youth team gets the Partial Paid bid. That’s Levels 1–5, regular Youth and Youth Flex, every size.',
-         'The three highest D1 Youth teams eligible for At-Large get those bids. If teams decline, remaining At-Large bids can go by score across D1 and D2.',
-         'Winning Youth 2 Flex Small alone guarantees neither award here.']},
+    how:['Goes to the highest-scoring D1 Youth team at this event: any level 1–5, Flex or not, any size.','The next 3 eligible D1 Youth teams get At-Large bids.','Winning our division doesn’t guarantee either bid here.']},
   'Spirit Sports':{bid:'Partial Paid', count:'1 for D1', field:'season',
-    how:['Same as Colorado: the highest-scoring eligible D1 Youth team, Levels 1–5, regular and Flex, every size, gets the Partial Paid bid.',
-         'The three highest D1 Youth teams eligible for At-Large get those bids. The other Partial Paid and three initial At-Large bids go to D2.']},
+    how:['Goes to the highest-scoring D1 Youth team at this event: any level 1–5, Flex or not, any size.','The next 3 eligible D1 Youth teams get At-Large bids.','Winning our division doesn’t guarantee either bid here.']},
   'USA':{bid:'Full Paid', count:'1 for D1', field:'season',
-    how:['The highest-scoring eligible D1 Youth team, Levels 1–5, regular and Flex, every size, gets the Full Paid bid.',
-         'Winning Y2K’s judged division guarantees at least an At-Large if Y2K is eligible. If the winner already holds a bid, earns Full Paid or declines, it can pass to 2nd, then 3rd. It stops at 3rd.']},
+    how:['Goes to the highest-scoring D1 Youth team at this event: any level 1–5, Flex or not, any size.','Winning our division earns at least an At-Large bid. If the winner can’t take it, it passes to 2nd, then 3rd.']},
   'NCA All-Star Nationals':{bid:'Full Paid', count:'1 for D1', field:'nca',
-    how:['Same as USA: Y2K is compared with every eligible D1 Youth team in Houston for the Full Paid bid.',
-         'For At-Large, what counts is placement in Y2K’s own judged division. It can pass down to 2nd or 3rd.']}
+    how:['Goes to the highest-scoring D1 Youth team at this event: any level 1–5, Flex or not, any size.','Winning our division earns at least an At-Large bid. If the winner can’t take it, it passes to 2nd, then 3rd.']}
 };
 function dhRaceRow(x){
   var sub=[x.gym, x.div].filter(Boolean).map(dhEsc).join(' · ');
@@ -5899,12 +5894,12 @@ function dhBidRace(name){
   var R=DH_BIDRACE[name], c=competitions.filter(function(x){return x.name===name;})[0]; if(!R||!c) return;
   var P=DH_BIDPOOL, nca=R.field==='nca';
   var h='<div class="dh-race-rule"><b>'+dhEsc(R.bid)+' · '+dhEsc(R.count)+'</b>'+R.how.map(function(t){return '<p>'+dhEsc(t)+'</p>';}).join('')
-    +'<p class="dh-mut">The score that earns the bid is the one posted at this competition. Y2K’s 97.8 is the benchmark.</p></div>';
+    +'<p class="dh-mut">Only the score from this event counts. Y2K’s season high is 97.8.</p></div>';
   h+='<div class="dh-h">'+(nca?'Registered for NCA · ranked by season high':'This season’s D1 Youth leaders')+'</div>'
-    +'<p class="dh-mut">'+(nca?(P.registered+1)+' D1 Youth teams are registered, Y2K included. ':'This event hasn’t published its team list yet, so some of these teams won’t be there. They are the D1 Youth teams registered for NCA, ranked by their highest score this season. ')
-    +'Equal scores share a rank. Teams already holding this bid or better can’t win it. '+(R.bid==='Full Paid'?'None of these teams held a Full Paid bid on Varsity’s Nov 18 list.':'Partial Paid holders weren’t checked yet, so check Varsity’s bid list before the event.')+'</p>';
+    +'<p class="dh-mut">'+(nca?(P.registered+1)+' D1 Youth teams registered, including Y2K. ':'This event’s team list isn’t out yet, so this shows the D1 Youth teams registered for NCA. Some won’t be at this event. ')
+    +'Ties share a rank. '+(R.bid==='Full Paid'?'None of these teams had a Full Paid bid on Varsity’s Nov 18 list.':'Teams that already have a Partial or Full Paid bid can’t win this one. We haven’t checked who has one yet.')+'</p>';
   h+='<table class="dh-tb"><thead><tr><th class="rk">Rank</th><th>Team</th><th class="n">Score</th></tr></thead><tbody>'+P.ranked.map(dhRaceRow).join('')+'</tbody></table>';
-  if(P.evaluation.length) h+='<div class="dh-h">Evaluation scores</div><p class="dh-mut">Listed in evaluation divisions, so they’re kept out of the ranking.</p><table class="dh-tb"><tbody>'+P.evaluation.map(dhRaceRow).join('')+'</tbody></table>';
+  if(P.evaluation.length) h+='<div class="dh-h">Evaluation scores</div><p class="dh-mut">Evaluation divisions, so not ranked.</p><table class="dh-tb"><tbody>'+P.evaluation.map(dhRaceRow).join('')+'</tbody></table>';
   if(P.unscored.length) h+='<details class="dh-dd"><summary>No published score yet ('+P.unscored.length+')</summary><div class="dh-race-uns">'+P.unscored.map(function(x){ return '<div><b>'+dhEsc(x.team)+'</b><small>'+dhEsc(x.gym)+' · '+dhEsc(x.div)+(x.athletes?' · '+x.athletes+' athletes':'')+'</small></div>'; }).join('')+'</div></details>';
   h+='<p class="dh-note">As of '+fmtRange(P.asOf,P.asOf)+' · '+dhEsc(P.source)+'.</p>';
   hsOpen('Paid bid race', dhEsc(name)+' · '+fmtRange(c.start,c.end||c.start), h);
