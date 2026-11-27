@@ -1287,6 +1287,10 @@ html.page-navy .app-disclaimer button.disc-link{color:rgba(255,255,255,.92);}
 .bud-edit-actions{display:flex; flex-wrap:wrap; gap:8px; align-items:center;}
 .bud-removed{font-size:12.5px; color:var(--text-muted); padding:10px 0 2px;}
 .exp-paste-actions{display:flex; flex-wrap:wrap; gap:8px;}
+.trv-rcpt{margin:-2px 0 10px;}
+.trv-rcpt-btn{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;font-weight:700;color:var(--accent);cursor:pointer;}
+.trv-rcpt-msg{display:block;margin-top:3px;font-size:12px;color:var(--text-muted);}
+.trv-rcpt-msg:empty{display:none;}
 .conf-num{font-size:12.5px; color:var(--text-muted);}
 .conf-num b{color:var(--text); letter-spacing:.02em;}
 
@@ -1757,7 +1761,8 @@ html.page-navy .app-disclaimer button.disc-link{color:rgba(255,255,255,.92);}
       </div>
       <div class="exp-datehint"><small>Change this if you paid on a different day.</small><button type="button" class="bud-link" onclick="document.getElementById('expDate').value=isoFromDate(new Date());syncExpStatus()">Set to today</button></div>
       <label>Status<select id="expStatus" class="cal-input" style="margin-top:0"><option value="paid">Paid</option><option value="planned">Upcoming (not paid yet)</option><option value="est">Estimate</option></select><small id="expStatusNote"></small></label>
-      <label>Note <small>(optional)</small><input type="text" id="expNote" class="cal-input" style="margin-top:0" maxlength="80" ></label>
+      <label><span id="expNoteLbl">Note</span> <small>(optional)</small><input type="text" id="expNote" class="cal-input" style="margin-top:0" maxlength="80" ></label>
+      <label id="expConfWrap" hidden>Confirmation # <small>(optional)</small><input type="text" id="expConf" class="cal-input" style="margin-top:0" maxlength="60" placeholder="e.g. R-06377711"><small>Saved to this comp’s My Travel on the Comp Schedule tab.</small></label>
       <div class="exp-err" id="expErr" role="alert"></div>
       <div class="exp-actions"><button type="button" class="pay-btn" id="expSave">Save</button><button type="button" class="linkbtn" id="expCancel" style="cursor:pointer;">Cancel</button></div>
     </div>
@@ -1884,7 +1889,7 @@ const competitions = [
     dateChanged:true, note:"Date changed — moved from Sun 11/22 to Sat 11/21. <a href=\"https://www.thespiritnetwork.net/sd-tsc\" target=\"_blank\" rel=\"noopener\">Event page →</a>"},
   {name:"ASCS Champs Grand Nationals", extraModules:[{icon:"❄️", label:"Team bonding", sub:"Codes &amp; tickets →", js:"openIceCodes()"}], loc:"Aurora, CO · Gaylord Rockies Resort &amp; Convention Center", address:"Gaylord Rockies Resort & Convention Center, Aurora, CO", start:"2026-12-19", end:"2026-12-20", travel:"required",
     housing:"required", bookingDate:"2026-09-10", travelStart:"2026-12-17", travelEnd:"2026-12-21",
-    bookingLinks:[{label:"ASCS housing block (book here)", url:"https://presto.eventpipe.com/event/1525a7d2-eb0c-4823-8240-3e4895689ee5"}],
+    bookingLinks:[{label:"General hotel block (book here)", url:"https://presto.eventpipe.com/event/1525a7d2-eb0c-4823-8240-3e4895689ee5"}],
     flightSearch:"Flights to Denver from San Diego, departing 2026-12-17, returning 2026-12-21",
     rosterLink:"https://www.varsity.com/download-event-app/", rosterLabel:"Team roster via Varsity Spirit Event App"},
   {name:"The Majors", loc:"Indianapolis, IN · Indiana Convention Center", address:"Indiana Convention Center, Indianapolis, IN", start:"2027-01-15", end:"2027-01-15", dateLabel:"January 2027", attending:false, teams:"Lady Bullets"},
@@ -1892,10 +1897,10 @@ const competitions = [
     housing:"optional", rosterLink:"https://www.thespiritnetwork.net/super-six-ca", rosterLabel:"Event page (roster posts closer to date)"},
   {name:"Spirit Sports", loc:"Palm Springs, CA · Palm Springs Convention Center", address:"Palm Springs Convention Center, Palm Springs, CA", start:"2027-01-29", end:"2027-01-31", travel:"local",
     housing:"optional", bookingDate:"2026-09-08",
-    bookingLinks:[{label:"Team block booking", url:"https://eventpipe.queue-it.net/?c=eventpipe&e=27spiritsportsgrand&t=https%3A%2F%2Fpresto.eventpipe.com%2Fevent%2Fec935e4d-c8c9-41cb-8d1e-c31199f4a746%2Fgroups%2F00b6a36f-6374-4869-97a7-49e2fdf6f5ff%3Finventory%3Dpublic&cid=en-US"}],
+    bookingLinks:[{label:"General hotel block (book here)", url:"https://app.eventpipe.com/event/ec935e4d-c8c9-41cb-8d1e-c31199f4a746/search/G-00754836"}],
     rosterLink:"https://www.varsity.com/download-event-app/", rosterLabel:"Team roster via Varsity Spirit Event App"},
   {name:"Aloha PHX", loc:"Phoenix, AZ · Phoenix Convention Center", address:"Phoenix Convention Center, Phoenix, AZ", start:"2027-03-05", end:"2027-03-07", attending:false, teams:"Sparkle, Glow, JSlay, J3, C3, Blush, Shazam, Sugar, Prep/Novice"},
-  {name:"USA", loc:"Anaheim, CA · Anaheim Convention Center", address:"Anaheim Convention Center, Anaheim, CA", start:"2027-03-13", end:"2027-03-14", travel:"local", hideTravelTag:true, note:"*If you live within 70 miles of the convention center, no housing is required.", housing:"required", housingNote:true, bookingDate:"2026-11-12",
+  {name:"USA", loc:"Anaheim, CA · Anaheim Convention Center", address:"Anaheim Convention Center, Anaheim, CA", start:"2027-03-13", end:"2027-03-14", travel:"local", hideTravelTag:true, note:"*If you live within 70 miles of the convention center, no housing is required.", housing:"required", housingNote:true, bookingDate:"2026-11-12", bookingLinks:[{label:"General hotel block (book here)", url:"https://presto.eventpipe.com/event/a7f1455c-dfaf-4ece-b8c5-62dc514a805c"}],
     rosterLink:"https://www.varsity.com/download-event-app/", rosterLabel:"Team roster via Varsity Spirit Event App"},
   {name:"UCA Allstar Nationals", loc:"Orlando, FL · ESPN Wide World of Sports", address:"ESPN Wide World of Sports, Orlando, FL", start:"2027-03-13", end:"2027-03-14", attending:false, teams:"C3, Blush, Shazam, Sugar"},
   {name:"NCA All-Star Nationals", loc:"Houston, TX · George R. Brown Convention Center", address:"George R. Brown Convention Center, Houston, TX", start:"2027-03-19", end:"2027-03-21", travel:"required",
@@ -2469,8 +2474,21 @@ const HOTEL_SITES = [
   [/great wolf/i, 'https://www.greatwolf.com', 'Great Wolf Lodge'],
   [/drury/i, 'https://www.druryhotels.com', 'Drury']
 ];
+/* Where a hotel was booked, from its confirmation #: Team Travel Source uses R- numbers; Booking.com, Airbnb and Vrbo have their own formats. */
+function hotelSource(v){
+  const t = String(v||'').trim();
+  if(/\bR-\d{6,}\b/i.test(t) || /teamtravelsource\.com|eventpipe\.com/i.test(t)) return {name:'Team Travel Source', url:'https://www.teamtravelsource.com/', note:'Booked through Team Travel Source. Change or cancel through them: use Manage Booking in your confirmation email, or call or text 502-354-9103.'};
+  if(/\b\d{4}\.\d{3}\.\d{3}\b/.test(t) || /booking\.com/i.test(t)) return {name:'Booking.com', url:'https://www.booking.com/', note:'Booked through Booking.com. Sign in there to check or change your stay.'};
+  if(/\bHM[A-Z0-9]{8}\b/.test(t) || /airbnb\./i.test(t)) return {name:'Airbnb', url:'https://www.airbnb.com/trips', note:'Booked through Airbnb. Your trip is under Trips.'};
+  if(/\bHA-[A-Z0-9]{5,}\b/i.test(t) || /vrbo\.com/i.test(t)) return {name:'Vrbo', url:'https://www.vrbo.com/', note:'Booked through Vrbo. Sign in there to see your trip.'};
+  if(/expedia\./i.test(t)) return {name:'Expedia', url:'https://www.expedia.com/trips', note:'Booked through Expedia. Your stay is under Trips.'};
+  if(/hotels\.com/i.test(t)) return {name:'Hotels.com', url:'https://www.hotels.com/trips', note:'Booked through Hotels.com. Your stay is under Trips.'};
+  return null;
+}
 function hotelToolsHtml(c, bk){
   const name = String(bk.hotelDetail||'').trim();
+  const src = hotelSource(bk.hotelLink);
+  if(src) return '<div class="trv-tools"><div class="trv-leg"><a class="trv-chip" href="'+src.url+'" target="_blank" rel="noopener noreferrer">'+src.name+' ↗</a></div><div class="trv-note">'+src.note+'</div></div>';
   if(!name) return '';
   const city = String(c.loc||'').split('·')[0].trim();
   let hit = null;
@@ -2502,6 +2520,7 @@ function travelToggleRow(field, yes, detail, link, title, sub, placeholder, back
         <button type="button" data-yes="0" class="${!yes?'active':''}">No</button>
       </div>
     </div>
+    <div class="trv-rcpt"><label class="trv-rcpt-btn"><input type="file" accept="image/*" hidden data-rcpt="${field}" onchange="trvRcpt(this)">📷 ${field==='air'?'Fill in from a flight receipt or confirmation':'Fill in from a hotel receipt or confirmation'}</label><small class="trv-rcpt-msg" data-rcpt-msg="${field}"></small></div>
     <div class="compx-travel-detail ${yes?'show':''}">
       ${field==='air'
         ? `<div class="flt-pair"><label class="flt-lbl">Flight there<input type="text" class="booking-link-input" data-field="airDetail" placeholder="e.g. DL 1234" value="${safeDetail}"></label><label class="flt-lbl">Flight back<input type="text" class="booking-link-input" data-field="airBack" placeholder="e.g. DL 5678" value="${safeBack}"></label></div>`
@@ -3816,6 +3835,7 @@ function openExpenseSheet(pre){
   document.getElementById('expAmt').value = pre.amt!=null ? pre.amt : '';
   document.getElementById('expMiles').value = pre.miles!=null ? pre.miles : '';
   document.getElementById('expNote').value = pre.note || '';
+  document.getElementById('expConf').value = pre.conf || '';
   expStatTouched = !!pre.status; if(pre.status) document.getElementById('expStatus').value = pre.status;
   syncExpStatus();
   document.getElementById('expTitle').textContent = expEditId ? 'Edit expense' : 'Add an expense';
@@ -3840,6 +3860,9 @@ function syncExpenseForm(){
   document.getElementById('expMilesWrap').hidden = !t.miles;
   document.getElementById('expRateNote').textContent = t.miles ? ('Rate: $'+Number(b.mileage).toFixed(3).replace(/0$/,'')+' per mile. This rate already includes gas, so skip logging gas for the same trip. Change it under Edit budget settings.') : '';
   document.getElementById('expUntracked').hidden = !!b.track[t.cat];
+  const trv = t.id==='hotel'||t.id==='flight';
+  document.getElementById('expConfWrap').hidden = !trv;
+  document.getElementById('expNoteLbl').textContent = t.id==='hotel' ? 'Hotel name' : (t.id==='flight' ? 'Flight numbers (like DL 1234, DL 5678)' : 'Note');
 }
 function saveExpenseFromSheet(){
   const t = expType(document.getElementById('expType').value);
@@ -3855,14 +3878,30 @@ function saveExpenseFromSheet(){
     comp: document.getElementById('expComp').value || '',
     note: document.getElementById('expNote').value.trim().slice(0,80),
     miles: t.miles && miles>0 ? miles : undefined,
+    conf: (t.id==='hotel'||t.id==='flight') ? (document.getElementById('expConf').value.trim().slice(0,60) || undefined) : undefined,
     origin: expEditId ? (expOrigin || undefined) : (expOrigin || 'budget')
   };
   const stSel = document.getElementById('expStatus').value; if(stSel && stSel !== expAutoStatus(rec)) rec.status = stSel;
   const ix = expEditId ? b.expenses.findIndex(e=>e.id===expEditId) : -1;
   if(ix>=0){ b.expenses[ix] = rec; if(b.over) delete b.over['x:'+expEditId]; } else b.expenses.push(rec);
   saveBudget(b);
+  trvFromExpense(rec);
   closeExpenseSheet();
   renderBudget(); renderComps();
+}
+/* A hotel or flight logged on the Budget tab for a comp also shows on that comp's My Travel (Comp Schedule tab).
+   It marks the trip booked and fills in the hotel name, flight numbers and confirmation # when those are empty. */
+function trvFlights(t){ const out=[]; const re=/\b([A-Z][A-Z0-9]|[A-Z0-9][A-Z])\s?(\d{1,4})\b/g; let m; String(t||'').toUpperCase().replace(/\s+/g,' ').split(/[,;\/&]| and /).join(' | ').replace(re,(x,a,n)=>{ if(typeof AIRLINES==='object'&&AIRLINES[a]&&out.indexOf(a+' '+n)<0) out.push(a+' '+n); return x; }); return out; }
+function trvFromExpense(rec){
+  if(!rec || !rec.comp || (rec.type!=='hotel' && rec.type!=='flight')) return;
+  const st = loadBooking(), s = st[rec.comp] = st[rec.comp] || {}, f = rec.type==='hotel' ? 'hotel' : 'air';
+  s[f] = true;
+  if(rec.note){
+    if(f==='hotel'){ if(!s.hotelDetail) s.hotelDetail = rec.note; }
+    else { const fl = trvFlights(rec.note); if(fl[0] && !s.airDetail) s.airDetail = fl[0]; if(fl[1] && !s.airBack) s.airBack = fl[1]; }
+  }
+  if(rec.conf && !s[f+'Link']) s[f+'Link'] = rec.conf;
+  saveBooking(st);
 }
 function removeExpense(id){
   const b = loadBudget(); b.expenses = b.expenses.filter(e=>e.id!==id); saveBudget(b); if(budEditKey==='x:'+id) budEditKey = null;
@@ -4237,7 +4276,11 @@ function rcptParse(text){
   if(vendor && vendor === vendor.toUpperCase()) vendor = vendor.toLowerCase().replace(/\b[a-z]/g, c=>c.toUpperCase());
   let type = null;
   for(let t = 0; t < RCPT_TYPES.length; t++){ if(RCPT_TYPES[t][1].test(flat)){ type = RCPT_TYPES[t][0]; break; } }
-  return {amt:amt, date:date, vendor:vendor, type:type};
+  let conf = '', hotel = '', mm = flat.match(/\bR-\d{6,}\b/i);
+  if(mm) conf = mm[0].toUpperCase();
+  else { mm = flat.match(/(?:confirmation|conf\.?|itinerary|reservation|booking|record locator)\s*(?:number|no\.?|#|code|id)?\s*[:#]?\s*([A-Z0-9][A-Z0-9.\-]{4,})/i); if(mm && /\d/.test(mm[1])) conf = mm[1].replace(/[.\-]$/,''); }
+  mm = flat.match(/^\s*(?:hotel|property)(?:\s*name)?\s*:\s*(.{3,60})$/im); if(mm) hotel = mm[1].trim();
+  return {amt:amt, date:date, vendor:vendor, type:type, conf:conf, hotel:hotel, flights:trvFlights(flat)};
 }
 let tessLoad = null;
 function loadTesseract(){
@@ -4275,8 +4318,10 @@ function rcptApply(r){
   if(r.type && !expEditId){ const sel = document.getElementById('expType'); sel.value = r.type; syncExpenseForm(); }
   if(r.amt){ document.getElementById('expAmt').value = r.amt.toFixed(2); got.push(bMoney(r.amt, true)); }
   if(r.date){ document.getElementById('expDate').value = r.date; got.push(fmtDate(r.date)); }
-  const note = document.getElementById('expNote');
-  if(r.vendor && !note.value){ note.value = r.vendor.slice(0,80); got.push(r.vendor); }
+  const note = document.getElementById('expNote'), tNow = document.getElementById('expType').value;
+  const label = tNow==='hotel' && r.hotel ? r.hotel : (tNow==='flight' && r.flights && r.flights.length ? r.flights.join(', ') : r.vendor);
+  if(label && !note.value){ note.value = label.slice(0,80); got.push(label); }
+  const cf = document.getElementById('expConf'); if(r.conf && cf && !cf.value && (tNow==='hotel'||tNow==='flight')){ cf.value = r.conf; got.push('Confirmation '+r.conf); }
   if(r.date && !document.getElementById('expComp').value){
     const hit = competitions.filter(c=>c.attending!==false&&!c.showoff && r.date >= addDaysISO(c.travelStart||c.start, -2) && r.date <= addDaysISO(c.travelEnd||c.end||c.start, 2));
     if(hit.length === 1) document.getElementById('expComp').value = slugify(hit[0].name);
@@ -4302,6 +4347,34 @@ async function rcptRun(file){
     rcptMsg(e && e.message==='slow' ? 'That took too long. Try again on a good connection, or type the amount.' : 'Could not read that photo. Check your connection and try again, or type the amount.', false);
   }
   btn.disabled = false;
+}
+
+/* ---- My Travel: read a receipt or confirmation screenshot into a comp's travel details (photo stays on the phone) ---- */
+const trvMsgs = {};
+function trvMsgShow(){ Object.keys(trvMsgs).forEach(k=>{ const p=k.split('|'); const sec=document.querySelector('.compx-section[data-slug="'+p[0]+'"]'); const el=sec&&sec.querySelector('[data-rcpt-msg="'+p[1]+'"]'); if(el) el.textContent=trvMsgs[k]; }); }
+async function trvRcpt(inp){
+  const file = inp.files && inp.files[0]; if(!file) return;
+  const sec = inp.closest('.compx-section'), slug = sec.dataset.slug, f = inp.dataset.rcpt, key = slug+'|'+f;
+  const say = t=>{ trvMsgs[key]=t; trvMsgShow(); };
+  try{
+    say('Loading the receipt reader. The first scan can take a minute.');
+    await loadTesseract();
+    const canvas = await rcptPrep(file);
+    const logger = m=>{ if(m && m.status==='recognizing text') say('Reading… '+Math.round((m.progress||0)*100)+'%'); };
+    const work = (async()=>{ try{ return await Tesseract.recognize(canvas, 'eng', {logger:logger, langPath:'https://cdn.jsdelivr.net/npm/@tesseract.js-data/eng/4.0.0_best_int'}); } catch(e){ return await Tesseract.recognize(canvas, 'eng', {logger:logger}); } })();
+    const res = await Promise.race([work, new Promise((_,rej)=>setTimeout(()=>rej(new Error('slow')), 120000))]);
+    const r = rcptParse(res && res.data && res.data.text);
+    const st = loadBooking(), s = st[slug] = st[slug] || {}, got = [];
+    s[f] = true;
+    if(f==='hotel'){ const n = r.hotel || (r.type==='hotel' ? r.vendor : ''); if(n){ s.hotelDetail = n.slice(0,80); got.push(n); } }
+    else if(r.flights && r.flights.length){ s.airDetail = r.flights[0]; got.push(r.flights[0]); if(r.flights[1]){ s.airBack = r.flights[1]; got.push(r.flights[1]); } }
+    if(r.conf){ s[f+'Link'] = r.conf; got.push('confirmation '+r.conf); }
+    if(r.amt && budgetOn()){ s[f+'Cost'] = Math.round(r.amt*100)/100; s[f+'Paid'] = r.date || isoFromDate(new Date()); got.push(bMoney(r.amt, true)); }
+    saveBooking(st);
+    trvMsgs[key] = got.length ? 'Filled in: '+got.join(' · ')+'. Check each field.' : 'Couldn’t read details from that photo. Try a clearer screenshot, or type them in.';
+    renderComps(); if(typeof renderBudget==='function') renderBudget(); trvMsgShow();
+  }catch(e){ say(e && e.message==='slow' ? 'That took too long. Try again on a good connection.' : 'Couldn’t read that photo. Check your connection and try again.'); }
+  inp.value = '';
 }
 
 /* ---- mileage: home ZIP to the venue ---- */
@@ -5342,6 +5415,8 @@ button.dh-b-tap b{font-size:14px;line-height:0;margin-left:1px;}
 .dh-race-uns div{padding:9px 0;border-top:1px solid var(--border);}
 .dh-race-uns b{display:block;font-size:14px;}
 .dh-race-uns small{display:block;font-size:12.5px;color:var(--text-muted);}
+.dh-b-pick{font-family:inherit;border:1px solid transparent;cursor:pointer;opacity:.75;}
+.dh-b-pick.on{opacity:1;border-color:color-mix(in srgb,var(--pc) 55%,transparent);box-shadow:0 0 0 1px color-mix(in srgb,var(--pc) 35%,transparent);}
 .dh-seg{display:flex;gap:2px;padding:3px;margin:2px 0 6px;border-radius:12px;background:var(--border);}
 .dh-seg button{flex:1;font:inherit;font-size:14px;font-weight:600;padding:9px 6px;border:0;border-radius:9px;background:transparent;color:var(--text-muted);cursor:pointer;}
 .dh-seg button.on{background:var(--surface);color:var(--text);box-shadow:0 1px 3px rgba(0,0,0,.12);}
@@ -5777,19 +5852,19 @@ var DH_ROSTERS = {'NCA All-Star Nationals':{source:'NCA All-Star Nationals 2027 
    'division' = only the group Y2K is judged against (placement order, can pass down to `passTo`). count = bids for the tier. */
 var DH_EVENT_BIDS = {
   'ASCS Champs Grand Nationals':[
-    {champ:'The Youth Summit', type:'partial', count:1, tier:'D1', scope:'youth', note:'All eligible D1 Youth teams across levels and sizes.'},
-    {champ:'The Youth Summit', type:'atlarge', count:3, tier:'D1', scope:'youth', d2Realloc:null, note:'3 bids initially go to D1. D2 teams are shown only if the published reallocation rule applies.'}],
+    {champ:'The Youth Summit', type:'partial', count:1, tier:'D1', scope:'youth', note:'Goes to the highest-scoring D1 Youth team at this event: any level 1–5, Flex or not, any size.'},
+    {champ:'The Youth Summit', type:'atlarge', count:3, tier:'D1', scope:'youth', d2Realloc:null, note:'The next 3 eligible D1 Youth teams get At-Large bids. If teams decline, the rest can go by score across D1 and D2.'}],
   'Spirit Sports':[
-    {champ:'The Youth Summit', type:'partial', count:1, tier:'D1', scope:'youth', note:'All eligible D1 Youth teams across levels and sizes.'},
-    {champ:'The Youth Summit', type:'atlarge', count:3, tier:'D1', scope:'youth', d2Realloc:null, note:'3 bids initially go to D1. D2 teams are shown only if the published reallocation rule applies.'}],
+    {champ:'The Youth Summit', type:'partial', count:1, tier:'D1', scope:'youth', note:'Goes to the highest-scoring D1 Youth team at this event: any level 1–5, Flex or not, any size.'},
+    {champ:'The Youth Summit', type:'atlarge', count:3, tier:'D1', scope:'youth', d2Realloc:null, note:'The next 3 eligible D1 Youth teams get At-Large bids. D2 teams compete for their own.'}],
   'USA':[
-    {champ:'The Youth Summit', type:'full', count:1, tier:'D1', scope:'youth', note:'All eligible D1 Youth teams across levels and sizes.'},
-    {champ:'The Youth Summit', type:'atlarge', count:null, tier:'D1', scope:'division', passTo:3, note:'Goes by placement in our judged division and can pass as far as an eligible 3rd-place team.'}],
+    {champ:'The Youth Summit', type:'full', count:1, tier:'D1', scope:'youth', note:'Goes to the highest-scoring D1 Youth team at this event: any level 1–5, Flex or not, any size.'},
+    {champ:'The Youth Summit', type:'atlarge', count:null, tier:'D1', scope:'division', passTo:3, note:'Winning our division earns at least an At-Large bid. If the winner can’t take it, it passes to 2nd, then 3rd.'}],
   'NCA All-Star Nationals':[
-    {champ:'The Youth Summit', type:'full', count:1, tier:'D1', scope:'youth', note:'All eligible D1 Youth teams across levels and sizes.'},
-    {champ:'The Youth Summit', type:'atlarge', count:null, tier:'D1', scope:'division', passTo:3, note:'Goes by placement in our judged division and can pass as far as an eligible 3rd-place team.'}],
+    {champ:'The Youth Summit', type:'full', count:1, tier:'D1', scope:'youth', note:'Goes to the highest-scoring D1 Youth team at this event: any level 1–5, Flex or not, any size.'},
+    {champ:'The Youth Summit', type:'atlarge', count:null, tier:'D1', scope:'division', passTo:3, note:'Winning our division earns at least an At-Large bid. If the winner can’t take it, it passes to 2nd, then 3rd.'}],
   'TSN Super Six':[
-    {champ:'The Youth Summit', type:'wild', count:2, tier:null, scope:'youth', judges:true, countLabel:'2 Youth bids · Judges’ choice', note:'Eligible Youth teams across divisions. Awarded at the judges’ discretion.'}]
+    {champ:'The Youth Summit', type:'wild', count:2, tier:null, scope:'youth', judges:true, countLabel:'2 Youth bids · Judges’ choice', note:'2 Youth Wild Cards, judges’ choice. TSN doesn’t publish a D1/D2 split.'}]
 };
 /* Official bid winners once announced: DH_EVENT_WINNERS['NCA All-Star Nationals'] = {'The Youth Summit|full':['team-id']}; */
 var DH_EVENT_WINNERS = {};
@@ -5855,20 +5930,17 @@ function dhBidList(c,b){
     +cards(shown)+(rest.length?'<details class="dh-dd"><summary>Show all '+eligible.length+'</summary>'+cards(rest)+'</details>':'');
 }
 function dhBidSection(c){
-  var bids=DH_EVENT_BIDS[c.name], slug=slugify(c.name);
   if(DH_ADVANCEMENT[c.name]) return '<div class="compx-section"><div class="compx-section-label"><span class="cxl-ic">'+ICON_CHECK+'</span>Advancement</div><p class="dh-lpend">Bid details unconfirmed</p></div>';
-  if(!bids||!bids.length) return '<div class="compx-section"><div class="compx-section-label"><span class="cxl-ic">'+ICON_CHECK+'</span>Bid Competition</div><p class="dh-lpend">Bid details unconfirmed</p></div>';
-  var y=dhBidBefore(dhY2K(),c.start), yr=y?DH_BRANK[y]:0;
-  if(DH_BIDSEL[c.name]==null){ var best=-1; bids.forEach(function(b,i){ if(b.champ==='The Youth Summit'&&DH_BRANK[b.type]>yr&&(best<0||DH_BRANK[b.type]>DH_BRANK[bids[best].type])) best=i; }); DH_BIDSEL[c.name]=best<0?0:best; }
-  var sel=DH_BIDSEL[c.name], champs={};
-  bids.forEach(function(b,i){ (champs[b.champ]=champs[b.champ]||[]).push(i); });
-  var opts=Object.keys(champs).map(function(ch){ return '<optgroup label="'+dhEsc(ch)+'">'+champs[ch].map(function(i){ var b=bids[i]; return '<option value="'+i+'"'+(i===sel?' selected':'')+'>'+dhEsc(ch.replace('The ','')+' · '+DH_BT[b.type]+(b.count!=null?' · '+b.count+(b.tier?' for '+b.tier:''):''))+'</option>'; }).join('')+'</optgroup>'; }).join('');
-  return '<div class="compx-section"><div class="compx-section-label"><span class="cxl-ic">'+ICON_CHECK+'</span>Bid Competition</div>'
-    +(y?'<p class="dh-mut">Y2K enters holding '+DH_BT[y]+'.</p>':'')
-    +'<label class="dh-bc-pick"><span>Bid</span><select onchange="dhPickBid(\''+slug+'\','+JSON.stringify(c.name).replace(/"/g,'&quot;')+',this.value)">'+opts+'</select></label>'
-    +'<div id="dhbc-'+slug+'">'+dhBidList(c,bids[sel])+'</div></div>';
+  var bids=DH_EVENT_BIDS[c.name]||[], slug=slugify(c.name);
+  var head='<div class="compx-section"><div class="compx-section-label"><span class="cxl-ic">'+ICON_CHECK+'</span>Bid Competition</div>';
+  if(!bids.length) return head+'<p class="dh-lpend">Bid details unconfirmed</p></div>';
+  var y=dhBidBefore(dhY2K(),c.start), sel=DH_BIDSEL[c.name]; if(sel==null||!bids[sel]) sel=DH_BIDSEL[c.name]=0;
+  var pills=bids.map(function(b,i){ return '<button type="button" class="dh-b dh-b-pick '+b.type+(i===sel?' on':'')+'" aria-pressed="'+(i===sel)+'" onclick="dhPickBid(\''+slug+'\','+JSON.stringify(c.name).replace(/"/g,'&quot;')+','+i+')">'+DH_BT[b.type]+' · '+dhEsc(dhBidCount(b))+'</button>'; }).join('');
+  return head+(y?'<p class="dh-mut">'+dhEsc(DH_TEAM.name)+' enters holding '+DH_BT[y]+'.</p>':'')
+    +'<div class="dh-bp" id="dhbp-'+slug+'">'+pills+'</div><p class="dh-bc-note" id="dhbc-'+slug+'">'+dhEsc(bids[sel].note||'')+'</p></div>';
 }
-function dhPickBid(slug,name,i){ DH_BIDSEL[name]=+i; var c=competitions.filter(function(x){return x.name===name;})[0], el=document.getElementById('dhbc-'+slug); if(c&&el) el.innerHTML=dhBidList(c,DH_EVENT_BIDS[name][+i]); }
+function dhBidCount(b){ return b.countLabel||(b.count!=null?b.count+(b.tier?' for '+b.tier:''):'division winners'); }
+function dhPickBid(slug,name,i){ DH_BIDSEL[name]=+i; var b=(DH_EVENT_BIDS[name]||[])[+i], n=document.getElementById('dhbc-'+slug), p=document.getElementById('dhbp-'+slug); if(n&&b) n.textContent=b.note||''; if(p) [].forEach.call(p.children,function(x,k){ x.classList.toggle('on',k===+i); x.setAttribute('aria-pressed',k===+i); }); }
 function dhDivisionSection(c){
   var L=DH_LINEUPS[c.name], x=L?dhLineupTeams(c):{teams:[],pending:[]}, all=x.teams.concat(x.pending).sort(dhByNow);
   var body=all.length?('<p class="dh-mut">'+dhEsc(L.division)+'. The organizer hasn’t published combined or split divisions yet.</p>'+all.map(function(t){ return dhOppNow(t, x.pending.indexOf(t)>-1?'Size not posted yet · registered '+DH_TEAM.division.tier+' Flex':''); }).join('')):'<p class="dh-lpend">Awaiting event roster</p>';
@@ -5913,7 +5985,7 @@ function dhBidRace(name){
   hsOpen('Paid bid race', dhEsc(name)+' · '+fmtRange(c.start,c.end||c.start), h);
 }
 function dhRaceOn(name){ return !!(DH_BIDRACE[name]&&DH_BIDPOOLS[name]); }
-function dhCompSections(c){ return dhDivisionSection(c)+dhBidSection(c); }
+function dhCompSections(c){ return dhBidSection(c); }  /* competitor lists stay on the Die Hards tab and Day plans */
 /* the Comp Schedule cards render before this script loads: render them again so the new sections appear */
 if(typeof renderComps==='function'){ try{ renderComps(); }catch(e){} }
 /* Views */
