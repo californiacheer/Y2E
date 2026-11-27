@@ -1991,6 +1991,7 @@ function startMins(f){
 }
 
 const feed = [
+  {date:"2026-12-01", dateLabel:"Due Dec 1", postedDate:"2026-11-25", expires:"2026-12-01", tag:"deadline", title:"Holiday break workout from Coach Jay", body:'Do this workout 3 times before practice on Tue, Dec 1. A private lesson can replace it.<ul class="hw-list"><li>3 sets of 10 push-ups</li><li>3 sets of 20 tap-tap squats</li><li>3 sets of 30-second hollow body holds</li><li>Run 1 mile in under 15 minutes</li></ul><b>Flexibility</b><ul class="hw-list"><li>1-minute over-split, right leg</li><li>1-minute over-split, left leg</li><li>1-minute middle split</li></ul>'},
   {date:"2026-11-25", dateLabel:"Nov 25–29", postedDate:"2026-11-23", expires:"2026-11-29", tag:"info", title:"Gym closed for Thanksgiving", body:"Closed Wed, Nov 25 through Sun, Nov 29. Watch for homework from your coaches starting Wednesday. Happy Thanksgiving!"},
   {date:"2026-11-30", dateLabel:"Due Nov 30", postedDate:"2026-11-24", expires:"2026-11-30", tag:"deadline", title:"Winter Collection pre-orders", body:'Closes Mon, Nov 30 at midnight. Pajama shorts and pants, polo, hats and hoodies arrive before the holidays. The car decal and rhinestone appliqué arrive after. Pre-order only, non-refundable, so triple-check sizes. <a href="https://caliproshop.com/collections/pre-orders" target="_blank" rel="noopener">Order now →</a>'},
   {date:"2026-11-21", dateLabel:"Nov 21", postedDate:"2026-11-23", tag:"info", title:"CALI swept TSN 🏆", body:"Overall champs! High point winners: Prep Bliss, Level 1 White Gold, Level 2 Reign, Levels 3–6 C3, and Grand Champs Reign (99.37)."},
@@ -6062,6 +6063,8 @@ function hsRivals(on){ var s=hsLoad(); s.rivals=!!on; hsSave(s); hsSyncRivals();
 .ice-code{font:inherit;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13px;font-weight:700;letter-spacing:.02em;color:var(--accent-ink);background:var(--accent-soft);border:0;border-radius:9px;padding:8px 11px;min-width:104px;text-align:center;cursor:pointer;}
 .ice-val{font-size:13.5px;font-weight:700;text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums;}
 .ice-link{display:block;margin-top:18px;padding:15px 18px;border-radius:14px;background:var(--accent);color:#fff !important;font-size:15px;font-weight:800;text-align:center;text-decoration:none !important;}
+.hw-list{margin:6px 0 8px;padding-left:20px;}
+.hw-list li{margin:2px 0;}
 .lk-row{display:flex;flex-wrap:wrap;gap:6px 20px;margin-top:9px;}
 .lk-row a{white-space:nowrap;font-weight:700;}
 .fund-meta .lk-row,.coming-row-desc .lk-row{margin-top:8px;}
