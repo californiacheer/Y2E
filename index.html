@@ -1897,14 +1897,14 @@ const competitions = [
     housing:"optional", rosterLink:"https://www.thespiritnetwork.net/super-six-ca", rosterLabel:"Event page (roster posts closer to date)"},
   {name:"Spirit Sports", loc:"Palm Springs, CA · Palm Springs Convention Center", address:"Palm Springs Convention Center, Palm Springs, CA", start:"2027-01-29", end:"2027-01-31", travel:"local",
     housing:"optional", bookingDate:"2026-09-08",
-    bookingLinks:[{label:"General hotel block (book here)", url:"https://app.eventpipe.com/event/ec935e4d-c8c9-41cb-8d1e-c31199f4a746/search/G-00754836"}],
+    bookingLinks:[{label:"General hotel block (book here)", url:"https://presto.eventpipe.com/event/ec935e4d-c8c9-41cb-8d1e-c31199f4a746"}],
     rosterLink:"https://www.varsity.com/download-event-app/", rosterLabel:"Team roster via Varsity Spirit Event App"},
   {name:"Aloha PHX", loc:"Phoenix, AZ · Phoenix Convention Center", address:"Phoenix Convention Center, Phoenix, AZ", start:"2027-03-05", end:"2027-03-07", attending:false, teams:"Sparkle, Glow, JSlay, J3, C3, Blush, Shazam, Sugar, Prep/Novice"},
   {name:"USA", loc:"Anaheim, CA · Anaheim Convention Center", address:"Anaheim Convention Center, Anaheim, CA", start:"2027-03-13", end:"2027-03-14", travel:"local", hideTravelTag:true, note:"*If you live within 70 miles of the convention center, no housing is required.", housing:"required", housingNote:true, bookingDate:"2026-11-12", bookingLinks:[{label:"General hotel block (book here)", url:"https://presto.eventpipe.com/event/a7f1455c-dfaf-4ece-b8c5-62dc514a805c"}],
     rosterLink:"https://www.varsity.com/download-event-app/", rosterLabel:"Team roster via Varsity Spirit Event App"},
   {name:"UCA Allstar Nationals", loc:"Orlando, FL · ESPN Wide World of Sports", address:"ESPN Wide World of Sports, Orlando, FL", start:"2027-03-13", end:"2027-03-14", attending:false, teams:"C3, Blush, Shazam, Sugar"},
   {name:"NCA All-Star Nationals", loc:"Houston, TX · George R. Brown Convention Center", address:"George R. Brown Convention Center, Houston, TX", start:"2027-03-19", end:"2027-03-21", travel:"required",
-    detail:"Fly in Thursday 3/18, fly out Monday 3/22.", housing:"required", bookingDate:"2026-11-20", travelStart:"2027-03-18", travelEnd:"2027-03-22",
+    detail:"Fly in Thursday 3/18, fly out Monday 3/22.", housing:"required", bookingDate:"2026-12-18", travelStart:"2027-03-18", travelEnd:"2027-03-22",
     bookingLinks:[{label:"General hotel block (book here)", url:"https://presto.eventpipe.com/event/27a4c0b3-2577-462d-9822-7c687749b1df"}],
     flightSearch:"Flights to Houston from San Diego, departing 2027-03-18, returning 2027-03-22",
     rosterLink:"https://www.varsity.com/download-event-app/", rosterLabel:"Team roster via Varsity Spirit Event App"},
@@ -1912,6 +1912,7 @@ const competitions = [
   {name:"Global Spirit", loc:"Oceanside, CA · Frontwave Arena", address:"Frontwave Arena, Oceanside, CA", start:"2027-04-10", end:"2027-04-11", travel:"local",
     housing:"optional", rosterLink:"https://www.kcexclusives.com/cheer-collective/competitions/global-spirit-championships-west-coast-nationals-2027-ca", rosterLabel:"Event page (team list not posted yet)"},
   {name:"Youth Summit", loc:"Tampa, FL · Tampa Convention Center", address:"Tampa Convention Center, 333 S Franklin St, Tampa, FL 33602", start:"2027-04-22", end:"2027-04-24", travel:"required", flightSearch:"Flights to Tampa from San Diego",
+    housing:"required", bookingDate:"2027-02-23", note:"Housing is required: book through Team Travel Source. They send booking links to coaches in January and February, and the public link opens Tue, Feb 23, 2027.",
     rosterLink:"https://www.varsity.com/all-star/competitions/end-of-season-events/the-youth-summit-championship", rosterLabel:"Event page (pricing &amp; bids coming soon)"},
   {name:"World Championships", loc:"Orlando, FL · ESPN Wide World of Sports", address:"ESPN Wide World of Sports, Orlando, FL", start:"2027-04-23", end:"2027-04-26", attending:false, teams:"Rangers, Coed, Lady Bullets, Glow, Sparkle"},
   {name:"Summit Championships", loc:"Orlando, FL · ESPN Wide World of Sports", address:"ESPN Wide World of Sports, Orlando, FL", start:"2027-04-29", end:"2027-05-02", attending:false, teams:"TBA"}
@@ -2478,7 +2479,7 @@ const HOTEL_SITES = [
 /* Where a hotel was booked, from its confirmation #: Team Travel Source uses R- numbers; Booking.com, Airbnb and Vrbo have their own formats. */
 function hotelSource(v){
   const t = String(v||'').trim();
-  if(/\bR-\d{6,}\b/i.test(t) || /teamtravelsource\.com|eventpipe\.com/i.test(t)) return {name:'Team Travel Source', url:'https://www.teamtravelsource.com/', note:'Booked through Team Travel Source. Change or cancel through them: use Manage Booking in your confirmation email, or call or text 502-354-9103.'};
+  if(/\bR-\d{6,}\b/i.test(t) || /teamtravelsource\.com|eventpipe\.com/i.test(t)) return {name:'Manage on Team Travel Source', url:'https://app.eventpipe.com/search/auth/new', note:'Booked through Team Travel Source. Look it up with your R- number and email to change or cancel, or call or text 502-354-9103.'};
   if(/\b\d{4}\.\d{3}\.\d{3}\b/.test(t) || /booking\.com/i.test(t)) return {name:'Booking.com', url:'https://www.booking.com/', note:'Booked through Booking.com. Sign in there to check or change your stay.'};
   if(/\bHM[A-Z0-9]{8}\b/.test(t) || /airbnb\./i.test(t)) return {name:'Airbnb', url:'https://www.airbnb.com/trips', note:'Booked through Airbnb. Your trip is under Trips.'};
   if(/\bHA-[A-Z0-9]{5,}\b/i.test(t) || /vrbo\.com/i.test(t)) return {name:'Vrbo', url:'https://www.vrbo.com/', note:'Booked through Vrbo. Sign in there to see your trip.'};
